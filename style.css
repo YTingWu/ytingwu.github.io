@@ -47,10 +47,18 @@
 body {
     background-color: var(--bg-body);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    min-height: 100vh;
-    padding: 40px 0;
     color: var(--text-main);
     transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 0;
+    padding: 0;
+}
+
+@media (min-width: 768px) {
+    body {
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+    }
 }
 
 .main-container {
@@ -187,6 +195,23 @@ body {
     background: var(--danger);
 }
 
+/* Deduction Row */
+.fee-item.deduction-row {
+    background: var(--bg-input-group);
+    margin: 0;
+    border-radius: 0;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--border-color);
+}
+.fee-item.deduction-row .fee-label,
+.fee-item.deduction-row .fee-value {
+    color: var(--text-main);
+    font-size: 1.1rem;
+}
+.fee-item.deduction-row .text-muted {
+    color: var(--text-secondary) !important;
+}
+
 /* Form Elements */
 .form-label {
     font-weight: 700;
@@ -237,12 +262,44 @@ body {
     background-color: rgba(255,255,255,0.05);
 }
 
+.footer-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+    .footer-wrapper {
+        padding: 0 15px;
+    }
+}
+
 @media (max-width: 768px) {
     body {
-        padding: 20px 0;
+        padding: 0;
+        /* Match card background on mobile to bleed into safe areas nicely */
+        background-color: var(--bg-card); 
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: auto;
+    }
+    #wrapper {
+        display: block;
+        height: auto;
+    }
+    #page-content-wrapper {
+        height: auto;
+        overflow: visible;
+        padding-bottom: 0; /* Let main-container handle it */
     }
     .main-container {
         padding: 15px;
+        padding-top: calc(20px + env(safe-area-inset-top)); /* Handle notch/top bars */
+        padding-bottom: calc(60px + env(safe-area-inset-bottom)); /* More padding at bottom for safari */
+        border-radius: 0; /* Flush on mobile for cleaner look */
+        box-shadow: none;
+        border: none;
+        min-height: 100dvh; /* Ensure context fills screen */
     }
     .input-section {
         padding: 20px;
@@ -267,14 +324,50 @@ body {
     }
 
     #themeToggle {
-        top: 0 !important;
+        top: env(safe-area-inset-top) !important;
         right: 0 !important;
         margin: 5px !important;
     }
     
     .header {
-        margin-top: 25px;
+        margin-top: 40px; /* Increased to avoid coverage */
         padding-top: 10px;
+    }
+    
+    /* Mobile Note Optimization */
+    .text-center.text-muted {
+        padding: 0 10px;
+    }
+    
+    .text-center.text-muted small {
+        display: block;
+        margin: 6px 0;
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+
+    /* Mobile Sidebar Card Style - FLOAT STYLE */
+    #sidebar-wrapper {
+        top: 15px;
+        bottom: 15px;
+        height: calc(100dvh - 30px);
+        left: -105%; /* Fully off-screen */
+        width: 85%;
+        border-radius: 20px;
+        box-shadow: 10px 0 30px rgba(0,0,0,0.15);
+        margin-left: 0;
+        z-index: 2000;
+        border: 1px solid var(--border-color);
+        transition: left .3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    body.toggled #sidebar-wrapper {
+        left: 10px; /* Floating gap from left */
+    }
+
+    #sidebar-wrapper .sidebar-heading {
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
     }
 }
 
@@ -319,6 +412,63 @@ body {
     background-color: var(--bg-input-group);
 }
 
+/* Seller Type Toggle */
+.seller-type-toggle {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    overflow: hidden;
+    gap: 0;
+}
+
+.seller-type-toggle .btn-outline-primary {
+    border: none;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    background-color: var(--bg-card);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.seller-type-toggle .btn-check:checked + .btn-outline-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, #224abe 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(78, 115, 223, 0.3) !important;
+}
+
+.seller-type-toggle .btn-check:checked + .btn-outline-primary i {
+    color: white !important;
+}
+
+.seller-type-toggle .btn-check:checked + .btn-outline-primary:hover {
+    background: linear-gradient(135deg, var(--primary) 0%, #224abe 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(78, 115, 223, 0.3) !important;
+}
+
+.seller-type-toggle .btn-outline-primary:hover:not(.active) {
+    background-color: var(--bg-input-group);
+    color: var(--primary);
+}
+
+.seller-type-toggle .btn-outline-primary i {
+    margin-right: 4px;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 576px) {
+    .seller-type-toggle .btn-outline-primary {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .seller-type-toggle .btn-outline-primary i {
+        margin-right: 2px;
+        font-size: 0.75rem;
+    }
+}
+
 /* Dark Mode Overrides for Bootstrap classes */
 [data-theme="dark"] .text-muted {
     color: var(--text-secondary) !important;
@@ -341,4 +491,346 @@ body {
     --bs-table-color: var(--text-main);
     background-color: var(--bg-input-group) !important;
     color: var(--text-main) !important;
+}
+
+/* Custom Switch Styling */
+.form-switch .form-check-input {
+    width: 2.5em;
+    height: 1.25em;
+    cursor: pointer;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: var(--success);
+    border-color: var(--success);
+}
+
+#costTaxLabel {
+    font-weight: 600;
+    min-width: 45px;
+    transition: color 0.3s ease;
+}
+
+[data-theme="dark"] #costTaxLabel {
+    color: var(--text-main) !important;
+}
+
+/* Tax Input Options */
+.input-tax-bg {
+    background-color: var(--light);
+}
+
+[data-theme="dark"] .input-tax-bg {
+    background-color: var(--bg-input-group);
+}
+
+/* Collapsible Fee Groups */
+.fee-group {
+    border-bottom: 1px solid var(--fee-border);
+}
+
+.fee-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--text-main);
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+}
+
+.fee-group-header:hover {
+    background-color: rgba(0,0,0,0.02);
+}
+
+[data-theme="dark"] .fee-group-header:hover {
+    background-color: rgba(255,255,255,0.02);
+}
+
+.fee-group-header .bi-chevron-down {
+    transition: transform 0.3s ease;
+}
+
+.fee-group-header[aria-expanded="true"] .bi-chevron-down {
+    transform: rotate(180deg);
+}
+
+.fee-subitem {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 25px 10px 45px;
+    align-items: center;
+    font-size: 0.95rem;
+    border-top: 1px dashed var(--fee-border);
+    color: var(--text-secondary);
+}
+
+.fee-subitem .fee-value {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+/* Color for deductions */
+.text-deduction {
+    color: var(--success) !important;
+}
+
+/* --- New Sidebar & Layout Styles --- */
+
+:root {
+    --sidebar-width: 280px;
+}
+
+/* Wrapper & Layout */
+#wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+@media (min-width: 768px) {
+    #wrapper {
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+    }
+}
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    left: -75%;
+    width: 75%;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 1060;
+    transition: left .25s ease-out;
+    background-color: var(--bg-card);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 1rem 1.25rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--bg-card);
+    /* Ensure heading corners match sidebar if needed */
+    border-top-right-radius: 20px; 
+}
+
+#sidebar-wrapper .list-group {
+    width: 100%;
+    overflow-y: auto;
+    flex-grow: 1;
+    /* Rounded bottom right */
+    border-bottom-right-radius: 20px;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    min-width: 0;
+    transition: margin .25s ease-out;
+    height: 100%;
+    overflow-y: auto;
+    padding: 0;
+}
+
+/* Resizer Handle */
+#resizer {
+    width: 5px;
+    height: 100%;
+    /* background: transparent; */ /* Make it invisible but clickable, or slightly visible on hover */
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: col-resize;
+    z-index: 1035;
+    transition: background 0.2s;
+}
+
+#resizer:hover, #resizer.resizing {
+    background: var(--primary);
+    width: 4px; /* Visual feedback */
+}
+
+/* Mobile Sidebar Toggled State */
+body.toggled {
+    overflow: hidden; 
+}
+
+body.toggled #sidebar-wrapper {
+    left: 0;
+}
+
+/* Desktop Sidebar */
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        left: 0;
+        margin-left: 0;
+        width: var(--sidebar-width);
+        position: relative; 
+        height: min-content; /* Only take needed height or... */
+        max-height: calc(100vh - 40px);
+        overflow-y: auto; 
+        z-index: 1000;
+        border-right: 1px solid var(--border-color);
+        /* Rounded Corners & Position match calculator */
+        margin-top: 20px;
+        margin-bottom: 20px;
+        margin-left: 20px;
+        border-radius: 20px;
+        box-shadow: 2px 2px 15px rgba(0,0,0,0.05);
+        transition: none;
+    }
+
+    #page-content-wrapper {
+        flex: 1;
+        width: calc(100% - var(--sidebar-width));
+        transition: none;
+        height: 100%;
+        overflow-y: auto; 
+        padding: 20px 0;
+    }
+
+    /* Collapsed State on Desktop */
+    #wrapper.desktop-collapsed #sidebar-wrapper {
+        margin-left: calc(var(--sidebar-width) * -1); /* Move off-screen or shrink? */
+        /* Better to just hide it or set width 0? 
+           Using margin-left negative is a good way to animate it out if we wanted animation.
+           But we must also set width to 0 or make it not take space.
+        */
+        display: none;
+    }
+    
+    #wrapper.desktop-collapsed #page-content-wrapper {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    body.toggled {
+        overflow: auto;
+    }
+    
+    #sidebar-overlay {
+        display: none !important;
+    }
+    
+    /* Hide mobile close button in sidebar */
+    #sidebar-wrapper .sidebar-heading .bi-x-lg {
+        display: none;
+    }
+}
+
+/* Mobile Overlay Backdrop */
+#sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1055; /* Above floating button, below sidebar */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+body.toggled #sidebar-overlay {
+    display: block;
+    opacity: 1;
+}
+
+/* Floating Sidebar Toggle Button */
+#floatingSidebarToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+#floatingSidebarToggle:hover {
+    transform: scale(1.1);
+}
+
+#floatingSidebarToggle:active {
+    transform: scale(0.95);
+}
+
+/* Handle visibility of the floating toggle btn */
+/* Desktop: Hide if not collapsed */
+@media (min-width: 768px) {
+    #wrapper:not(.desktop-collapsed) ~ #floatingSidebarToggle {
+        display: none !important;
+    }
+}
+
+/* Mobile: Hide if sidebar is open (toggled) */
+@media (max-width: 767.98px) {
+    body.toggled #floatingSidebarToggle {
+        display: none !important;
+    }
+}
+
+/* Sidebar List Items */
+.sidebar-list-item {
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    transition: all 0.2s;
+    background-color: transparent;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem;
+    text-decoration: none;
+}
+
+.sidebar-list-item:hover {
+    background-color: var(--light);
+    border-left-color: var(--primary);
+    color: var(--text-main);
+}
+
+[data-theme="dark"] .sidebar-list-item:hover {
+    background-color: var(--bg-input-group);
+}
+
+.config-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.config-details {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.delete-config-btn {
+    opacity: 0.3;
+    transition: opacity 0.2s;
+    padding: 0;
+    color: var(--text-secondary);
+    border: none;
+    background: none;
+}
+
+.sidebar-list-item:hover .delete-config-btn {
+    opacity: 1;
+}
+
+.delete-config-btn:hover {
+    color: var(--danger);
+}
+
+/* Toast Container positioning */
+.toast-container {
+    z-index: 1060;
 }
