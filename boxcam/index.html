@@ -99,14 +99,40 @@
                 <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
                     <!-- Placeholder for Logo - Replace src with actual path -->
                     <img src="LaunchLogo.png" alt="BoxCam Logo" class="h-10 w-10 object-contain rounded-xl shadow-sm" onerror="this.onerror=null; this.src='https://placehold.co/100x100/2563eb/white?text=B';">
-                    <span class="font-bold text-xl tracking-tight text-slate-900 dark:text-white">BoxCam <span class="hidden sm:inline-block font-medium text-slate-500 text-sm ml-1">包裹相機</span></span>
+                    <span class="font-bold text-xl tracking-tight text-slate-900 dark:text-white">BoxCam <span class="hidden sm:inline-block font-medium text-slate-500 text-sm ml-1" data-i18n="app.subtitle">包裹相機</span></span>
                 </div>
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#features" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors">核心功能</a>
-                    <a href="#audience" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors">適用對象</a>
-                    <a href="#pricing" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Pro 版</a>
+                    <a href="#features" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="nav.features">核心功能</a>
+                    <a href="#audience" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="nav.audience">適用對象</a>
+                    <a href="#pricing" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="nav.pricing">Pro 版</a>
+                    
+                    <!-- Language Selector -->
+                    <div class="relative" id="lang-selector">
+                        <button id="lang-toggle" class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none">
+                            <i class="fas fa-globe text-slate-500"></i>
+                            <span class="text-sm font-medium" id="current-lang">繁中</span>
+                            <i class="fas fa-chevron-down text-xs text-slate-400"></i>
+                        </button>
+                        <div id="lang-menu" class="hidden absolute right-0 mt-2 w-40 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-50">
+                            <button class="lang-option w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" data-lang="zh-TW">
+                                <span class="mr-2">🇹🇼</span> 繁體中文
+                            </button>
+                            <button class="lang-option w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" data-lang="zh-CN">
+                                <span class="mr-2">🇨🇳</span> 简体中文
+                            </button>
+                            <button class="lang-option w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" data-lang="en">
+                                <span class="mr-2">🇺🇸</span> English
+                            </button>
+                            <button class="lang-option w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" data-lang="ja">
+                                <span class="mr-2">🇯🇵</span> 日本語
+                            </button>
+                            <button class="lang-option w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" data-lang="ko">
+                                <span class="mr-2">🇰🇷</span> 한국어
+                            </button>
+                        </div>
+                    </div>
                     
                     <!-- Dark Mode Toggle -->
                     <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none">
@@ -121,6 +147,9 @@
 
                 <!-- Mobile menu button -->
                 <div class="md:hidden flex items-center gap-4">
+                    <button id="lang-toggle-mobile" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fas fa-globe text-slate-500"></i>
+                    </button>
                     <button id="theme-toggle-mobile" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                         <i class="fas fa-sun text-yellow-500 hidden dark:block"></i>
                         <i class="fas fa-moon text-slate-500 block dark:hidden"></i>
@@ -135,10 +164,31 @@
         <!-- Mobile Menu Panel -->
         <div id="mobile-menu" class="hidden md:hidden glass-nav border-t border-slate-200 dark:border-slate-800 absolute w-full">
             <div class="px-4 pt-2 pb-6 space-y-2">
-                <a href="#features" class="block px-3 py-3 rounded-md text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800">核心功能</a>
-                <a href="#audience" class="block px-3 py-3 rounded-md text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800">適用對象</a>
-                <a href="#pricing" class="block px-3 py-3 rounded-md text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800">升級 Pro</a>
-                <a href="https://apps.apple.com/tw/app/boxcam-%E5%8C%85%E8%A3%B9%E7%9B%B8%E6%A9%9F/id6757115855" class="block mt-4 text-center bg-primary-600 text-white px-3 py-3 rounded-lg font-medium shadow-md">
+                <a href="#features" class="block px-3 py-3 rounded-md text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800" data-i18n="nav.features">核心功能</a>
+                <a href="#audience" class="block px-3 py-3 rounded-md text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800" data-i18n="nav.audience">適用對象</a>
+                <a href="#pricing" class="block px-3 py-3 rounded-md text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800" data-i18n="nav.pricing">升級 Pro</a>
+                
+                <!-- Mobile Language Selector -->
+                <div class="pt-2 border-t border-slate-200 dark:border-slate-700">
+                    <p class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase" data-i18n="nav.language">語言</p>
+                    <button class="lang-option-mobile w-full text-left px-3 py-3 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800" data-lang="zh-TW">
+                        <span class="mr-2">🇹🇼</span> 繁體中文
+                    </button>
+                    <button class="lang-option-mobile w-full text-left px-3 py-3 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800" data-lang="zh-CN">
+                        <span class="mr-2">🇨🇳</span> 简体中文
+                    </button>
+                    <button class="lang-option-mobile w-full text-left px-3 py-3 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800" data-lang="en">
+                        <span class="mr-2">🇺🇸</span> English
+                    </button>
+                    <button class="lang-option-mobile w-full text-left px-3 py-3 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800" data-lang="ja">
+                        <span class="mr-2">🇯🇵</span> 日本語
+                    </button>
+                    <button class="lang-option-mobile w-full text-left px-3 py-3 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800" data-lang="ko">
+                        <span class="mr-2">🇰🇷</span> 한국어
+                    </button>
+                </div>
+                
+                <a href="https://apps.apple.com/tw/app/boxcam-%E5%8C%85%E8%A3%B9%E7%9B%B8%E6%A9%9F/id6757115855" class="block mt-4 text-center bg-primary-600 text-white px-3 py-3 rounded-lg font-medium shadow-md" data-i18n="nav.download">
                     前往 App Store
                 </a>
             </div>
@@ -160,13 +210,13 @@
                 <div class="lg:col-span-6 text-center lg:text-left mb-12 lg:mb-0">
                     <div class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 text-sm font-semibold mb-6 border border-blue-100 dark:border-blue-800">
                         <span class="flex h-2 w-2 rounded-full bg-blue-600 mr-2 animate-pulse"></span>
-                        網購糾紛自保神器
+                        <span data-i18n="hero.badge">網購糾紛自保神器</span>
                     </div>
                     <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
-                        出貨收貨都<span class="text-gradient">錄影</span><br>
-                        買賣雙方都<span class="text-gradient">安心</span>
+                        <span data-i18n="hero.title1">出貨收貨都</span><span class="text-gradient" data-i18n="hero.title2">錄影</span><br>
+                        <span data-i18n="hero.title3">買賣雙方都</span><span class="text-gradient" data-i18n="hero.title4">安心</span>
                     </h1>
-                    <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                    <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed" data-i18n="hero.subtitle">
                         專為電商與網購打造。透過「掃碼、錄影、存證」簡易流程，完整保存每一筆交易真相。告別惡意缺件申訴與毀損爭議。
                     </p>
                     
@@ -176,7 +226,7 @@
                             <i class="fab fa-apple text-2xl"></i>
                             <div class="text-left">
                                 <div class="text-[10px] uppercase font-bold tracking-wider opacity-80">Download on the</div>
-                                <div class="text-lg font-bold leading-none">App Store</div>
+                                <div class="text-lg font-bold leading-none" data-i18n="hero.download">App Store</div>
                             </div>
                         </a>
                         
@@ -185,22 +235,22 @@
                             <i class="fab fa-google-play text-2xl"></i>
                             <div class="text-left">
                                 <div class="text-[10px] uppercase font-bold tracking-wider opacity-80">Android</div>
-                                <div class="text-lg font-bold leading-none">開發中</div>
+                                <div class="text-lg font-bold leading-none" data-i18n="hero.android">開發中</div>
                             </div>
                             <!-- Tooltip -->
-                            <span class="absolute -top-10 bg-slate-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">敬請期待</span>
+                            <span class="absolute -top-10 bg-slate-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity" data-i18n="hero.tooltip">敬請期待</span>
                         </div>
                     </div>
                     
                     <div class="mt-8 flex items-center justify-center lg:justify-start gap-4 text-sm text-slate-500 dark:text-slate-400">
                         <div class="flex items-center gap-1">
-                            <i class="fas fa-check-circle text-green-500"></i> 本地儲存
+                            <i class="fas fa-check-circle text-green-500"></i> <span data-i18n="hero.feature1">本地儲存</span>
                         </div>
                         <div class="flex items-center gap-1">
-                            <i class="fas fa-check-circle text-green-500"></i> 無個資上傳
+                            <i class="fas fa-check-circle text-green-500"></i> <span data-i18n="hero.feature2">無個資上傳</span>
                         </div>
                         <div class="flex items-center gap-1">
-                            <i class="fas fa-check-circle text-green-500"></i> 支援 iCloud
+                            <i class="fas fa-check-circle text-green-500"></i> <span data-i18n="hero.feature3">支援 iCloud</span>
                         </div>
                     </div>
                 </div>
@@ -243,8 +293,8 @@
                                 <i class="fas fa-shield-alt text-xl"></i>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">交易糾紛</p>
-                                <p class="text-sm font-bold text-slate-800 dark:text-white">大幅降低</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="hero.badge.dispute">交易糾紛</p>
+                                <p class="text-sm font-bold text-slate-800 dark:text-white" data-i18n="hero.badge.reduced">大幅降低</p>
                             </div>
                         </div>
                     </div>
@@ -257,8 +307,8 @@
     <section id="features" class="py-20 bg-white dark:bg-slate-900 transition-colors">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">專為電商場景打造</h2>
-                <p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4" data-i18n="features.title">專為電商場景打造</h2>
+                <p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto" data-i18n="features.subtitle">
                     解決傳統出貨錄影的痛點，整合掃碼、錄影與檔案管理，讓效率提升數倍。
                 </p>
             </div>
@@ -271,8 +321,8 @@
                         <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400">
                             <i class="fas fa-qrcode text-2xl"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">極速掃碼，告別手動</h3>
-                        <p class="text-slate-600 dark:text-slate-400">
+                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="feature1.title">極速掃碼,告別手動</h3>
+                        <p class="text-slate-600 dark:text-slate-400" data-i18n="feature1.desc">
                             內建智慧掃描器，支援蝦皮、全家好賣+、iOPEN Mall 等主流平台條碼。掃描成功即自動鎖定單號並啟動錄影。
                         </p>
                     </div>
@@ -281,7 +331,7 @@
                         <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent"></div>
                         <div class="text-center">
                             <i class="fas fa-barcode text-6xl text-slate-300 dark:text-slate-500 mb-2"></i>
-                            <div class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded text-xs font-bold">已鎖定單號 TW2025...</div>
+                            <div class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded text-xs font-bold" data-i18n="feature.locked">已鎖定單號 TW2025...</div>
                         </div>
                     </div>
                 </div>
@@ -291,8 +341,8 @@
                     <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-xl flex items-center justify-center text-purple-600 dark:text-purple-400 mb-6">
                         <i class="fas fa-file-signature text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">自動命名歸檔</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3" data-i18n="feature2.title">自動命名歸檔</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm" data-i18n="feature2.desc">
                         影片依「訂單編號_日期」格式自動命名。不再需要錄影完還要花時間手動改檔名，檔案井然有序。
                     </p>
                 </div>
@@ -302,8 +352,8 @@
                     <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-6">
                         <i class="fas fa-lock text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">隱私百分百自主</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3" data-i18n="feature3.title">隱私百分百自主</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm" data-i18n="feature3.desc">
                         資料完全儲存於本地或您的 iCloud Drive。我們不擁有您的資料，也不會上傳至第三方伺服器。
                     </p>
                 </div>
@@ -314,8 +364,8 @@
                         <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/50 rounded-xl flex items-center justify-center text-orange-600 dark:text-orange-400">
                             <i class="fas fa-search text-2xl"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">關鍵時刻，秒級舉證</h3>
-                        <p class="text-slate-600 dark:text-slate-400">
+                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="feature4.title">關鍵時刻,秒級舉證</h3>
+                        <p class="text-slate-600 dark:text-slate-400" data-i18n="feature4.desc">
                             發生糾紛時，只需輸入單號，1秒內定位對應影片。支援匯出 CSV 報表，包含單號、時間與檔案路徑，對帳最方便。
                         </p>
                     </div>
@@ -347,7 +397,7 @@
         
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold text-slate-900 dark:text-white">誰最需要 BoxCam？</h2>
+                <h2 class="text-3xl font-bold text-slate-900 dark:text-white" data-i18n="audience.title">誰最需要 BoxCam?</h2>
             </div>
             
             <div class="grid md:grid-cols-3 gap-8">
@@ -356,8 +406,8 @@
                     <div class="w-20 h-20 mx-auto bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-3xl shadow-lg shadow-blue-500/30 mb-6">
                         <i class="fas fa-store"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">個人賣家與微型電商</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3" data-i18n="audience1.title">個人賣家與微型電商</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed" data-i18n="audience1.desc">
                         在繁忙的包貨流程中，需要極速紀錄出貨過程，有效降低惡意缺件申訴風險，保護賣場信譽。
                     </p>
                 </div>
@@ -367,8 +417,8 @@
                     <div class="w-20 h-20 mx-auto bg-gradient-to-br from-pink-400 to-rose-600 rounded-full flex items-center justify-center text-white text-3xl shadow-lg shadow-rose-500/30 mb-6">
                         <i class="fas fa-gift"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">網購愛好者</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3" data-i18n="audience2.title">網購愛好者</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed" data-i18n="audience2.desc">
                         購買高單價商品（如手機、精品）時，確保開箱過程完整記錄，若遇毀損或掉包，維護自身消費權益。
                     </p>
                 </div>
@@ -378,8 +428,8 @@
                     <div class="w-20 h-20 mx-auto bg-gradient-to-br from-amber-400 to-orange-600 rounded-full flex items-center justify-center text-white text-3xl shadow-lg shadow-orange-500/30 mb-6">
                         <i class="fas fa-boxes"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">專業團購主</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3" data-i18n="audience3.title">專業團購主</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed" data-i18n="audience3.desc">
                         需管理大量分貨與寄件紀錄，確保物流過程有據可查，對帳分貨不再手忙腳亂。
                     </p>
                 </div>
@@ -393,27 +443,27 @@
             <div class="glass-card rounded-3xl p-1 md:p-2 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900">
                 <div class="rounded-2xl bg-white dark:bg-slate-950 p-8 md:p-12 text-center md:text-left md:flex items-center justify-between gap-10">
                     <div class="flex-1">
-                        <div class="inline-block px-3 py-1 bg-gradient-to-r from-amber-200 to-yellow-400 text-yellow-900 text-xs font-bold rounded-full mb-4">
+                        <div class="inline-block px-3 py-1 bg-gradient-to-r from-amber-200 to-yellow-400 text-yellow-900 text-xs font-bold rounded-full mb-4" data-i18n="pricing.badge">
                             UNLOCK PRO
                         </div>
-                        <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">升級 BoxCam Pro</h2>
-                        <p class="text-slate-600 dark:text-slate-400 mb-6">
+                        <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-4" data-i18n="pricing.title">升級 BoxCam Pro</h2>
+                        <p class="text-slate-600 dark:text-slate-400 mb-6" data-i18n="pricing.subtitle">
                             解鎖完整生產力工具，讓您的業務更上一層樓。
                         </p>
                         <ul class="space-y-3 mb-8 md:mb-0">
                             <li class="flex items-center text-slate-700 dark:text-slate-300">
-                                <i class="fas fa-check text-green-500 mr-3"></i> 多賣場管理（蝦皮一店、二店分類）
+                                <i class="fas fa-check text-green-500 mr-3"></i> <span data-i18n="pricing.feature1">多賣場管理（蝦皮一店、二店分類）</span>
                             </li>
                             <li class="flex items-center text-slate-700 dark:text-slate-300">
-                                <i class="fas fa-check text-green-500 mr-3"></i> 影片自動上傳 iCloud Drive 備份
+                                <i class="fas fa-check text-green-500 mr-3"></i> <span data-i18n="pricing.feature2">影片自動上傳 iCloud Drive 備份</span>
                             </li>
                             <li class="flex items-center text-slate-700 dark:text-slate-300">
-                                <i class="fas fa-check text-green-500 mr-3"></i> 無廣告干擾的純淨體驗
+                                <i class="fas fa-check text-green-500 mr-3"></i> <span data-i18n="pricing.feature3">無廣告干擾的純淨體驗</span>
                             </li>
                         </ul>
                     </div>
                     <div class="flex-shrink-0">
-                        <a href="https://apps.apple.com/tw/app/boxcam-%E5%8C%85%E8%A3%B9%E7%9B%B8%E6%A9%9F/id6757115855" class="inline-block bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-1">
+                        <a href="https://apps.apple.com/tw/app/boxcam-%E5%8C%85%E8%A3%B9%E7%9B%B8%E6%A9%9F/id6757115855" class="inline-block bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-1" data-i18n="pricing.cta">
                             立即下載體驗
                         </a>
                     </div>
@@ -431,9 +481,9 @@
                     <span class="text-xl font-bold text-slate-900 dark:text-white">BoxCam</span>
                 </div>
                 <div class="flex space-x-6">
-                    <a href="/boxcam/privacy" class="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">隱私權政策</a>
-                    <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" class="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">使用條款</a>
-                    <a href="https://www.instagram.com/boxcamapp" class="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">聯絡我們</a>
+                    <a href="/boxcam/privacy" class="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" data-i18n="footer.privacy">隱私權政策</a>
+                    <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" class="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" data-i18n="footer.terms">使用條款</a>
+                    <a href="https://www.instagram.com/boxcamapp" class="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" data-i18n="footer.contact">聯絡我們</a>
                 </div>
             </div>
             <div class="text-center md:text-left text-sm text-slate-400 dark:text-slate-600">
@@ -444,6 +494,377 @@
 
     <!-- Scripts -->
     <script>
+        // ========== Multi-Language Support ==========
+        const translations = {
+            'zh-TW': {
+                'app.subtitle': '包裹相機',
+                'nav.features': '核心功能',
+                'nav.audience': '適用對象',
+                'nav.pricing': 'Pro 版',
+                'nav.language': '語言',
+                'nav.download': '下載 App',
+                'hero.badge': '網購糾紛自保神器',
+                'hero.title1': '出貨收貨都',
+                'hero.title2': '錄影',
+                'hero.title3': '買賣雙方都',
+                'hero.title4': '安心',
+                'hero.subtitle': '專為電商與網購打造。透過「掃碼、錄影、存證」簡易流程,完整保存每一筆交易真相。告別惡意缺件申訴與毀損爭議。',
+                'hero.download': 'App Store',
+                'hero.android': '開發中',
+                'hero.tooltip': '敬請期待',
+                'hero.feature1': '本地儲存',
+                'hero.feature2': '無個資上傳',
+                'hero.feature3': '支援 iCloud',
+                'hero.badge.dispute': '交易糾紛',
+                'hero.badge.reduced': '大幅降低',
+                'feature.locked': '已鎖定單號 TW2025...',
+                'features.title': '專為電商場景打造',
+                'features.subtitle': '解決傳統出貨錄影的痛點,整合掃碼、錄影與檔案管理,讓效率提升數倍。',
+                'feature1.title': '極速掃碼,告別手動',
+                'feature1.desc': '內建智慧掃描器,支援蝦皮、全家好賣+、iOPEN Mall 等主流平台條碼。掃描成功即自動鎖定單號並啟動錄影。',
+                'feature2.title': '自動命名歸檔',
+                'feature2.desc': '影片依「訂單編號_日期」格式自動命名。不再需要錄影完還要花時間手動改檔名,檔案井然有序。',
+                'feature3.title': '隱私百分百自主',
+                'feature3.desc': '資料完全儲存於本地或您的 iCloud Drive。我們不擁有您的資料,也不會上傳至第三方伺服器。',
+                'feature4.title': '關鍵時刻,秒級舉證',
+                'feature4.desc': '發生糾紛時,只需輸入單號,1秒內定位對應影片。支援匯出 CSV 報表,包含單號、時間與檔案路徑,對帳最方便。',
+                'audience.title': '誰最需要 BoxCam?',
+                'audience1.title': '個人賣家與微型電商',
+                'audience1.desc': '在繁忙的包貨流程中,需要極速紀錄出貨過程,有效降低惡意缺件申訴風險,保護賣場信譽。',
+                'audience2.title': '網購愛好者',
+                'audience2.desc': '購買高單價商品(如手機、精品)時,確保開箱過程完整記錄,若遇毀損或掉包,維護自身消費權益。',
+                'audience3.title': '專業團購主',
+                'audience3.desc': '需管理大量分貨與寄件紀錄,確保物流過程有據可查,對帳分貨不再手忙腳亂。',
+                'pricing.badge': 'UNLOCK PRO',
+                'pricing.title': '升級 BoxCam Pro',
+                'pricing.subtitle': '解鎖完整生產力工具,讓您的業務更上一層樓。',
+                'pricing.feature1': '多賣場管理(蝦皮一店、二店分類)',
+                'pricing.feature2': '影片自動上傳 iCloud Drive 備份',
+                'pricing.feature3': '無廣告干擾的純淨體驗',
+                'pricing.cta': '立即下載體驗',
+                'footer.privacy': '隱私權政策',
+                'footer.terms': '使用條款',
+                'footer.contact': '聯絡我們',
+            },
+            'zh-CN': {
+                'app.subtitle': '包裹相机',
+                'nav.features': '核心功能',
+                'nav.audience': '适用对象',
+                'nav.pricing': 'Pro 版',
+                'nav.language': '语言',
+                'nav.download': '下载 App',
+                'hero.badge': '网购纠纷自保神器',
+                'hero.title1': '出货收货都',
+                'hero.title2': '录影',
+                'hero.title3': '买卖双方都',
+                'hero.title4': '安心',
+                'hero.subtitle': '专为电商与网购打造。透过「扫码、录影、存证」简易流程,完整保存每一笔交易真相。告别恶意缺件申诉与毁损争议。',
+                'hero.download': 'App Store',
+                'hero.android': '开发中',
+                'hero.tooltip': '敬请期待',
+                'hero.feature1': '本地储存',
+                'hero.feature2': '无个资上传',
+                'hero.feature3': '支持 iCloud',
+                'hero.badge.dispute': '交易纠纷',
+                'hero.badge.reduced': '大幅降低',
+                'feature.locked': '已锁定单号 TW2025...',
+                'features.title': '专为电商场景打造',
+                'features.subtitle': '解决传统出货录影的痛点,整合扫码、录影与档案管理,让效率提升数倍。',
+                'feature1.title': '极速扫码,告别手动',
+                'feature1.desc': '内建智慧扫描器,支持虾皮、全家好卖+、iOPEN Mall 等主流平台条码。扫描成功即自动锁定单号并启动录影。',
+                'feature2.title': '自动命名归档',
+                'feature2.desc': '影片依「订单编号_日期」格式自动命名。不再需要录影完还要花时间手动改档名,档案井然有序。',
+                'feature3.title': '隐私百分百自主',
+                'feature3.desc': '资料完全储存于本地或您的 iCloud Drive。我们不拥有您的资料,也不会上传至第三方服务器。',
+                'feature4.title': '关键时刻,秒级举证',
+                'feature4.desc': '发生纠纷时,只需输入单号,1秒内定位对应影片。支持汇出 CSV 报表,包含单号、时间与档案路径,对帐最方便。',
+                'audience.title': '谁最需要 BoxCam?',
+                'audience1.title': '个人卖家与微型电商',
+                'audience1.desc': '在繁忙的包货流程中,需要极速纪录出货过程,有效降低恶意缺件申诉风险,保护卖场信誉。',
+                'audience2.title': '网购爱好者',
+                'audience2.desc': '购买高单价商品(如手机、精品)时,确保开箱过程完整记录,若遇毁损或掉包,维护自身消费权益。',
+                'audience3.title': '专业团购主',
+                'audience3.desc': '需管理大量分货与寄件纪录,确保物流过程有据可查,对帐分货不再手忙脚乱。',
+                'pricing.badge': 'UNLOCK PRO',
+                'pricing.title': '升级 BoxCam Pro',
+                'pricing.subtitle': '解锁完整生产力工具,让您的业务更上一层楼。',
+                'pricing.feature1': '多卖场管理(虾皮一店、二店分类)',
+                'pricing.feature2': '影片自动上传 iCloud Drive 备份',
+                'pricing.feature3': '无广告干扰的纯净体验',
+                'pricing.cta': '立即下载体验',
+                'footer.privacy': '隐私权政策',
+                'footer.terms': '使用条款',
+                'footer.contact': '联络我们',
+            },
+            'en': {
+                'app.subtitle': 'Package Camera',
+                'nav.features': 'Features',
+                'nav.audience': 'For Whom',
+                'nav.pricing': 'Pro Version',
+                'nav.language': 'Language',
+                'nav.download': 'Download App',
+                'hero.badge': 'Essential Tool for E-commerce Protection',
+                'hero.title1': 'Record Every',
+                'hero.title2': 'Shipment',
+                'hero.title3': 'Peace of Mind for',
+                'hero.title4': 'Everyone',
+                'hero.subtitle': 'Built for e-commerce and online shopping. Through a simple "Scan, Record, Save" process, preserve the truth of every transaction. Say goodbye to fraudulent claims and damage disputes.',
+                'hero.download': 'App Store',
+                'hero.android': 'Coming Soon',
+                'hero.tooltip': 'Stay Tuned',
+                'hero.feature1': 'Local Storage',
+                'hero.feature2': 'No Data Upload',
+                'hero.feature3': 'iCloud Support',
+                'hero.badge.dispute': 'Disputes',
+                'hero.badge.reduced': 'Reduced',
+                'feature.locked': 'Locked Order TW2025...',
+                'features.title': 'Built for E-commerce Scenarios',
+                'features.subtitle': 'Solves traditional shipping video pain points, integrating scanning, recording, and file management to multiply efficiency.',
+                'feature1.title': 'Lightning-Fast Scanning',
+                'feature1.desc': 'Built-in smart scanner supports major platforms like Shopee, FamilyMart+, iOPEN Mall. Scan to auto-lock order number and start recording instantly.',
+                'feature2.title': 'Auto-Naming & Organization',
+                'feature2.desc': 'Videos are automatically named in "OrderNumber_Date" format. No more manual renaming after recording—files stay organized.',
+                'feature3.title': '100% Privacy Control',
+                'feature3.desc': 'Data is stored entirely locally or in your iCloud Drive. We don\'t own your data and never upload to third-party servers.',
+                'feature4.title': 'Instant Evidence Retrieval',
+                'feature4.desc': 'When disputes arise, just enter the order number to locate the video in 1 second. Export CSV reports with order numbers, timestamps, and file paths for easy reconciliation.',
+                'audience.title': 'Who Needs BoxCam?',
+                'audience1.title': 'Individual Sellers & Micro E-commerce',
+                'audience1.desc': 'During busy packing processes, quickly record shipments to effectively reduce fraudulent shortage claims and protect shop reputation.',
+                'audience2.title': 'Online Shopping Enthusiasts',
+                'audience2.desc': 'When purchasing high-value items (phones, luxury goods), ensure unboxing is fully recorded to protect consumer rights against damage or substitution.',
+                'audience3.title': 'Professional Group Buyers',
+                'audience3.desc': 'Manage bulk distribution and shipping records, ensuring logistics are documented and reconciliation is hassle-free.',
+                'pricing.badge': 'UNLOCK PRO',
+                'pricing.title': 'Upgrade to BoxCam Pro',
+                'pricing.subtitle': 'Unlock full productivity tools to take your business to the next level.',
+                'pricing.feature1': 'Multi-store management (Shopee Store 1, Store 2 categorization)',
+                'pricing.feature2': 'Auto-upload videos to iCloud Drive backup',
+                'pricing.feature3': 'Ad-free pure experience',
+                'pricing.cta': 'Download Now',
+                'footer.privacy': 'Privacy Policy',
+                'footer.terms': 'Terms of Use',
+                'footer.contact': 'Contact Us',
+            },
+            'ja': {
+                'app.subtitle': 'パッケージカメラ',
+                'nav.features': 'コア機能',
+                'nav.audience': '対象ユーザー',
+                'nav.pricing': 'Pro版',
+                'nav.language': '言語',
+                'nav.download': 'アプリをダウンロード',
+                'hero.badge': 'ネットショッピング紛争の必須ツール',
+                'hero.title1': '発送・受取',
+                'hero.title2': '全て録画',
+                'hero.title3': '売買双方',
+                'hero.title4': '安心',
+                'hero.subtitle': 'ECとオンラインショッピング専用設計。「スキャン・録画・保存」の簡単な流れで、全ての取引の真実を完全保存。悪質なクレームや破損トラブルにさよなら。',
+                'hero.download': 'App Store',
+                'hero.android': '開発中',
+                'hero.tooltip': 'お楽しみに',
+                'hero.feature1': 'ローカル保存',
+                'hero.feature2': '個人情報アップロードなし',
+                'hero.feature3': 'iCloud対応',
+                'hero.badge.dispute': '取引紛争',
+                'hero.badge.reduced': '大幅減少',
+                'feature.locked': '注文番号ロック TW2025...',
+                'features.title': 'ECシーン専用設計',
+                'features.subtitle': '従来の出荷録画の課題を解決し、スキャン・録画・ファイル管理を統合し、効率を数倍向上。',
+                'feature1.title': '高速スキャン、手動不要',
+                'feature1.desc': '主要プラットフォーム(Shopee、FamilyMart+、iOPEN Mallなど)のバーコードに対応したスマートスキャナー内蔵。スキャン成功で注文番号を自動ロックし録画開始。',
+                'feature2.title': '自動命名・整理',
+                'feature2.desc': '動画は「注文番号_日付」形式で自動命名。録画後の手動リネームは不要、ファイルは整然と管理。',
+                'feature3.title': 'プライバシー100%自主管理',
+                'feature3.desc': 'データは完全にローカルまたはあなたのiCloud Driveに保存。当社はデータを所有せず、第三者サーバーへのアップロードもありません。',
+                'feature4.title': '重要な時、秒速で証拠提示',
+                'feature4.desc': 'トラブル発生時、注文番号を入力するだけで1秒で該当動画を特定。注文番号・時間・ファイルパスを含むCSVレポート出力で照合も便利。',
+                'audience.title': 'BoxCamが最も必要な人は?',
+                'audience1.title': '個人販売者・小規模EC',
+                'audience1.desc': '忙しい梱包作業中、出荷プロセスを高速記録し、悪質な欠品クレームリスクを効果的に低減、店舗の評判を守ります。',
+                'audience2.title': 'ネットショッピング愛好家',
+                'audience2.desc': '高額商品(スマホ、ブランド品など)購入時、開封プロセスを完全記録し、破損やすり替えに遭った際の消費者権利を保護。',
+                'audience3.title': 'プロ共同購入者',
+                'audience3.desc': '大量の仕分け・発送記録を管理し、物流プロセスを確実に記録、照合・仕分けがスムーズに。',
+                'pricing.badge': 'UNLOCK PRO',
+                'pricing.title': 'BoxCam Proにアップグレード',
+                'pricing.subtitle': '完全な生産性ツールを解除し、ビジネスを次のレベルへ。',
+                'pricing.feature1': '複数店舗管理(Shopee店舗1、店舗2分類)',
+                'pricing.feature2': '動画を自動的にiCloud Driveにバックアップ',
+                'pricing.feature3': '広告なしのピュアな体験',
+                'pricing.cta': '今すぐダウンロード',
+                'footer.privacy': 'プライバシーポリシー',
+                'footer.terms': '利用規約',
+                'footer.contact': 'お問い合わせ',
+            },
+            'ko': {
+                'app.subtitle': '패키지 카메라',
+                'nav.features': '핵심 기능',
+                'nav.audience': '대상 사용자',
+                'nav.pricing': 'Pro 버전',
+                'nav.language': '언어',
+                'nav.download': '앱 다운로드',
+                'hero.badge': '온라인쇼핑 분쟁 필수 도구',
+                'hero.title1': '배송·수령',
+                'hero.title2': '모두 녹화',
+                'hero.title3': '판매자·구매자',
+                'hero.title4': '모두 안심',
+                'hero.subtitle': '전자상거래와 온라인 쇼핑 전용 설계. "스캔·녹화·저장" 간편한 프로세스로 모든 거래의 진실을 완벽하게 보존. 악의적 분실 신고와 파손 분쟁에 작별 인사.',
+                'hero.download': 'App Store',
+                'hero.android': '개발 중',
+                'hero.tooltip': '기대해주세요',
+                'hero.feature1': '로컬 저장',
+                'hero.feature2': '개인정보 업로드 없음',
+                'hero.feature3': 'iCloud 지원',
+                'hero.badge.dispute': '거래 분쟁',
+                'hero.badge.reduced': '대폭 감소',
+                'feature.locked': '주문번호 잠금 TW2025...',
+                'features.title': '전자상거래 시나리오 전용 설계',
+                'features.subtitle': '전통적인 출하 녹화의 문제점을 해결하고, 스캔·녹화·파일 관리를 통합하여 효율을 몇 배 향상.',
+                'feature1.title': '초고속 스캔, 수동 작업 불필요',
+                'feature1.desc': '주요 플랫폼(Shopee, FamilyMart+, iOPEN Mall 등)의 바코드를 지원하는 스마트 스캐너 내장. 스캔 성공 시 주문번호 자동 잠금 및 녹화 시작.',
+                'feature2.title': '자동 명명 및 정리',
+                'feature2.desc': '영상은 "주문번호_날짜" 형식으로 자동 명명. 녹화 후 수동으로 파일명을 변경할 필요 없이 파일이 체계적으로 관리됩니다.',
+                'feature3.title': '프라이버시 100% 자율 관리',
+                'feature3.desc': '데이터는 완전히 로컬 또는 iCloud Drive에 저장. 당사는 귀하의 데이터를 소유하지 않으며 제3자 서버에 업로드하지 않습니다.',
+                'feature4.title': '중요한 순간, 초 단위 증거 제시',
+                'feature4.desc': '분쟁 발생 시 주문번호를 입력하면 1초 내에 해당 영상을 찾습니다. 주문번호·시간·파일 경로가 포함된 CSV 리포트 내보내기로 대조가 편리.',
+                'audience.title': '누구에게 BoxCam이 가장 필요한가요?',
+                'audience1.title': '개인 판매자 및 소규모 전자상거래',
+                'audience1.desc': '바쁜 포장 프로세스 중 출하 프로세스를 신속하게 기록하여 악의적인 분실 신고 위험을 효과적으로 줄이고 매장 평판을 보호.',
+                'audience2.title': '온라인 쇼핑 애호가',
+                'audience2.desc': '고가 상품(휴대폰, 명품 등) 구매 시 개봉 프로세스를 완벽하게 기록하여 파손이나 바꿔치기를 당했을 때 소비자 권리 보호.',
+                'audience3.title': '전문 공동구매 진행자',
+                'audience3.desc': '대량의 분류 및 배송 기록을 관리하여 물류 프로세스를 확실히 기록하고 대조·분류가 원활.',
+                'pricing.badge': 'UNLOCK PRO',
+                'pricing.title': 'BoxCam Pro로 업그레이드',
+                'pricing.subtitle': '완전한 생산성 도구를 해제하여 비즈니스를 한 단계 업그레이드.',
+                'pricing.feature1': '다중 매장 관리(Shopee 1호점, 2호점 분류)',
+                'pricing.feature2': '영상 자동으로 iCloud Drive에 백업',
+                'pricing.feature3': '광고 없는 순수한 경험',
+                'pricing.cta': '지금 다운로드',
+                'footer.privacy': '개인정보 보호정책',
+                'footer.terms': '이용약관',
+                'footer.contact': '문의하기',
+            }
+        };
+
+        const langNames = {
+            'zh-TW': '繁中',
+            'zh-CN': '简中',
+            'en': 'EN',
+            'ja': '日本',
+            'ko': '한국'
+        };
+
+        // Get language from URL query string
+        function getLanguageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const langParam = urlParams.get('lang');
+            // Validate the language parameter
+            if (langParam && translations[langParam]) {
+                return langParam;
+            }
+            return null;
+        }
+
+        // Get browser language
+        function getBrowserLanguage() {
+            const browserLang = navigator.language || navigator.userLanguage;
+            if (browserLang.startsWith('zh')) {
+                if (browserLang.includes('CN') || browserLang.includes('Hans')) {
+                    return 'zh-CN';
+                }
+                return 'zh-TW';
+            }
+            if (browserLang.startsWith('ja')) return 'ja';
+            if (browserLang.startsWith('ko')) return 'ko';
+            if (browserLang.startsWith('en')) return 'en';
+            return 'zh-TW'; // Default
+        }
+
+        // Initialize language with priority: URL > localStorage > Browser > Default
+        let currentLang = getLanguageFromURL() || localStorage.getItem('language') || getBrowserLanguage();
+
+        // Apply translations
+        function applyTranslations(lang) {
+            const texts = translations[lang];
+            if (!texts) return;
+
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (texts[key]) {
+                    element.textContent = texts[key];
+                }
+            });
+
+            // Update current language display
+            const currentLangEl = document.getElementById('current-lang');
+            if (currentLangEl) {
+                currentLangEl.textContent = langNames[lang];
+            }
+
+            // Update page title and meta
+            document.title = lang === 'en' ? 'BoxCam - Package Camera' : 
+                           lang === 'ja' ? 'BoxCam - パッケージカメラ' :
+                           lang === 'ko' ? 'BoxCam - 패키지 카메라' :
+                           lang === 'zh-CN' ? 'BoxCam - 包裹相机' :
+                           'BoxCam - 包裹相機';
+
+            // Update html lang attribute
+            document.documentElement.lang = lang;
+
+            // Save to localStorage
+            localStorage.setItem('language', lang);
+            currentLang = lang;
+        }
+
+        // Language selector toggle
+        const langToggle = document.getElementById('lang-toggle');
+        const langMenu = document.getElementById('lang-menu');
+        const langToggleMobile = document.getElementById('lang-toggle-mobile');
+
+        if (langToggle && langMenu) {
+            langToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                langMenu.classList.toggle('hidden');
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', () => {
+                langMenu.classList.add('hidden');
+            });
+        }
+
+        // Language selection (desktop)
+        document.querySelectorAll('.lang-option').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = button.getAttribute('data-lang');
+                applyTranslations(lang);
+                langMenu.classList.add('hidden');
+            });
+        });
+
+        // Language selection (mobile)
+        document.querySelectorAll('.lang-option-mobile').forEach(button => {
+            button.addEventListener('click', () => {
+                const lang = button.getAttribute('data-lang');
+                applyTranslations(lang);
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+
+        // Mobile language toggle shows mobile menu
+        if (langToggleMobile) {
+            langToggleMobile.addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.toggle('hidden');
+            });
+        }
+
+        // Apply initial language
+        applyTranslations(currentLang);
+
         // Dark Mode Logic
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeToggleMobileBtn = document.getElementById('theme-toggle-mobile');
