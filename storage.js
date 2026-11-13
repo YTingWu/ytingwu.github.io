@@ -9,6 +9,24 @@ const SAVE_BTN_ID = 'saveConfigBtn';
 
 let savedConfigs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 
+// 現行頁（index.html）與 12/11 新制頁（new.html）共用同一份儲存列表。
+// 寫入前重新讀取，避免兩個分頁各自持有舊陣列而互相覆蓋。
+const RATES_TAG = 'current';
+function reloadSavedConfigs() {
+    try {
+        savedConfigs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    } catch (e) {
+        savedConfigs = [];
+    }
+}
+// 其他分頁（含另一個版本的頁面）改了列表時同步更新
+window.addEventListener('storage', (e) => {
+    if (e.key === STORAGE_KEY) {
+        reloadSavedConfigs();
+        renderSidebar();
+    }
+});
+
 // DOM Elements
 const floatingToggle = document.getElementById(FLOATING_TOGGLE_ID);
 const sidebarCloseBtn = document.getElementById(CLOSE_BTN_ID);
@@ -248,9 +266,11 @@ function saveConfig() {
         title: title || defaultTitle,
         date: new Date().toLocaleDateString(),
         data: currentState,
-        summary: defaultTitle
+        summary: defaultTitle,
+        rates: RATES_TAG
     };
     
+    reloadSavedConfigs();
     savedConfigs.unshift(config); // Add to top
     localStorage.setItem(STORAGE_KEY, JSON.stringify(savedConfigs));
     
@@ -265,14 +285,19 @@ function saveConfig() {
 }
 
 function loadConfig(id) {
+    reloadSavedConfigs();
     const config = savedConfigs.find(c => c.id === id);
-    if (!config) return;
+    if (!config) { renderSidebar(); return; }
     
     applyStateToDOM(config.data);
     
     // Close mobile sidebar if open
     document.body.classList.remove('toggled');
-    showToast('已載入設定: ' + config.title);
+    showToast('已載入設定: ' + escapeHtml(config.title));
+    const savedRates = config.rates === 'new' ? 'new' : 'current';
+    if (savedRates !== RATES_TAG) {
+        showToast('此設定是用 12/11 新制存的，現行頁沒有的選項（蝦皮小舖、備貨 2 天、長短期蝦幣回饋等）已改用最接近的設定');
+    }
 }
 
 function applyStateToDOM(data) {
@@ -296,7 +321,9 @@ function applyStateToDOM(data) {
 
     // 3. Seller Type
     if (data.seller) {
-        const rad = document.querySelector(`input[name="sellerType"][value="${data.seller}"]`);
+        // 新制的蝦皮小舖在現行頁不存在，改用一般賣家（同為一般賣家費率）
+        const seller = data.seller === 'shop' ? 'general' : data.seller;
+        const rad = document.querySelector(`input[name="sellerType"][value="${seller}"]`);
         if (rad && !rad.checked) {
             rad.checked = true;
             triggerEvent(rad, 'change');
@@ -327,6 +354,15 @@ function applyStateToDOM(data) {
     setInput('sellPrice', data.sell);
     setInput('profitMargin', data.margin);
     setInput('transactionFee', data.fee);
+
+    // 信用卡分期
+    {
+        const rad = document.getElementById('installment' + (data.installment || '0'));
+        if (rad && !rad.checked) {
+            rad.checked = true;
+            triggerEvent(rad, 'change');
+        }
+    }
 
     // 5. Preorder
     if (data.preorder) {
@@ -382,12 +418,14 @@ function applyStateToDOM(data) {
     // In calculator.js getQueryParams: hasProdInv: params.get('hasProdInv') === '1'
     setCheck('hasProductInvoice', data.hasProdInv === '1');
     setCheck('hasFeeInvoice', data.hasFeeInv === '1');
+    setCheck('frozenOrder', data.frozen === '1');
 }
 
 function deleteConfig(id, event) {
     if (event) event.stopPropagation();
     if (!confirm('確定要刪除此設定嗎？')) return;
     
+    reloadSavedConfigs();
     savedConfigs = savedConfigs.filter(c => c.id !== id);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(savedConfigs));
     renderSidebar();
@@ -420,6 +458,9 @@ function renderSidebar() {
             <div class="d-flex justify-content-between align-items-start">
                 <div class="w-100">
                     <span class="config-title">${escapeHtml(config.title)}</span>
+                    ${config.rates === 'new'
+                        ? '<span class="badge text-bg-danger ms-1 align-middle">12/11 新制</span>'
+                        : '<span class="badge text-bg-secondary ms-1 align-middle">現行</span>'}
                     <div class="config-details">
                         <span>${escapeHtml(config.summary)}</span>
                         <span class="mx-1">•</span>

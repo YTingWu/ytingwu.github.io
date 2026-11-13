@@ -137,9 +137,19 @@
                         style="z-index: 10;">
                         <i class="bi bi-moon-fill fs-4" id="themeIcon"></i>
                     </button>
+                    <button id="announcementBtn" class="btn btn-link position-absolute top-0 end-0 m-3 text-decoration-none"
+                        style="z-index: 10; margin-right: 4rem !important;" title="12/11 費率調整公告">
+                        <i class="bi bi-megaphone-fill fs-4 text-danger"></i>
+                    </button>
                     <div class="header">
                         <h1><i class="bi bi-calculator"></i> 蝦皮手續費計算機</h1>
                         <p>輕鬆計算您的商品成本與獲利</p>
+                        <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 mt-2">
+                            <span class="badge bg-secondary fs-6">現行費率：適用至 2026/12/10 成立的訂單</span>
+                            <a href="new.html" class="small text-decoration-none fw-bold new-version-link">
+                                12/11 起新制計算機 <i class="bi bi-arrow-right-circle"></i>
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Seller Type Toggle -->
@@ -193,6 +203,19 @@
                                     <input type="radio" class="btn-check" name="shippingOption" id="shipTwo"
                                         value="ship2">
                                     <label class="btn btn-outline-secondary" for="shipTwo">方案二</label>
+                                </div>
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" id="frozenOrder">
+                                    <label class="form-check-label" for="frozenOrder">
+                                        冷凍訂單（≥$100 每單 $80）
+                                        <i class="bi bi-info-circle text-muted" data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="買家選擇冷凍物流的訂單，單筆 $100 以上活動服務費每筆 $80，取代方案一 6% 或方案二 $60；$99 以下收 6%。"
+                                            style="cursor: help;"></i>
+                                        <a href="https://seller.shopee.tw/edu/article/28149" target="_blank" class="text-decoration-none small">
+                                            <i class="bi bi-box-arrow-up-right"></i> 詳情
+                                        </a>
+                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -412,6 +435,55 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <hr class="my-3 text-secondary opacity-25">
+
+                            <!-- Credit Card Installment -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <i class="bi bi-credit-card"></i> 信用卡分期
+                                        <small class="text-muted">（計入金流與系統處理費）</small>
+                                    </label>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="installment" id="installment0"
+                                                value="0" checked>
+                                            <label class="form-check-label" for="installment0">
+                                                否 (2.5%)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="installment" id="installment3"
+                                                value="3">
+                                            <label class="form-check-label" for="installment3">
+                                                3 期 (2.5%)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="installment" id="installment6"
+                                                value="6">
+                                            <label class="form-check-label" for="installment6">
+                                                6 期 (3%)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="installment" id="installment12"
+                                                value="12">
+                                            <label class="form-check-label" for="installment12">
+                                                12 期 (3.5%)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="installment" id="installment24"
+                                                value="24">
+                                            <label class="form-check-label" for="installment24">
+                                                24 期 (5%)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Save Button -->
@@ -493,7 +565,7 @@
                                             <span class="fee-value" id="regular-ship1-transaction">$ 0</span>
                                         </div>
                                         <div class="fee-subitem">
-                                            <span>金流處理費 (2.5%)</span>
+                                            <span id="regular-ship1-payment-label">金流處理費 (2.5%)</span>
                                             <span class="fee-value" id="regular-ship1-payment">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="regular-ship1-preorder-row" style="display: none;">
@@ -501,7 +573,7 @@
                                             <span class="fee-value" id="regular-ship1-preorder">$ 0</span>
                                         </div>
                                         <div class="fee-subitem">
-                                            <span>免運手續費 (6%)</span>
+                                            <span id="regular-ship1-shipping-label">免運手續費 (6%)</span>
                                             <span class="fee-value" id="regular-ship1-shipping">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="regular-ship1-cashback-row" style="display: none;">
@@ -594,7 +666,7 @@
                                             <span class="fee-value" id="regular-ship2-transaction">$ 0</span>
                                         </div>
                                         <div class="fee-subitem">
-                                            <span>金流處理費 (2.5%)</span>
+                                            <span id="regular-ship2-payment-label">金流處理費 (2.5%)</span>
                                             <span class="fee-value" id="regular-ship2-payment">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="regular-ship2-preorder-row" style="display: none;">
@@ -695,7 +767,7 @@
                                             <span class="fee-value" id="event-ship1-transaction">$ 0</span>
                                         </div>
                                         <div class="fee-subitem">
-                                            <span>金流處理費 (2.5%)</span>
+                                            <span id="event-ship1-payment-label">金流處理費 (2.5%)</span>
                                             <span class="fee-value" id="event-ship1-payment">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="event-ship1-preorder-row" style="display: none;">
@@ -703,7 +775,7 @@
                                             <span class="fee-value" id="event-ship1-preorder">$ 0</span>
                                         </div>
                                         <div class="fee-subitem">
-                                            <span>免運手續費 (6%)</span>
+                                            <span id="event-ship1-shipping-label">免運手續費 (6%)</span>
                                             <span class="fee-value" id="event-ship1-shipping">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="event-ship1-cashback-row" style="display: none;">
@@ -794,7 +866,7 @@
                                             <span class="fee-value" id="event-ship2-transaction">$ 0</span>
                                         </div>
                                         <div class="fee-subitem">
-                                            <span>金流處理費 (2.5%)</span>
+                                            <span id="event-ship2-payment-label">金流處理費 (2.5%)</span>
                                             <span class="fee-value" id="event-ship2-payment">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="event-ship2-preorder-row" style="display: none;">
@@ -1054,7 +1126,7 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                             </div>
                             <!-- Line 3: Version -->
                             <div class="text-center text-muted small opacity-50">
-                                v1.1.7
+                                v1.1.9
                             </div>
                         </div>
 
@@ -1100,7 +1172,7 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                             </div>
                             <!-- Version -->
                             <div class="text-muted small opacity-50">
-                                v1.1.8
+                                v1.1.9
                             </div>
                         </div>
                     </div>
@@ -1139,6 +1211,38 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
         </div>
     </div>
 
+    <!-- 2026/12/11 Fee Update Announcement Modal -->
+    <div class="modal fade" id="feeUpdateModal" tabindex="-1" aria-labelledby="feeUpdateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="feeUpdateModalLabel"><i class="bi bi-megaphone-fill text-danger"></i> 蝦皮 12/11 起費用調整</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted mb-3">蝦皮公告自 <strong>2026/12/11 00:00</strong> 起成立的訂單適用新費率。本頁是現行費率（適用至 12/10）。</p>
+                    <ul class="small ps-3">
+                        <li class="mb-2"><strong>成交手續費依品類調整</strong>：分類細分到第三、四層，各品類調幅不同，部分調降。</li>
+                        <li class="mb-2"><strong>促銷檔期加收</strong>：一般賣家 +2% → <strong>+4%</strong>、商城 +3% → <strong>+5%</strong>；參加長期蝦幣回饋免收，只參加短期仍要加收。</li>
+                        <li class="mb-2"><strong>免運及進階賣家專案</strong>：方案一 6% → <strong>6.5%</strong>；方案二 $60 → <strong>$65</strong>（$99 以下 6% → 6.5%）；冷凍訂單 $100 以上維持每單 $80。</li>
+                        <li class="mb-2"><strong>預購訂單服務費</strong>：備貨 2 天降為 <strong>2%</strong>，3 天以上維持 3%。</li>
+                        <li class="mb-2"><strong>促銷檔期增加</strong>：每月 5–6 天（例：12/11、12/12、12/17、12/18、12/25）。</li>
+                        <li class="mb-2"><strong>新賣場類型「蝦皮小舖」</strong>（2027/1/7 開通）：每月前 5 筆免成交手續費。</li>
+                    </ul>
+                    <p class="small mb-0">
+                        <a href="https://seller.shopee.tw/edu/article/28668" target="_blank" class="text-decoration-none">
+                            <i class="bi bi-box-arrow-up-right"></i> 蝦皮官方公告
+                        </a>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">繼續用現行費率</button>
+                    <a href="new.html" class="btn btn-danger new-version-link">前往 12/11 新制計算機 <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Fee Lookup Modal -->
     <div class="modal fade" id="feeLookupModal" tabindex="-1" aria-labelledby="feeLookupModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -1172,9 +1276,10 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="calculator.js?202601243"></script>
+    <script src="calculator.js?20261113e"></script>
     <script src="fee-lookup.js?20260107"></script>
-    <script src="storage.js?20260113"></script>
+    <script src="storage.js?20261113d"></script>
+    <script src="announcement.js?20261113"></script>
 </body>
 
 </html>

@@ -19,6 +19,10 @@ const sellPriceRows = document.querySelectorAll('.sell-price-row');
 const inputTaxOptions = document.getElementById('inputTaxOptions');
 const hasProductInvoiceInput = document.getElementById('hasProductInvoice');
 const hasFeeInvoiceInput = document.getElementById('hasFeeInvoice');
+// 冷凍訂單（免運及進階賣家專案 方案三、四）：≥$100 每單 $80，≤$99 收 6%
+const frozenOrderInput = document.getElementById('frozenOrder');
+const FROZEN_FIXED = 80;
+function isFrozenOrder() { return !!(frozenOrderInput && frozenOrderInput.checked); }
 
 // Floating Header Elements
 const floatSellContainer = document.getElementById('floatSellContainer');
@@ -30,6 +34,24 @@ const sellPriceColumns = document.querySelectorAll('.sell-price-column');
 const cashbackRadios = document.querySelectorAll('input[name="cashbackProgram"]');
 const taxRadios = document.querySelectorAll('input[name="taxSetting"]');
 const preOrderRadios = document.querySelectorAll('input[name="preOrder"]');
+
+// 信用卡分期：金流與系統處理費率（%），2026/01/01 起，新舊制相同
+const INSTALLMENT_PAYMENT_PCT = { '0': 2.5, '3': 2.5, '6': 3, '12': 3.5, '24': 5 };
+const installmentRadios = document.querySelectorAll('input[name="installment"]');
+function getInstallment() {
+    let v = '0';
+    installmentRadios.forEach(r => { if (r.checked) v = r.value; });
+    return INSTALLMENT_PAYMENT_PCT[v] !== undefined ? v : '0';
+}
+function getPaymentPct() { return INSTALLMENT_PAYMENT_PCT[getInstallment()]; }
+function paymentLabel() {
+    const v = getInstallment();
+    return v === '0' ? `金流處理費 (${getPaymentPct()}%)` : `金流處理費 (分期 ${v} 期 ${getPaymentPct()}%)`;
+}
+function setInstallmentFromParam(v) {
+    const el = document.getElementById('installment' + (INSTALLMENT_PAYMENT_PCT[v] !== undefined ? v : '0'));
+    if (el) el.checked = true;
+}
 
 let currentMode = 'profit'; 
 let currentShippingOption = 'both'; 
@@ -52,11 +74,13 @@ function getQueryParams() {
         margin: params.get('margin') || '5',
         fee: params.get('fee') || '6',
         preorder: params.get('preorder') || '0',
+        installment: params.get('installment') || '0',
         cashback: params.get('cashback') || '0',
         tax: params.get('tax') || '0',
         costTax: params.get('costTax') || 'inc',
         hasProdInv: params.get('hasProdInv') === '1',
-        hasFeeInv: params.get('hasFeeInv') === '1'
+        hasFeeInv: params.get('hasFeeInv') === '1',
+        frozen: params.get('frozen') === '1'
     };
 }
 
@@ -79,6 +103,7 @@ function updateQueryString() {
     let preOrderValue = '0';
     preOrderRadios.forEach(r => { if(r.checked) preOrderValue = r.value; });
     params.set('preorder', preOrderValue);
+    if (getInstallment() !== '0') params.set('installment', getInstallment());
     
     let cashbackValue = '0';
     cashbackRadios.forEach(r => { if(r.checked) cashbackValue = r.value; });
@@ -92,6 +117,7 @@ function updateQueryString() {
         if (hasProductInvoiceInput.checked) params.set('hasProdInv', '1');
         if (hasFeeInvoiceInput.checked) params.set('hasFeeInv', '1');
     }
+    if (frozenOrderInput && frozenOrderInput.checked) params.set('frozen', '1');
     
     const newUrl = window.location.pathname + '?' + params.toString();
     window.history.replaceState({}, '', newUrl);
@@ -127,6 +153,7 @@ function loadFromQueryString() {
     if (params.margin) profitMarginInput.value = params.margin;
     if (params.fee) transactionFeeInput.value = params.fee;
     
+    setInstallmentFromParam(params.installment);
     if (params.preorder === '3') document.getElementById('isPreOrder').checked = true;
     else document.getElementById('noPreOrder').checked = true;
     
@@ -141,6 +168,7 @@ function loadFromQueryString() {
 
     hasProductInvoiceInput.checked = params.hasProdInv;
     hasFeeInvoiceInput.checked = params.hasFeeInv;
+    if (frozenOrderInput) frozenOrderInput.checked = params.frozen;
     
     updateTaxOptionsVisibility();
 }
@@ -180,6 +208,11 @@ taxRadios.forEach(r => r.addEventListener('change', () => {
     updateQueryString();
 }));
 
+if (frozenOrderInput) frozenOrderInput.addEventListener('change', () => {
+    calculateFees();
+    updateQueryString();
+});
+
 [costPriceInput, sellPriceInput, profitMarginInput, transactionFeeInput, costTaxTypeInput, hasProductInvoiceInput, hasFeeInvoiceInput].forEach(el => {
     if (el === costTaxTypeInput) {
         el.addEventListener('change', (e) => {
@@ -203,6 +236,10 @@ taxRadios.forEach(r => r.addEventListener('change', () => {
 });
 
 cashbackRadios.forEach(r => r.addEventListener('change', () => {
+    calculateFees();
+    updateQueryString();
+}));
+installmentRadios.forEach(r => r.addEventListener('change', () => {
     calculateFees();
     updateQueryString();
 }));
@@ -250,107 +287,29 @@ function updateShippingOptionUI() {
     summaryRows.forEach((row, i) => { row.style.display = show[i] ? '' : 'none'; });
 }
 
-function _calcRequiredPriceWithShipParams(cost, marginPercent, transactionFeeRate, cashbackRate, preOrderRate, taxSetting, isEvent, shipRate, shipFixed, isMall, hasProdInv, hasFeeInv, isCostInc) {
-    const margin = marginPercent / 100;
-    const eventFeeIncrease = isMall ? 3 : 2;
-    const effectiveTransactionRate = (isEvent && cashbackRate === 0) ? transactionFeeRate + eventFeeIncrease : transactionFeeRate;
-    const transRate = effectiveTransactionRate / 100;
-    const paymentRate = 0.025;
-    const cashbackRateVal = cashbackRate / 100;
-    const preOrderRateVal = preOrderRate / 100;
 
-    // Agent Fee
-    const agentFee = (taxSetting === '5_plus') ? 2.5 : 0;
-
-    // Shopee Fee Rate (Ratio of Price)
-    const feeRate = transRate + paymentRate + shipRate + cashbackRateVal + preOrderRateVal;
-
-    // Tax Rates
-    let outputTaxRate = 0;
-    if (taxSetting === '1') outputTaxRate = 0.01;
-    else if (taxSetting === '5' || taxSetting === '5_plus') outputTaxRate = 0.05 / 1.05;
-
-    // Input Tax Deductions
-    let productInputTax = 0;
-    if (hasProdInv && (taxSetting === '5' || taxSetting === '5_plus')) {
-        if (isCostInc) productInputTax = cost / 1.05 * 0.05;
-        else productInputTax = cost * 0.05;
-    }
-
-    let feeInputTaxRate = 0;
-    let feeInputTaxFixed = 0;
-    if (hasFeeInv && (taxSetting === '5' || taxSetting === '5_plus')) {
-        const factor = 0.05 / 1.05;
-        feeInputTaxRate = feeRate * factor;
-        feeInputTaxFixed = shipFixed * factor;
-    }
-
-    // Cash Out Cost
-    const cashOutCost = isCostInc ? cost : cost * 1.05;
-
-    // Formula Check
-    const taxRateLinear = outputTaxRate - feeInputTaxRate;
-    const taxFixedDeduction = productInputTax + feeInputTaxFixed;
-
-    const denominator_linear = 1 - margin - feeRate - taxRateLinear;
-    const numerator_linear = cashOutCost + shipFixed - taxFixedDeduction + agentFee;
-
-    if (denominator_linear <= 0) return 0; // Impossible
-
-    // Check if simple calculation works (Linear assumption: Tax > 0)
-    let price1 = numerator_linear / denominator_linear;
-
-    // Check Tax at price1
-    const taxAtP1 = (price1 * outputTaxRate) - productInputTax - (price1 * feeRate + shipFixed) * (0.05/1.05);
-
-    // Case 2: Tax <= 0. Payable Tax is 0.
-    const price2_denom = 1 - margin - feeRate;
-    const price2_num = cashOutCost + shipFixed + agentFee;
-    let price2 = (price2_denom > 0) ? price2_num / price2_denom : 0;
-
-    let usePrice = (taxAtP1 >= 0) ? price1 : price2;
-
-    // Handle General Seller Limit (35000) for Transaction Fee
-    if (!isMall && usePrice > 35000) {
-        // Recalculate with Fixed Trans Fee
-        const fixedTransFee = 35000 * transRate;
-        const feeRate_capped = feeRate - transRate;
-        const feeFixed_capped = fixedTransFee + shipFixed;
-
-        const feeInputTaxRate_capped = hasFeeInv ? feeRate_capped * (0.05/1.05) : 0;
-        const feeInputTaxFixed_capped = hasFeeInv ? feeFixed_capped * (0.05/1.05) : 0;
-
-        const taxRateLinear_capped = outputTaxRate - feeInputTaxRate_capped;
-        const taxFixedDeduction_capped = productInputTax + feeInputTaxFixed_capped;
-
-        const denom_capped = 1 - margin - feeRate_capped - taxRateLinear_capped;
-        const num_capped = cashOutCost + feeFixed_capped - taxFixedDeduction_capped + agentFee;
-
-        if (denom_capped > 0) {
-             let price_capped_1 = num_capped / denom_capped;
-             const taxAtCapped1 = (price_capped_1 * outputTaxRate) - productInputTax - (price_capped_1 * feeRate_capped + feeFixed_capped) * (0.05/1.05);
-             if (taxAtCapped1 >= 0) {
-                 usePrice = price_capped_1;
-             } else {
-                 const denom_capped_2 = 1 - margin - feeRate_capped;
-                 const num_capped_2 = cashOutCost + feeFixed_capped + agentFee;
-                 if (denom_capped_2 > 0) usePrice = num_capped_2 / denom_capped_2;
-             }
-        }
-    }
-
-    return Math.ceil(usePrice);
-}
-
+// 用獲利率反推售價：找出「獲利率 ≥ 目標」的最低整數售價。
+// 每項費用各自四捨五入，公式解會略低於目標，所以直接用實際計算逐一驗證；
+// 免運／冷凍服務費在 $99／$100 之間有級距，兩段各自單調，分段二分搜尋後取較低者。
 function calculateRequiredPrice(cost, marginPercent, transactionFeeRate, cashbackRate, preOrderRate, taxSetting, isEvent, isShip2, isMall, hasProdInv, hasFeeInv, isCostInc) {
-    if (!isShip2) {
-        return _calcRequiredPriceWithShipParams(cost, marginPercent, transactionFeeRate, cashbackRate, preOrderRate, taxSetting, isEvent, 0.06, 0, isMall, hasProdInv, hasFeeInv, isCostInc);
-    }
-    // Ship2 tiered: ≥100 → fixed $60; ≤99 → 6% activity service fee
-    const priceA = _calcRequiredPriceWithShipParams(cost, marginPercent, transactionFeeRate, cashbackRate, preOrderRate, taxSetting, isEvent, 0, 60, isMall, hasProdInv, hasFeeInv, isCostInc);
-    if (priceA >= 100) return priceA;
-    const priceB = _calcRequiredPriceWithShipParams(cost, marginPercent, transactionFeeRate, cashbackRate, preOrderRate, taxSetting, isEvent, 0.06, 0, isMall, hasProdInv, hasFeeInv, isCostInc);
-    return priceB;
+    if (cost <= 0) return 0;
+    const target = marginPercent / 100;
+    const ok = (p) => computeScenarioValues(p, cost, transactionFeeRate, cashbackRate, preOrderRate, taxSetting, isEvent, isShip2, isMall, hasProdInv, hasFeeInv, isCostInc).profit >= p * target;
+    const lowestIn = (lo, hi) => {
+        if (!ok(hi)) return null;
+        const floor = lo;
+        while (lo < hi) {
+            const mid = Math.floor((lo + hi) / 2);
+            if (ok(mid)) hi = mid; else lo = mid + 1;
+        }
+        // 各項費用四捨五入會讓獲利在臨界點附近上下跳動幾元，往下再掃一段找更低的可行售價
+        let best = lo;
+        for (let q = lo - 1; q >= Math.max(floor, lo - 50); q--) if (ok(q)) best = q;
+        return best;
+    };
+    const low = lowestIn(1, 99);
+    if (low !== null) return low;
+    return lowestIn(100, 100000000) || 0;
 }
 
 function calculateFees() {
@@ -451,7 +410,8 @@ function calculateFees() {
     });
 }
 
-function calculateScenario(prefix, sellPrice, costPrice, transactionFeeRate, cashbackRate, preOrderRate, taxSetting, isEvent, isShip2, isMall, hasProdInv, hasFeeInv, isCostInc) {
+// 計算單一情境的各項數值（不碰畫面），calculateScenario 與反推售價共用
+function computeScenarioValues(sellPrice, costPrice, transactionFeeRate, cashbackRate, preOrderRate, taxSetting, isEvent, isShip2, isMall, hasProdInv, hasFeeInv, isCostInc) {
     // 1. Shopee Fees
     const limit = 35000;
     const eventFeeIncrease = isMall ? 3 : 2;
@@ -461,11 +421,15 @@ function calculateScenario(prefix, sellPrice, costPrice, transactionFeeRate, cas
         Math.round(sellPrice * effTransRate / 100) : 
         Math.round(Math.min(sellPrice, limit) * effTransRate / 100);
         
-    const payFee = Math.round(sellPrice * 0.025);
+    const payFee = Math.round(sellPrice * getPaymentPct() / 100);
     // Ship2 tiered: ≤99 → 6% activity service fee; ≥100 → fixed $60
-    const shipFee = isShip2
-        ? (sellPrice <= 99 ? Math.round(sellPrice * 0.06) : 60)
-        : Math.round(sellPrice * 0.06);
+    // Frozen: ≥100 → fixed $80 (both plans); ≤99 → 6%
+    const frozen = isFrozenOrder();
+    const shipFee = (frozen && sellPrice > 99)
+        ? FROZEN_FIXED
+        : isShip2
+            ? (sellPrice <= 99 ? Math.round(sellPrice * 0.06) : 60)
+            : Math.round(sellPrice * 0.06);
     const cashFee = Math.round(sellPrice * cashbackRate / 100);
     const preFee = Math.round(sellPrice * preOrderRate / 100);
     
@@ -501,16 +465,27 @@ function calculateScenario(prefix, sellPrice, costPrice, transactionFeeRate, cas
     const cashOutCost = isCostInc ? costPrice : costPrice * 1.05;
     const profit = sellPrice - cashOutCost - totalDeduction;
 
+    return { frozen, transFee, payFee, shipFee, cashFee, preFee, totalShopeeFee, outputTax, inputTax, feeInputTax, payableTax, agentFee, totalDeduction, profit };
+}
+
+function calculateScenario(prefix, sellPrice, costPrice, transactionFeeRate, cashbackRate, preOrderRate, taxSetting, isEvent, isShip2, isMall, hasProdInv, hasFeeInv, isCostInc) {
+    const { frozen, transFee, payFee, shipFee, cashFee, preFee, totalShopeeFee, outputTax, inputTax, feeInputTax, payableTax, agentFee, totalDeduction, profit } =
+        computeScenarioValues(sellPrice, costPrice, transactionFeeRate, cashbackRate, preOrderRate, taxSetting, isEvent, isShip2, isMall, hasProdInv, hasFeeInv, isCostInc);
+
     // --- Update UI ---
     
     // Group 1
     document.getElementById(`${prefix}-transaction`).textContent = formatCurrency(transFee);
     document.getElementById(`${prefix}-payment`).textContent = formatCurrency(payFee);
+    const payLabelEl = document.getElementById(`${prefix}-payment-label`);
+    if (payLabelEl) payLabelEl.textContent = paymentLabel();
     document.getElementById(`${prefix}-shipping`).textContent = formatCurrency(shipFee);
 
     const shipLabelEl = document.getElementById(`${prefix}-shipping-label`);
-    if (shipLabelEl && isShip2) {
-        shipLabelEl.textContent = sellPrice <= 99 ? '免運活動服務費 (6%)' : '免運手續費 (+60元)';
+    if (shipLabelEl) {
+        if (frozen && sellPrice > 99) shipLabelEl.textContent = '冷凍訂單活動服務費 (+80元)';
+        else if (isShip2) shipLabelEl.textContent = sellPrice <= 99 ? '免運活動服務費 (6%)' : '免運手續費 (+60元)';
+        else shipLabelEl.textContent = '免運手續費 (6%)';
     }
     
     const elPre = document.getElementById(`${prefix}-preorder`);

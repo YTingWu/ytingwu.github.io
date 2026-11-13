@@ -1,0 +1,3574 @@
+[
+    {
+        "母嬰用品": {
+            "孕婦保健": {
+                "媽媽奶粉": {
+                    "general_seller_fee": "4.5%",
+                    "mall_seller_fee": "7.5%"
+                },
+                "其他": {
+                    "general_seller_fee": "5.6%",
+                    "mall_seller_fee": "10.8%"
+                },
+                "孕期保養": {
+                    "general_seller_fee": "5.6%",
+                    "mall_seller_fee": "10.8%"
+                },
+                "孕補食品": {
+                    "general_seller_fee": "5.6%",
+                    "mall_seller_fee": "10.8%"
+                }
+            },
+            "嬰幼童奶粉、副食品": {
+                "UHT Milk": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "8%"
+                },
+                "其他": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "副食品": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "奶粉": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "寶寶零食": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                }
+            },
+            "清潔與護膚用品": {
+                "寶寶香水": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "浴帽": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "8%"
+                },
+                "其他": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "指甲/頭髮護理": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "毛巾/浴巾": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "洗澡用具": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "洗衣精": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "浴盆": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "濕紙巾": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "護髮/沐浴液": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                }
+            },
+            "孕婦用品": {
+                "general_seller_fee": "5.1%",
+                "mall_seller_fee": "8.3%"
+            },
+            "禮盒": {
+                "general_seller_fee": "5.1%",
+                "mall_seller_fee": "8.3%"
+            },
+            "嬰幼兒居家防護": {
+                "蚊帳": {
+                    "general_seller_fee": "5.6%",
+                    "mall_seller_fee": "7.5%"
+                },
+                "兒童監視器": {
+                    "general_seller_fee": "5.6%",
+                    "mall_seller_fee": "10.8%"
+                },
+                "其他": {
+                    "general_seller_fee": "5.6%",
+                    "mall_seller_fee": "10.8%"
+                },
+                "嬰兒床護欄": {
+                    "general_seller_fee": "5.6%",
+                    "mall_seller_fee": "10.8%"
+                },
+                "嬰兒防撞用品": {
+                    "general_seller_fee": "5.6%",
+                    "mall_seller_fee": "10.8%"
+                },
+                "安全鎖": {
+                    "general_seller_fee": "5.6%",
+                    "mall_seller_fee": "10.8%"
+                },
+                "安全門、防護欄": {
+                    "general_seller_fee": "5.6%",
+                    "mall_seller_fee": "10.8%"
+                }
+            },
+            "哺育用品": {
+                "general_seller_fee": "5.6%",
+                "mall_seller_fee": "10.8%"
+            },
+            "嬰幼童保健相關": {
+                "general_seller_fee": "5.6%",
+                "mall_seller_fee": "10.8%"
+            },
+            "嬰幼童家具、寢具": {
+                "general_seller_fee": "6.1%",
+                "mall_seller_fee": "9.3%"
+            },
+            "尿布、學習便器": {
+                "general_seller_fee": "6.1%",
+                "mall_seller_fee": "9.3%"
+            },
+            "嬰幼兒外出用品": {
+                "general_seller_fee": "6.1%",
+                "mall_seller_fee": "11.3%"
+            },
+            "玩具": {
+                "交通造型玩具": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "娃娃、填充玩具": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "嬰幼童玩具": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "學習教具": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "家家酒玩具": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "玩具機器人": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "積木玩具": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "運動、戶外玩具": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "黏土、按壓玩具": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "其他": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "11%"
+                }
+            },
+            "其他": {
+                "general_seller_fee": "7.5%",
+                "mall_seller_fee": "11.3%"
+            }
+        },
+        "寵物": {
+            "寵物服飾配件": {
+                "毛髮裝飾": {
+                    "general_seller_fee": "5.5%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "眼睛周邊": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "其他服飾配件": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.8%"
+                },
+                "寵物服飾": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.8%"
+                },
+                "帽子": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.8%"
+                },
+                "足部保護": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.8%"
+                },
+                "雨衣相關": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.8%"
+                },
+                "頸部裝飾": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.8%"
+                }
+            },
+            "寵物健康保健": {
+                "general_seller_fee": "7.5%",
+                "mall_seller_fee": "9.8%"
+            },
+            "寵物食品": {
+                "general_seller_fee": "7.5%",
+                "mall_seller_fee": "11.2%"
+            },
+            "寵物配件": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "9.8%"
+            },
+            "寵物廁所相關&貓砂": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.8%"
+            },
+            "寵物美容": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.8%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.8%"
+            }
+        },
+        "美食、伴手禮": {
+            "禮盒": {
+                "general_seller_fee": "6.1%",
+                "mall_seller_fee": "11.3%"
+            },
+            "飲品": {
+                "即飲甜品": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "咖啡": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "巧克力飲品": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "果汁、果醋": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "植物奶": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "水": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "沖泡飲料": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "碳酸飲料": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "糖漿": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "能量、運動飲品": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "茶葉、茶包": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "草本漢方飲品": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "飲品配料": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "其他": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                }
+            },
+            "休閒零食": {
+                "乾貨零食": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "堅果": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "巧克力": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "布丁、果凍、棉花糖": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "海苔": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "爆米花": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "瓜子": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "甜食、糖果": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "薯片、洋芋片": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "餅乾、威化餅": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "其他": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                }
+            },
+            "烘焙點心": {
+                "糕餅點心": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "蛋糕、餡餅": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "麵包": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "其他": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                }
+            },
+            "烘焙必需品": {
+                "發酵粉、蘇打粉": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "8%"
+                },
+                "食用色素": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "8%"
+                },
+                "其他": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "烘焙用麵粉": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "烘焙裝飾": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "烘焙調味": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "預拌麵粉": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                }
+            },
+            "乳製品、蛋": {
+                "奶精": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "8%"
+                },
+                "豆腐": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "8%"
+                },
+                "乳品": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "優格、優酪乳": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "其他": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "冰品、冰淇淋": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "奶油、人造黃油": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "芝士、芝士粉": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "蛋": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                }
+            },
+            "油品調味": {
+                "麵粉": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "8%"
+                },
+                "其他": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "味精、雞粉": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "糖": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "糖精": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "調味料、調味品": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "調理包": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "鍋、湯體": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "食用油": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                }
+            },
+            "主食": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "11.3%"
+            },
+            "早餐麥片": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "11.3%"
+            },
+            "便利/即食品": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "11.8%"
+            },
+            "生鮮食品": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.8%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.8%"
+            }
+        },
+        "嬰幼兒童裝童鞋": {
+            "嬰兒護手/腳套": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "9.3%"
+            },
+            "嬰幼童配件": {
+                "飾品": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "圍巾": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "帽子": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "手套": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "手錶": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "皮帶": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "眼鏡、太陽眼鏡": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "耳罩": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "襪子": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "雨衣及雨具": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "髮飾、髮夾": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "包包、行李箱": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "女童童裝": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "嬰幼兒裝": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "男童童裝": {
+                "上衣": {
+                    "general_seller_fee": "7.1%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "下著": {
+                    "general_seller_fee": "7.1%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "內衣褲": {
+                    "general_seller_fee": "7.1%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "外套與帽T": {
+                    "general_seller_fee": "7.1%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "套裝組合": {
+                    "general_seller_fee": "7.1%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "泳衣": {
+                    "general_seller_fee": "7.1%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "睡衣": {
+                    "general_seller_fee": "7.1%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "造型服飾": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.5%"
+                },
+                "其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "女童童鞋": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "男童童鞋": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            }
+        },
+        "保健": {
+            "個人照護": {
+                "乾洗手": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "成人尿布、防失禁用品": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "按摩器材、按摩槍": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "私密清潔保養": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "防蚊液": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "口腔照護": {
+                    "電動牙刷、配件": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "8.8%"
+                    },
+                    "假牙照護": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "11.3%"
+                    },
+                    "其他": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "11.3%"
+                    },
+                    "漱口水": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "11.3%"
+                    },
+                    "牙刷": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "11.3%"
+                    },
+                    "牙線": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "11.3%"
+                    },
+                    "牙膏": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "11.3%"
+                    },
+                    "矯正配件": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "11.3%"
+                    },
+                    "美白牙齒、美白貼片": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "11.3%"
+                    }
+                },
+                "眼部照護": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "耳部照護": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                }
+            },
+            "醫療保健": {
+                "體重計、體脂計": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11%"
+                },
+                "健康儀器、測試儀": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "受傷、殘障支撐道具": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "實驗室工具": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "急救用品": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "聽診器": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "舒緩用品": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "醫用手套、醫用口罩": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "鼻噴劑": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                }
+            },
+            "情趣用品": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "9.8%"
+            },
+            "保健食品、營養品": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            }
+        },
+        "美妝保養": {
+            "美容工具": {
+                "瘦身器材": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "臉部保養用具": {
+                    "臉部清潔工具": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "8.8%"
+                    },
+                    "其他": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    },
+                    "瘦臉器、臉部按摩器具": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    },
+                    "蒸臉機": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    }
+                },
+                "髮型工具": {
+                    "吹風機": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "8.8%"
+                    },
+                    "其他": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    },
+                    "梳子": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    },
+                    "編髮用具": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    },
+                    "頭髮造型用具": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    }
+                },
+                "上妝器具": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.8%"
+                },
+                "其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.8%"
+                },
+                "除毛器材": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.8%"
+                }
+            },
+            "男士保養": {
+                "男士剃鬍、除毛用品": {
+                    "電動刮鬍刀": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "8.8%"
+                    },
+                    "其他": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    },
+                    "刮鬍刀": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    },
+                    "刮鬍水": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    },
+                    "刮鬍泡": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    },
+                    "剃鬍刷": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    },
+                    "剃鬍裝備": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    },
+                    "多功能刮鬍刀": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.8%"
+                    }
+                },
+                "其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.8%"
+                },
+                "男士臉部保養": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.8%"
+                },
+                "男士身體保養": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.8%"
+                },
+                "頭髮護理": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.8%"
+                }
+            },
+            "彩妝": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.8%"
+            },
+            "手足保養、美甲": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.8%"
+            },
+            "美妝、保養組合": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.8%"
+            },
+            "美髮護理": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.8%"
+            },
+            "肌膚保養": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.8%"
+            },
+            "身體清潔、保養": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.8%"
+            },
+            "香水、香氛": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.8%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.8%"
+            }
+        },
+        "票券、優惠券與服務": {
+            "蝦皮": {
+                "Digital Products": {
+                    "general_seller_fee": "4%",
+                    "mall_seller_fee": "7%"
+                },
+                "蝦皮官方": {
+                    "general_seller_fee": "4.5%",
+                    "mall_seller_fee": "7.5%"
+                },
+                "蝦皮付費廣告": {
+                    "general_seller_fee": "4.5%",
+                    "mall_seller_fee": "8%"
+                },
+                "其他": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "8%"
+                }
+            },
+            "遊戲、虛擬點數": {
+                "general_seller_fee": "5%",
+                "mall_seller_fee": "5.5%"
+            },
+            "禮券": {
+                "百貨公司禮券": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "7.5%"
+                },
+                "其他": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "8%"
+                },
+                "超市、超商禮券": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "8%"
+                }
+            },
+            "交通": {
+                "general_seller_fee": "5%",
+                "mall_seller_fee": "8%"
+            },
+            "餐券": {
+                "general_seller_fee": "5%",
+                "mall_seller_fee": "8%"
+            },
+            "服務": {
+                "冷氣修繕": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "7.5%"
+                },
+                "家事服務": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "7.5%"
+                },
+                "搬運服務": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "8%"
+                },
+                "攝影/影印/相片沖洗": {
+                    "general_seller_fee": "5.5%",
+                    "mall_seller_fee": "7.5%"
+                },
+                "其他": {
+                    "general_seller_fee": "5.5%",
+                    "mall_seller_fee": "8%"
+                }
+            },
+            "美容與健康": {
+                "健康養生": {
+                    "general_seller_fee": "5.5%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "牙齒護理": {
+                    "general_seller_fee": "5.5%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "美髮沙龍": {
+                    "general_seller_fee": "5.5%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "SPA、按摩": {
+                    "general_seller_fee": "6%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "健身、運動": {
+                    "general_seller_fee": "6%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "其他": {
+                    "general_seller_fee": "6%",
+                    "mall_seller_fee": "9%"
+                }
+            },
+            "活動與景點": {
+                "活動、博覽會、會議": {
+                    "general_seller_fee": "5.5%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "展覽": {
+                    "general_seller_fee": "6%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "電影": {
+                    "general_seller_fee": "6%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "其他": {
+                    "general_seller_fee": "6%",
+                    "mall_seller_fee": "9%"
+                },
+                "樂園、景點": {
+                    "general_seller_fee": "6%",
+                    "mall_seller_fee": "9%"
+                }
+            },
+            "虛擬寶物/帳號/儲值/串流": {
+                "general_seller_fee": "6%",
+                "mall_seller_fee": "9%"
+            },
+            "課程、工作坊": {
+                "general_seller_fee": "6%",
+                "mall_seller_fee": "9%"
+            },
+            "旅遊": {
+                "公車": {
+                    "general_seller_fee": "6%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "旅遊行程": {
+                    "general_seller_fee": "6%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "火車": {
+                    "general_seller_fee": "6%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "租車": {
+                    "general_seller_fee": "6%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "溫泉": {
+                    "general_seller_fee": "6.5%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "住宿": {
+                    "general_seller_fee": "6.5%",
+                    "mall_seller_fee": "9%"
+                },
+                "其他": {
+                    "general_seller_fee": "6.5%",
+                    "mall_seller_fee": "9%"
+                }
+            },
+            "其他": {
+                "general_seller_fee": "6.5%",
+                "mall_seller_fee": "9%"
+            }
+        },
+        "書籍及雜誌期刊": {
+            "書籍": {
+                "語言學習書籍": {
+                    "general_seller_fee": "4.5%",
+                    "mall_seller_fee": "9.3%"
+                },
+                "BL/GL": {
+                    "general_seller_fee": "4.5%",
+                    "mall_seller_fee": "11%"
+                },
+                "教科參考書": {
+                    "general_seller_fee": "4.5%",
+                    "mall_seller_fee": "11%"
+                },
+                "漫畫": {
+                    "general_seller_fee": "4.5%",
+                    "mall_seller_fee": "11%"
+                },
+                "親子教養書籍": {
+                    "general_seller_fee": "4.5%",
+                    "mall_seller_fee": "11%"
+                },
+                "貼紙、著色書籍": {
+                    "general_seller_fee": "4.5%",
+                    "mall_seller_fee": "11%"
+                },
+                "星座運勢書籍": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "8%"
+                },
+                "農業、漁業書籍": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "8%"
+                },
+                "傳記": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "8%"
+                },
+                "求職、自我成長書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "8%"
+                },
+                "自然科普書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "9.3%"
+                },
+                "電腦資訊書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "9.3%"
+                },
+                "健身節食書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "其他書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "商業理財書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "宗教命理書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "布書/觸摸書": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "心理勵志書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "愛情小說": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "政治、法律、社會人文書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "旅遊相關書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "有聲書": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "樂譜": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "歷史人文書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "生活風格書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "科幻小說": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "經典文學及古典小說": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "繪本童書": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "藝術設計書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "輕小說": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "醫療保健書籍": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "限制級書刊": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "食譜": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "驚悚、動作、犯罪小說": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                }
+            },
+            "雜誌期刊": {
+                "商業理財雜誌": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "11%"
+                },
+                "青少年雜誌": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "8%"
+                },
+                "其他雜誌": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                },
+                "生活風格雜誌": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "11%"
+                }
+            },
+            "電子書": {
+                "general_seller_fee": "6%",
+                "mall_seller_fee": "5%"
+            },
+            "其他": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "11%"
+            }
+        },
+        "愛好與收藏品": {
+            "收藏品": {
+                "公仔": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "6.5%"
+                },
+                "交通模型": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "7.2%"
+                },
+                "動漫周邊": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "7.2%"
+                },
+                "組裝模型": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "7.2%"
+                },
+                "雕像、雕塑": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "7.2%"
+                },
+                "偶像周邊": {
+                    "general_seller_fee": "7.1%",
+                    "mall_seller_fee": "10.3%"
+                },
+                "原石水晶": {
+                    "general_seller_fee": "7.1%",
+                    "mall_seller_fee": "10.3%"
+                },
+                "紀念幣 / 鈔票": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "12%"
+                },
+                "運動周邊": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "12%"
+                },
+                "其他": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "12.3%"
+                }
+            },
+            "玩具與遊戲": {
+                "劍玉": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "扭蛋盒玩": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "整人玩具": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "桌遊": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "溜溜球": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "遙控玩具與配件": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "陀螺": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "魔術方塊": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "魔術玩具": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "10%"
+                },
+                "其他": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "11%"
+                }
+            },
+            "CD, DVD 與藍光光碟": {
+                "general_seller_fee": "7.5%",
+                "mall_seller_fee": "11.3%"
+            },
+            "黑膠唱片": {
+                "general_seller_fee": "8.5%",
+                "mall_seller_fee": "9%"
+            },
+            "紀念品": {
+                "手扇": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "9%"
+                },
+                "其他": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "12%"
+                },
+                "冰箱貼": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "12%"
+                },
+                "存錢筒、撲滿": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "12%"
+                },
+                "鑰匙圈": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "12%"
+                }
+            },
+            "樂器與樂器配件": {
+                "general_seller_fee": "8.5%",
+                "mall_seller_fee": "11.5%"
+            },
+            "刺繡作品": {
+                "general_seller_fee": "8.5%",
+                "mall_seller_fee": "12%"
+            },
+            "相簿": {
+                "general_seller_fee": "8.5%",
+                "mall_seller_fee": "12%"
+            },
+            "其他": {
+                "general_seller_fee": "8.5%",
+                "mall_seller_fee": "12.3%"
+            }
+        },
+        "居家生活": {
+            "日用品": {
+                "衛生紙、廚房紙巾": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "洗衣精、衣物清潔劑": {
+                    "洗衣精、洗衣粉、洗衣凝膠球": {
+                        "general_seller_fee": "6.6%",
+                        "mall_seller_fee": "9.8%"
+                    },
+                    "衣物柔軟精": {
+                        "general_seller_fee": "6.6%",
+                        "mall_seller_fee": "9.8%"
+                    },
+                    "衣物芳香劑": {
+                        "general_seller_fee": "6.6%",
+                        "mall_seller_fee": "9.8%"
+                    },
+                    "其他": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "11%"
+                    }
+                },
+                "其他": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                },
+                "垃圾桶": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                },
+                "垃圾袋": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                },
+                "大型曬衣支架、曬衣架": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                },
+                "家用清潔劑": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                },
+                "廁所用紙": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                },
+                "抹布": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                },
+                "拖把": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                },
+                "掃把": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                },
+                "海綿、菜瓜布": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                },
+                "清潔刷": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                },
+                "臉盆、泡腳桶": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                },
+                "除塵用具、雞毛撢子": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                },
+                "除蟲消毒": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.6%"
+                }
+            },
+            "五金修繕、電動工具": {
+                "手工具組": {
+                    "砂紙、磨切機與配件": {
+                        "general_seller_fee": "6.6%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "空氣壓縮機、空壓機": {
+                        "general_seller_fee": "6.6%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "電鋸、軍刀鋸、砂輪機、其他切割機": {
+                        "general_seller_fee": "6.6%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "電鑽、電動起子與配件": {
+                        "general_seller_fee": "6.6%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "其他": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "手工具組": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "扳手組": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "捲尺、檢測工具、其他測量": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "水平儀、測距輪": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "測距儀": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "焊接工具": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "發電機": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "釘子，螺絲和緊固件": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "鉗子": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "錘子": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "電流表、三用電表": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "高壓清洗機": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "鼓風機": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    }
+                },
+                "篷布、遮雨棚": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "屋頂磚、地板磚": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "工作防護": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "工具梯": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "建築材料": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "手推車": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "抽水機與配件": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "水龍頭、水料": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "油漆、塗料": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "空氣幫浦、打氣機、氣動工具與配件": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "門窗、紗窗、窗框": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "黏接、修補膠帶": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "園藝植作": {
+                "割草機": {
+                    "general_seller_fee": "6.6%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "種子、花苗": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "園藝器具": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "園藝土壤": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "園藝裝飾": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "植栽、盆栽": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "肥料": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "自動灌溉系統": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "花架、花盆、花器": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.7%"
+                }
+            },
+            "寢具": {
+                "general_seller_fee": "7.5%",
+                "mall_seller_fee": "9.3%"
+            },
+            "風水、宗教商品": {
+                "general_seller_fee": "7.6%",
+                "mall_seller_fee": "9.8%"
+            },
+            "節慶、派對用品": {
+                "夾子、裝飾夾": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "彩帶、榮譽肩帶、頒獎肩帶": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "氣球、字母數字氣球": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "活動背版": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "紙類餐盤、一次性餐具": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "裝扮道具": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "邀請卡、卡片": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                }
+            },
+            "收納": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "8.8%"
+            },
+            "居家香氛": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "9.8%"
+            },
+            "燈具": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "9.8%"
+            },
+            "傢俱": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11%"
+            },
+            "水杯瓶、餐廚配件": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "鍋具、餐廚／烘焙／咖啡用具、廚房收納": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "暖暖包、冷熱水袋": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.7%"
+            },
+            "浴室": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.7%"
+            },
+            "居安防護": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "12.2%"
+            },
+            "居家裝飾": {
+                "乾燥花、鮮花、人造花": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "地板貼、巧拼": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "地毯、地墊": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "壁貼、窗貼": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "時鐘、掛鐘": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "桌墊、桌布": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "相框、牆壁裝飾": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "窗簾、門簾": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "花瓶": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "蠟燭、燭臺": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "鏡子": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "電視罩、防塵蓋布": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.8%"
+                },
+                "其他": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "9.8%"
+                }
+            },
+            "其他": {
+                "general_seller_fee": "8.5%",
+                "mall_seller_fee": "12.2%"
+            }
+        },
+        "文具、美術用具": {
+            "信紙、信封": {
+                "郵票": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "7.5%"
+                },
+                "信封、紅包袋": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "10.7%"
+                },
+                "其他": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "10.7%"
+                },
+                "明信片": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "10.7%"
+                }
+            },
+            "禮品盒、包裝材料": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "9.3%"
+            },
+            "美術用具": {
+                "油畫顏料": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "調色盤": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "其他": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "壓克力顏料": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "彩色鉛筆": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "水彩、廣告顏料": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "畫布、畫架": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "畫筆、刷具": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "素描本": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.7%"
+                },
+                "蠟筆、粉彩筆": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.7%"
+                }
+            },
+            "學校、辦公用品": {
+                "general_seller_fee": "8.5%",
+                "mall_seller_fee": "11.7%"
+            },
+            "文具用品、修正用品": {
+                "general_seller_fee": "8.5%",
+                "mall_seller_fee": "11.7%"
+            },
+            "筆記本、紙製品": {
+                "general_seller_fee": "8.5%",
+                "mall_seller_fee": "11.7%"
+            },
+            "其他": {
+                "general_seller_fee": "8.5%",
+                "mall_seller_fee": "11.7%"
+            }
+        },
+        "汽機車百貨／交通用品": {
+            "保養維修工具": {
+                "胎壓偵測器與其他測量工具": {
+                    "胎壓偵測器": {
+                        "general_seller_fee": "5.1%",
+                        "mall_seller_fee": "5.8%"
+                    },
+                    "其他": {
+                        "general_seller_fee": "6.5%",
+                        "mall_seller_fee": "10%"
+                    }
+                },
+                "其他": {
+                    "general_seller_fee": "6.5%",
+                    "mall_seller_fee": "10%"
+                },
+                "千斤頂及升降機": {
+                    "general_seller_fee": "6.5%",
+                    "mall_seller_fee": "10%"
+                },
+                "打氣機及空氣壓縮機": {
+                    "general_seller_fee": "6.5%",
+                    "mall_seller_fee": "10%"
+                },
+                "板手": {
+                    "general_seller_fee": "6.5%",
+                    "mall_seller_fee": "10%"
+                },
+                "汽機車掃描儀/診斷工具": {
+                    "general_seller_fee": "6.5%",
+                    "mall_seller_fee": "10%"
+                },
+                "車用電動絞盤/吊車工具": {
+                    "general_seller_fee": "6.5%",
+                    "mall_seller_fee": "10%"
+                },
+                "輪胎安裝工具": {
+                    "general_seller_fee": "6.5%",
+                    "mall_seller_fee": "10%"
+                },
+                "電瓶充電器及檢測工具": {
+                    "general_seller_fee": "6.5%",
+                    "mall_seller_fee": "10%"
+                }
+            },
+            "汽車": {
+                "general_seller_fee": "6%",
+                "mall_seller_fee": "6.7%"
+            },
+            "機車": {
+                "general_seller_fee": "6.5%",
+                "mall_seller_fee": "7.2%"
+            },
+            "車用安全與防盜器材": {
+                "車用鑰匙及周邊": {
+                    "general_seller_fee": "6.5%",
+                    "mall_seller_fee": "10.2%"
+                },
+                "警報器及配件": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "輪胎螺母": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "防盜工具及其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "防盜鎖": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "電子防盜鎖及中控鎖": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "車內周邊百貨": {
+                "鑰匙圈及鑰匙套": {
+                    "general_seller_fee": "6.5%",
+                    "mall_seller_fee": "10.2%"
+                },
+                "汽車影音設備": {
+                    "天線": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "8.3%"
+                    },
+                    "其他": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "揚聲器": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "擴大機": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "遙控器": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "音響": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "音響驅動器": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    }
+                },
+                "USB藍芽接收器": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "導航、GPS接收器": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "座椅及座椅套": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "汽車床墊及其他車內配件": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "汽車方向盤套": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "汽車行車紀錄器": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "車用地墊及行李箱墊": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "車用手機支架、充電器": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "車用收納與杯架": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "遮陽隔熱": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "輪胎、輪框及周邊": {
+                "general_seller_fee": "7.5%",
+                "mall_seller_fee": "7.3%"
+            },
+            "重型車輛/工程車/船類用品": {
+                "general_seller_fee": "7.5%",
+                "mall_seller_fee": "8.3%"
+            },
+            "車外裝飾及性能配件": {
+                "輪圈墊片": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "7.3%"
+                },
+                "輪圈蓋": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "7.3%"
+                },
+                "導流板": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.3%"
+                },
+                "尾門配件": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.3%"
+                },
+                "拖鉤周邊": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.3%"
+                },
+                "擋泥板": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.3%"
+                },
+                "車牌框及其他": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.3%"
+                },
+                "車罩": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.3%"
+                },
+                "車身側踏板": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.3%"
+                },
+                "車輪拱罩": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.3%"
+                },
+                "車頂架/行李架": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.3%"
+                },
+                "車外裝飾/改裝配件": {
+                    "其他": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "8.3%"
+                    },
+                    "抬頭顯示器及儀錶板": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "照明": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "車漆及補漆筆": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    }
+                },
+                "車貼": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.3%"
+                },
+                "停車輔助/倒車雷達": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "汽機車美容用品": {
+                "輪胎及鋁圈保養用品": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "7.3%"
+                },
+                "除油劑": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "7.3%"
+                },
+                "拋光打蠟機": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "洗車劑及洗車用品": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "洗車海棉及拋光上蠟墊": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "玻璃清潔及其他美容用品": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "美白/亮光/增艷劑": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "車用吸塵器": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "車用擦拭布/洗車毛巾": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "車用香氛": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "車蠟及打蠟用品": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "鍍膜美容用品": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "汽車零件": {
+                "添加劑和潤滑劑": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "10%"
+                },
+                "汽車外部零件": {
+                    "螺帽蓋": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "7.3%"
+                    },
+                    "喇叭": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "8.3%"
+                    },
+                    "車標 / 汽車標誌": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "8.3%"
+                    },
+                    "其他": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "氣壓支撐杆": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "防撞條及橡膠條": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "雨刷": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "雨刷液儲存槽": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "雨刷臂": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "雨刷馬達": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    }
+                },
+                "車體車身與保險桿": {
+                    "其他": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "8.3%"
+                    },
+                    "後視鏡及周邊": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "8.3%"
+                    },
+                    "車身飾條": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "8.3%"
+                    },
+                    "保險桿": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "保險桿支架": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "保險桿架": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "保險桿格柵": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "擋泥板": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "油箱": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "車門和儀表板": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "車門把手": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "霧燈罩": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    }
+                },
+                "汽車內部零配件": {
+                    "後視鏡及周邊": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "8.3%"
+                    },
+                    "車用頭枕及腰靠墊及其他": {
+                        "general_seller_fee": "7.5%",
+                        "mall_seller_fee": "8.3%"
+                    },
+                    "手動變速桿": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "手煞車拉桿": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "方向盤": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "槓桿和把手": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "汽車啟動鈕/啟動按鍵": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "汽車手套箱": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "汽車扶手": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "行李箱內襯蓋": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "變速桿頭/打檔桿頭/排檔頭": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "變速桿頭/打檔桿頭/排檔頭套": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "踏板": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "車用室內燈": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "車用空氣清淨機": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "車用電線": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "車門開關飾板": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    }
+                },
+                "CNG及周邊零件": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "傳動系統": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "剎車系統": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "引擎系統": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "排氣管及周邊": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "汽車玻璃/車窗": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "汽車過濾器、濾網、濾芯": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "照明系統": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "燃油噴射系統及零件": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "車用空調零件": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "避震系統": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "電氣系統": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "點火裝置": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "機車零件": {
+                "添加劑和潤滑劑": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "10%"
+                },
+                "傳動系統": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "喇叭及其他機車零件": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "引擎系統": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "排氣管與消音器": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "機車過濾器、濾網、濾芯": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "機車電池": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "照明系統": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "點火裝置": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "底盤周邊": {
+                    "前叉管": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "塑料外殼套件": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "座椅把手": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "引擎護罩": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "手把握把套": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "手把與相關零件": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "扳手": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "把手": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "機車踏墊/停車地毯及其他": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "機車電線": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "油箱及周邊": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "油箱蓋": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "煞車": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "腳踏桿": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "車牌架/車牌支架": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "輪輻/輻條": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "輪轂": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "阻尼器": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "駐車架/腳架": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11%"
+                    },
+                    "擋泥板": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    },
+                    "機車座椅": {
+                        "general_seller_fee": "8%",
+                        "mall_seller_fee": "11.5%"
+                    }
+                },
+                "後照鏡及周邊": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "機車配件/機車百貨": {
+                "安全帽": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "安全帽藍芽耳機及通訊系統": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "安全帽鏡片": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "手把護罩/手把套": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "擋風玻璃": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "機車行車紀錄器": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "重機背包/騎士背包": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "防摔防倒用品": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "馬鞍包/側掛包": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "騎士部品": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11%"
+                },
+                "儀錶板": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "其他周邊": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "引擎保護桿/引擎護杠": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "後箱/收納箱": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "機車手機支架": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "機車車貼、車標改裝": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "車罩": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "其他交通工具與用品": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.7%"
+            }
+        },
+        "時尚配件": {
+            "戒指": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "10.5%"
+            },
+            "手鍊 / 手環": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "10.5%"
+            },
+            "耳環": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "10.5%"
+            },
+            "腳鍊 / 腳環": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "10.5%"
+            },
+            "項鍊": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "10.5%"
+            },
+            "珠寶 / 貴金屬": {
+                "general_seller_fee": "7.5%",
+                "mall_seller_fee": "10.5%"
+            },
+            "鑽石珠寶玉石": {
+                "general_seller_fee": "7.5%",
+                "mall_seller_fee": "10.5%"
+            },
+            "圍巾 / 披肩": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            },
+            "帽子": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            },
+            "手套": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            },
+            "皮帶": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            },
+            "眼鏡": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            },
+            "穿搭配件": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            },
+            "配件套組 / 配飾禮盒組": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            },
+            "領帶 / 領結 / 領巾": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            },
+            "髮飾": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            }
+        },
+        "男生包包": {
+            "側/肩背包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "公事包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "後背包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "手拿包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "托特包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "皮夾": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "腰包/胸包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "電腦包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            }
+        },
+        "男生衣著": {
+            "上衣": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "傳統服飾": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "內著": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "外套, 風衣與背心": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "套裝": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "帽T, 大學T": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "戲服": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "毛衣, 針織": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "牛仔褲": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "睡衣": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "短褲": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "職業制服": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "襪子": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "西裝": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "長褲": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "其他": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            }
+        },
+        "男鞋": {
+            "休閒鞋款": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "懶人鞋/ 穆勒鞋": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "樂福鞋/ 帆船鞋": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "涼拖鞋": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "牛津鞋/ 綁帶皮鞋": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "靴子": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "鞋材/ 鞋類周邊": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            }
+        },
+        "手錶": {
+            "手錶配件": {
+                "手錶維修工具": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8%"
+                },
+                "手錶錶扣": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8%"
+                },
+                "手錶電池": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8%"
+                },
+                "其他手錶配件": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "手錶收納盒": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "手錶錶帶": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.3%"
+                }
+            },
+            "女錶": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            },
+            "情侶對錶/手錶禮盒": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            },
+            "男錶": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            }
+        },
+        "女生包包/精品": {
+            "包包配件": {
+                "包包掛勾": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "8.2%"
+                },
+                "其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "包包吊飾": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "包包收納": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "清潔/保養用品": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "背帶/配件": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "側/肩背包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "後背包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "手提包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "托特包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "晚宴包/手拿包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "皮夾": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "腰包/胸包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "電腦包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            }
+        },
+        "女生衣著": {
+            "上衣": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "傳統服飾": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "內衣褲": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "外套 / 背心": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "大學T / 帽T": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "套裝": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "孕婦裝": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "布料": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "毛衣 / 針織": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "洋裝": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "牛仔褲": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "睡衣 / 居家服": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "短褲": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "禮服": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "裙裝": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "襪子 / 絲襪": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "角色扮演服": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "連身褲 / 吊帶褲": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "長褲 / 緊身褲": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "其他": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            }
+        },
+        "女鞋": {
+            "休閒鞋款": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "平底鞋": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "楔型鞋": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "涼拖鞋": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "跟鞋": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "靴子": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "鞋材/ 鞋類周邊": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            }
+        },
+        "戶外與運動用品": {
+            "運動健身與戶外休閒": {
+                "壁球": {
+                    "general_seller_fee": "6%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "橄欖球及美式足球": {
+                    "general_seller_fee": "6%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "射箭": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "撞球": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "飛鏢": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "8.5%"
+                },
+                "乒乓球": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "健身運動器材": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "其他運動健身與戶外休閒用品": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "划船與獨木舟": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "拳擊與武術": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "排球": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "攀岩與抱石": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "板類運動": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "棒球與壘球": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "游泳與潛水": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "滑雪與冬季運動": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "瑜珈與皮拉提斯": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "登山、露營": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "籃球": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "網球": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "羽毛球": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "腳踏車、自行車": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "衝浪與滑水": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "足球用品": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "釣魚/釣蝦": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "高爾夫": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "運動服飾/戶外服飾": {
+                "general_seller_fee": "7.1%",
+                "mall_seller_fee": "11.5%"
+            },
+            "運動戶外裝備及配件": {
+                "運動頭帶/運動穿戴配件/運動配備": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "7.2%"
+                },
+                "戶外機能配件/戶外包袋": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "防水包袋與防水套": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "鞋袋/運動包袋": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "健身及運動護具": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "碼表及運動測量": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "護齒、運動貼布與肌貼": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "運動帽、戶外帽": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "運動訓練輔助器材": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "運動護腕 & 運動用品": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "雨傘及雨具": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                },
+                "雨衣": {
+                    "general_seller_fee": "8.5%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "運動鞋/戶外鞋": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "其他運動及戶外用品": {
+                "general_seller_fee": "8.5%",
+                "mall_seller_fee": "11.5%"
+            }
+        },
+        "旅行相關用品/行李箱": {
+            "旅行包": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "旅行相關周邊": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "行李箱": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            }
+        },
+        "電玩遊戲": {
+            "主機遊戲": {
+                "PS Vita遊戲": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "6%"
+                },
+                "Wii系列遊戲": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "6%"
+                },
+                "PSP遊戲": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "9.2%"
+                },
+                "Gameboy遊戲": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "6%"
+                },
+                "NDS遊戲": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "6%"
+                },
+                "XBOX系列遊戲": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "6%"
+                },
+                "PC遊戲": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "9.2%"
+                },
+                "PS系列遊戲": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "9.2%"
+                },
+                "Switch遊戲": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "9.2%"
+                },
+                "其他": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "9.2%"
+                }
+            },
+            "電玩主機": {
+                "PS Vita主機": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "3%"
+                },
+                "Wii系列主機": {
+                    "general_seller_fee": "5%",
+                    "mall_seller_fee": "3%"
+                },
+                "Gameboy系列主機": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "3%"
+                },
+                "NDS系列主機": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "3%"
+                },
+                "PSP主機": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "3%"
+                },
+                "PS系列主機": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "4.3%"
+                },
+                "Switch主機": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "4.3%"
+                },
+                "XBOX系列主機": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "4.3%"
+                },
+                "其他": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "4.3%"
+                }
+            },
+            "主機周邊": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.3%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.3%"
+            }
+        },
+        "家用電器": {
+            "居安與家用零件": {
+                "避雷器": {
+                    "general_seller_fee": "5.5%",
+                    "mall_seller_fee": "7.5%"
+                },
+                "其他電路及零件": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.8%"
+                },
+                "省電器": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.8%"
+                },
+                "警報器": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.8%"
+                },
+                "門鈴": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.8%"
+                },
+                "開關面板": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.8%"
+                },
+                "電源插座/延長線": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.8%"
+                },
+                "電路安全裝置": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.8%"
+                }
+            },
+            "生活家電": {
+                "空氣清淨": {
+                    "general_seller_fee": "6.1%",
+                    "mall_seller_fee": "8.7%"
+                },
+                "通訊辦公": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "6.8%"
+                },
+                "其他生活家電": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.8%"
+                },
+                "吸塵器/地板保養用具": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.8%"
+                },
+                "沖牙機": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.8%"
+                },
+                "泡腳機/足浴桶": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.8%"
+                },
+                "熨斗/掛燙機": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.8%"
+                },
+                "裁縫機與周邊": {
+                    "general_seller_fee": "7.5%",
+                    "mall_seller_fee": "8.8%"
+                }
+            },
+            "電視機與周邊配件": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "8%"
+            },
+            "大型家電": {
+                "general_seller_fee": "7%",
+                "mall_seller_fee": "6.8%"
+            },
+            "廚房家電": {
+                "general_seller_fee": "7.5%",
+                "mall_seller_fee": "8.8%"
+            },
+            "遙控器": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.8%"
+            },
+            "電池": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.8%"
+            },
+            "投影機與周邊配件": {
+                "其他投影機周邊": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "投影機/投影布幕": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.3%"
+                },
+                "簡報筆": {
+                    "general_seller_fee": "8.1%",
+                    "mall_seller_fee": "11.3%"
+                }
+            },
+            "其他家電": {
+                "general_seller_fee": "9.5%",
+                "mall_seller_fee": "11.3%"
+            }
+        },
+        "電腦與周邊配件": {
+            "電腦周邊配件": {
+                "印表伺服器": {
+                    "general_seller_fee": "5.5%",
+                    "mall_seller_fee": "7%"
+                },
+                "電力線網路橋接器": {
+                    "general_seller_fee": "5.5%",
+                    "mall_seller_fee": "10.3%"
+                },
+                "KVM切換器": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.3%"
+                },
+                "中繼器": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.3%"
+                },
+                "無線網卡": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.3%"
+                },
+                "網路交換器與乙太網路設備": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.3%"
+                },
+                "網路設備": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.3%"
+                },
+                "電腦線材": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.3%"
+                },
+                "其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "11.5%"
+                }
+            },
+            "辦公設備": {
+                "打字機": {
+                    "general_seller_fee": "5.5%",
+                    "mall_seller_fee": "7%"
+                },
+                "其他": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.3%"
+                },
+                "碎紙機": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.3%"
+                },
+                "考勤機": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.3%"
+                },
+                "點鈔機": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "10.3%"
+                }
+            },
+            "筆記型電腦": {
+                "general_seller_fee": "5.6%",
+                "mall_seller_fee": "4.8%"
+            },
+            "螢幕顯示器": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "6.8%"
+            },
+            "儲存裝置": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "8.3%"
+            },
+            "鍵盤滑鼠": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "9%"
+            },
+            "軟體": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "10.8%"
+            },
+            "桌上型電腦": {
+                "general_seller_fee": "7.5%",
+                "mall_seller_fee": "7.8%"
+            },
+            "電腦零組件": {
+                "general_seller_fee": "7.7%",
+                "mall_seller_fee": "7.3%"
+            },
+            "電腦/筆電周邊配件": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.3%"
+            },
+            "列印機/掃描機": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.7%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.5%"
+            }
+        },
+        "相機&空拍機": {
+            "相機保養配件": {
+                "鏡頭清潔筆刷": {
+                    "general_seller_fee": "5.5%",
+                    "mall_seller_fee": "9.5%"
+                },
+                "乾燥劑": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.5%"
+                },
+                "其他配件": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.5%"
+                },
+                "吹塵球": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.5%"
+                },
+                "清潔組": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.5%"
+                },
+                "防潮箱": {
+                    "general_seller_fee": "8%",
+                    "mall_seller_fee": "9.5%"
+                }
+            },
+            "空拍機": {
+                "general_seller_fee": "6.6%",
+                "mall_seller_fee": "7.3%"
+            },
+            "鏡頭": {
+                "general_seller_fee": "7%",
+                "mall_seller_fee": "5.8%"
+            },
+            "相機": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "7.3%"
+            },
+            "相機周邊配件": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "9.5%"
+            },
+            "安全視訊監控及系統": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.8%"
+            },
+            "空拍機周邊配件": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.8%"
+            },
+            "鏡頭周邊配件": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.8%"
+            },
+            "其他": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "11.3%"
+            }
+        },
+        "影音": {
+            "綜合擴大機/混音器": {
+                "general_seller_fee": "6%",
+                "mall_seller_fee": "8.8%"
+            },
+            "耳機/耳麥/藍牙耳機": {
+                "general_seller_fee": "7.5%",
+                "mall_seller_fee": "8.5%"
+            },
+            "多媒體播放器": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.3%"
+            },
+            "音響/喇叭": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.3%"
+            },
+            "麥克風": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.3%"
+            },
+            "其他音訊產品": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.8%"
+            },
+            "視聽線材/轉換器": {
+                "general_seller_fee": "8%",
+                "mall_seller_fee": "10.8%"
+            }
+        },
+        "手機平板與周邊": {
+            "手機": {
+                "general_seller_fee": "6%",
+                "mall_seller_fee": "4%"
+            },
+            "平板電腦": {
+                "general_seller_fee": "6%",
+                "mall_seller_fee": "5%"
+            },
+            "穿戴裝置": {
+                "general_seller_fee": "7.5%",
+                "mall_seller_fee": "7.2%"
+            },
+            "對講機": {
+                "general_seller_fee": "8.5%",
+                "mall_seller_fee": "12.2%"
+            },
+            "其他": {
+                "general_seller_fee": "9.5%",
+                "mall_seller_fee": "12.2%"
+            },
+            "手機周邊配件": {
+                "general_seller_fee": "9.5%",
+                "mall_seller_fee": "12.2%"
+            },
+            "電話、儲值卡": {
+                "general_seller_fee": "9.5%",
+                "mall_seller_fee": "12.2%"
+            }
+        }
+    }
+]
