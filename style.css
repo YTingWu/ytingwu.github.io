@@ -1059,3 +1059,17 @@ body.toggled #sidebar-overlay {
     outline: 2px solid var(--warning);
     outline-offset: 1px;
 }
+
+/* header 項目多：文字不換行；992–1199px 寬度不夠時隱藏導覽 icon、縮小間距 */
+.site-nav .nav-link {
+    white-space: nowrap;
+}
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .site-nav .navbar-nav .nav-link > i {
+        display: none;
+    }
+    .site-nav .navbar-nav .nav-link {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+}

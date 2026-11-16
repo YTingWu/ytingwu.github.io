@@ -18,7 +18,7 @@ const MODAL_BTN_USE_NEW = '<button type="button" class="btn btn-danger" data-bs-
 const MODAL_BTN_GO_OLD = '<a href="old.html" class="btn btn-outline-secondary" data-carry-query><i class="bi bi-clock-history"></i> 前往舊制計算機</a>';
 const MODAL_BTN_GO_NEW = '<a href="./" class="btn btn-danger" data-carry-query>前往新制計算機 <i class="bi bi-arrow-right"></i></a>';
 
-const NAV = { active_index: '', active_old: '', active_faq: '', active_events: '' };
+const NAV = { active_index: '', active_old: '', active_faq: '', active_events: '', active_sponsor: '' };
 
 // 每頁的變數。新增頁面時在這裡加一筆，並在 HTML 放好 include 標記。
 // new.html 是轉址頁（永久保留），不在這裡。
@@ -44,7 +44,7 @@ const PAGES = {
         modal_buttons: `${MODAL_BTN_GO_OLD}\n                    ${MODAL_BTN_CLOSE}`,
     },
     'sponsor.html': {
-        ...NAV,
+        ...NAV, active_sponsor: ACTIVE,
         modal_autoshow: 'false',
         modal_buttons: `${MODAL_BTN_GO_OLD}\n                    ${MODAL_BTN_CLOSE}`,
     },
