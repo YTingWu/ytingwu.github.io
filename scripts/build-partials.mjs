@@ -43,6 +43,11 @@ const PAGES = {
         modal_autoshow: 'false',
         modal_buttons: `${MODAL_BTN_GO_OLD}\n                    ${MODAL_BTN_CLOSE}`,
     },
+    'sponsor.html': {
+        ...NAV,
+        modal_autoshow: 'false',
+        modal_buttons: `${MODAL_BTN_GO_OLD}\n                    ${MODAL_BTN_CLOSE}`,
+    },
 };
 
 function render(name, vars) {
