@@ -953,10 +953,14 @@ body.toggled #sidebar-overlay {
 }
 .faq-answer-lead {
     font-size: 1.05rem;
-    background: var(--event-bg);
-    color: var(--event-text);
-    border-radius: 12px;
-    padding: 12px 16px;
+    color: var(--text-main);
+    border-left: 4px solid var(--primary);
+    background: rgba(78, 115, 223, 0.06);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 16px;
+}
+.faq-answer-lead .bi {
+    color: var(--primary);
 }
 .faq-steps li {
     margin-bottom: 8px;
@@ -986,14 +990,13 @@ body.toggled #sidebar-overlay {
 
 /* --- Events page (促銷檔期行事曆) --- */
 .promo-subscribe {
-    background: var(--event-bg);
-    color: var(--event-text);
-    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
     padding: 20px;
+    color: var(--text-main);
 }
-.promo-subscribe .text-muted {
-    color: var(--event-text) !important;
-    opacity: 0.8;
+.promo-subscribe h2 .bi {
+    color: var(--primary);
 }
 .promo-legend {
     display: flex;
