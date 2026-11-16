@@ -1076,3 +1076,65 @@ body.toggled #sidebar-overlay {
         padding-right: 6px;
     }
 }
+
+/* --- Articles --- */
+.article-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.article-card {
+    position: relative;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: border-color 0.2s ease;
+}
+.article-card:hover {
+    border-color: var(--primary);
+}
+.article-card h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 4px 0 8px;
+    line-height: 1.5;
+}
+.article-card h2 a {
+    color: var(--text-main);
+    text-decoration: none;
+}
+.article-card h2 a:hover {
+    color: var(--primary);
+}
+.article-card p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+.article-meta {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+.article-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.45;
+    margin-bottom: 8px;
+}
+.article-breadcrumb .breadcrumb-item a {
+    text-decoration: none;
+}
+.article-breadcrumb .breadcrumb-item.active {
+    color: var(--text-secondary);
+}
+.article-page .table th[scope="row"] {
+    white-space: nowrap;
+}
+@media (max-width: 575.98px) {
+    .article-title {
+        font-size: 1.3rem;
+    }
+    .article-page .table th[scope="row"] {
+        white-space: normal;
+    }
+}
