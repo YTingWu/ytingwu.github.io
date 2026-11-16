@@ -67,7 +67,7 @@
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="style.css?v=20260224">
+    <link rel="stylesheet" href="style.css?v=20261116">
     <link rel="stylesheet" href="fee-lookup.css">
 </head>
 
@@ -132,14 +132,39 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             <div class="container">
+                <!-- include:header -->
+                <nav class="navbar navbar-expand-lg site-nav" aria-label="網站導覽">
+                    <div class="container-fluid px-0">
+                        <a class="navbar-brand site-brand" href="./">
+                            <img src="favicon.svg" alt="" width="28" height="28"> 蝦皮手續費計算機
+                        </a>
+                        <div class="d-flex align-items-center gap-1 order-lg-last">
+                            <button type="button" class="btn btn-link site-nav-icon" id="announcementBtn"
+                                title="12/11 費率調整公告" aria-label="12/11 費率調整公告">
+                                <i class="bi bi-megaphone-fill fs-5 text-danger"></i>
+                            </button>
+                            <button class="navbar-toggler site-nav-toggler" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#siteNavLinks" aria-controls="siteNavLinks" aria-expanded="false"
+                                aria-label="開啟選單">
+                                <i class="bi bi-list fs-3"></i>
+                            </button>
+                        </div>
+                        <div class="collapse navbar-collapse" id="siteNavLinks">
+                            <ul class="navbar-nav ms-lg-auto">
+                                <li class="nav-item"><a class="nav-link active" aria-current="page" href="./"><i class="bi bi-calculator"></i> 手續費計算機</a></li>
+                                <li class="nav-item"><a class="nav-link new-version-link " href="new.html"><i class="bi bi-stars"></i> 12/11 新制</a></li>
+                                <li class="nav-item"><a class="nav-link " href="faq.html"><i class="bi bi-question-circle"></i> 常見問題</a></li>
+                                <li class="nav-item"><a class="nav-link" href="faq.html#install"><i class="bi bi-phone"></i> 加入主畫面</a></li>
+                                <li class="nav-item"><a class="nav-link site-events-link" href="#events"><i class="bi bi-calendar-event"></i> 活動日行事曆</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <!-- /include:header -->
                 <div class="main-container">
                     <button id="themeToggle" class="btn btn-link position-absolute top-0 end-0 m-3 text-decoration-none"
                         style="z-index: 10;">
                         <i class="bi bi-moon-fill fs-4" id="themeIcon"></i>
-                    </button>
-                    <button id="announcementBtn" class="btn btn-link position-absolute top-0 end-0 m-3 text-decoration-none"
-                        style="z-index: 10; margin-right: 4rem !important;" title="12/11 費率調整公告">
-                        <i class="bi bi-megaphone-fill fs-4 text-danger"></i>
                     </button>
                     <div class="header">
                         <h1><i class="bi bi-calculator"></i> 蝦皮手續費計算機</h1>
@@ -495,7 +520,7 @@
                     </div>
 
                     <!-- Event Day Info -->
-                    <div class="event-info">
+                    <div class="event-info" id="events">
                         <h6 style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#eventDayDetails"
                             aria-expanded="false" aria-controls="eventDayDetails">
                             <i class="bi bi-calendar-event"></i> <strong>2026年促銷檔期（手續費2%）</strong>
@@ -1098,7 +1123,7 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                     </div>
                 </div>
 
-                <!-- Footer -->
+                <!-- include:footer -->
                 <footer class="mt-5 pt-4 pb-4 border-top">
                     <div class="footer-wrapper">
                         <!-- Desktop View -->
@@ -1136,6 +1161,12 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                                         src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" height="28" />
                                 </a>
                             </div>
+                            <!-- Site Links -->
+                            <div class="text-center small mb-2 footer-links">
+                                <a href="faq.html" class="link-secondary">常見問題</a>
+                                <span class="text-secondary mx-1">·</span>
+                                <a href="faq.html#install" class="link-secondary">加入手機主畫面</a>
+                            </div>
                             <!-- Line 2: License Text -->
                             <div class="text-center text-secondary small mb-2">
                                 採用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
@@ -1144,7 +1175,7 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                             </div>
                             <!-- Line 3: Version -->
                             <div class="text-center text-muted small opacity-50">
-                                v1.1.10
+                                v1.1.11
                             </div>
                         </div>
 
@@ -1169,6 +1200,12 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                                     <i class="bi bi-person-badge-fill"></i>
                                 </a>
                             </div>
+                            <!-- Site Links -->
+                            <div class="small mb-3 footer-links">
+                                <a href="faq.html" class="link-secondary">常見問題</a>
+                                <span class="text-secondary mx-1">·</span>
+                                <a href="faq.html#install" class="link-secondary">加入手機主畫面</a>
+                            </div>
                             <!-- Author -->
                             <div class="text-secondary small mb-3">
                                 本工具由 <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
@@ -1190,11 +1227,12 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                             </div>
                             <!-- Version -->
                             <div class="text-muted small opacity-50">
-                                v1.1.10
+                                v1.1.11
                             </div>
                         </div>
                     </div>
                 </footer>
+                <!-- /include:footer -->
             </div>
         </div>
     </div>
@@ -1229,8 +1267,8 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
         </div>
     </div>
 
-    <!-- 2026/12/11 Fee Update Announcement Modal -->
-    <div class="modal fade" id="feeUpdateModal" tabindex="-1" aria-labelledby="feeUpdateModalLabel" aria-hidden="true">
+    <!-- include:announcement-modal -->
+    <div class="modal fade" id="feeUpdateModal" data-autoshow="true" tabindex="-1" aria-labelledby="feeUpdateModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1238,7 +1276,7 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="small text-muted mb-3">蝦皮公告自 <strong>2026/12/11 00:00</strong> 起成立的訂單適用新費率。本頁是現行費率（適用至 12/10）。</p>
+                    <p class="small text-muted mb-3">蝦皮公告自 <strong>2026/12/11 00:00</strong> 起成立的訂單適用新費率，12/10 以前成立的訂單仍是現行費率。</p>
                     <ul class="small ps-3">
                         <li class="mb-2"><strong>成交手續費依品類調整</strong>：分類細分到第三、四層，各品類調幅不同，部分調降。</li>
                         <li class="mb-2"><strong>促銷檔期加收</strong>：一般賣家 +2% → <strong>+4%</strong>、商城 +3% → <strong>+5%</strong>；參加長期蝦幣回饋免收，只參加短期仍要加收。</li>
@@ -1260,6 +1298,7 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
             </div>
         </div>
     </div>
+    <!-- /include:announcement-modal -->
 
     <!-- Fee Lookup Modal -->
     <div class="modal fade" id="feeLookupModal" tabindex="-1" aria-labelledby="feeLookupModalLabel" aria-hidden="true">
@@ -1297,7 +1336,8 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
     <script src="calculator.js?20261113e"></script>
     <script src="fee-lookup.js?20260107"></script>
     <script src="storage.js?20261113d"></script>
-    <script src="announcement.js?20261113"></script>
+    <script src="announcement.js?20261116"></script>
+    <script src="site.js?20261116"></script>
 </body>
 
 </html>
