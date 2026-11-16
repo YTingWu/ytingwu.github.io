@@ -582,7 +582,7 @@ function renderOldCompareNote(s) {
     if (!note) return;
     if (s.seller === 'shop') { note.style.display = 'none'; return; }
     note.style.display = '';
-    const parts = ['括號內為同樣條件在 12/10 前（現行費率）的試算。'];
+    const parts = ['括號內為同樣條件在 12/10 前（舊制費率）的試算。'];
     parts.push(oldTransRate !== null
         ? `成交手續費依「查詢」的類別對應為 ${oldTransRate}%。`
         : `成交手續費沿用目前的 ${s.transRate}%（手動輸入或查無對應類別；可用「查詢」選類別帶入 12/10 前費率）。`);

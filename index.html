@@ -7,17 +7,18 @@
     <meta name="google-adsense-account" content="ca-pub-7220444464281913">
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="蝦皮手續費，快速計算蝦皮成交手續費、金流服務費、免運方案成本與實際獲利。支援一般日與促銷檔期手續費計算，賣家必備工具。">
+    <meta name="description" content="蝦皮手續費計算機（2026/12/11 新制）：依新版品類成交手續費、促銷檔期加收 4%／5%、免運方案 6.5%／$65、冷凍訂單、預購 2%／3% 與蝦皮小舖，計算實際獲利。">
     <meta name="keywords" content="蝦皮手續費,蝦皮手續費計算機,蝦皮計算機,蝦皮成本,蝦皮利潤,蝦皮免運,蝦皮活動日,蝦皮賣家工具,手續費計算,蝦皮抽成">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="蝦皮手續費計算機">
+    <meta property="og:title" content="蝦皮手續費計算機（2026/12/11 新制）">
+    <link rel="canonical" href="https://ytingwu.github.io/">
     <meta property="og:site_name" content="蝦皮手續費計算機">
     <meta property="og:url" content="https://ytingwu.github.io/">
     <meta property="og:description" content="蝦皮手續費，幫您快速計算蝦皮成交手續費、金流服務費及免運方案成本，一鍵算出實際獲利，精準掌握賣場營收。">
 
-    <title>蝦皮手續費計算機</title>
+    <title>蝦皮手續費計算機（2026/12/11 新制）</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     
     <!-- Apple Touch Icon for iPhone -->
@@ -35,7 +36,7 @@
         "name": "蝦皮手續費計算機",
         "url": "https://ytingwu.github.io/",
         "dateCreated": "2025-12-19T15:00:00+08:00",
-        "dateModified": "2026-03-02T00:57:32+08:00",
+        "dateModified": "2026-11-16T12:00:00+08:00",
         "author": {
             "@type": "Person",
             "name": "Bruce Wu"
@@ -67,7 +68,7 @@
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="style.css?v=20261116">
+    <link rel="stylesheet" href="style.css?v=20261116b">
     <link rel="stylesheet" href="fee-lookup.css">
 </head>
 
@@ -140,7 +141,7 @@
                         </a>
                         <div class="d-flex align-items-center gap-1 order-lg-last">
                             <button type="button" class="btn btn-link site-nav-icon" id="announcementBtn"
-                                title="12/11 費率調整公告" aria-label="12/11 費率調整公告">
+                                title="12/11 新制公告" aria-label="12/11 新制公告">
                                 <i class="bi bi-megaphone-fill fs-5 text-danger"></i>
                             </button>
                             <button class="navbar-toggler site-nav-toggler" type="button" data-bs-toggle="collapse"
@@ -152,10 +153,10 @@
                         <div class="collapse navbar-collapse" id="siteNavLinks">
                             <ul class="navbar-nav ms-lg-auto">
                                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="./"><i class="bi bi-calculator"></i> 手續費計算機</a></li>
-                                <li class="nav-item"><a class="nav-link new-version-link " href="new.html"><i class="bi bi-stars"></i> 12/11 新制</a></li>
+                                <li class="nav-item"><a class="nav-link " href="old.html" data-carry-query><i class="bi bi-clock-history"></i> 舊制</a></li>
                                 <li class="nav-item"><a class="nav-link " href="faq.html"><i class="bi bi-question-circle"></i> 常見問題</a></li>
                                 <li class="nav-item"><a class="nav-link" href="faq.html#install"><i class="bi bi-phone"></i> 加入主畫面</a></li>
-                                <li class="nav-item"><a class="nav-link site-events-link" href="#events"><i class="bi bi-calendar-event"></i> 活動日行事曆</a></li>
+                                <li class="nav-item"><a class="nav-link " href="events.html"><i class="bi bi-calendar-event"></i> 活動日行事曆</a></li>
                             </ul>
                         </div>
                     </div>
@@ -170,9 +171,9 @@
                         <h1><i class="bi bi-calculator"></i> 蝦皮手續費計算機</h1>
                         <p>輕鬆計算您的商品成本與獲利</p>
                         <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 mt-2">
-                            <span class="badge bg-secondary fs-6">現行費率：適用至 2026/12/10 成立的訂單</span>
-                            <a href="new.html" class="small text-decoration-none fw-bold new-version-link">
-                                12/11 起新制計算機 <i class="bi bi-arrow-right-circle"></i>
+                            <span class="badge bg-danger fs-6"><i class="bi bi-stars"></i> 新制：適用 2026/12/11 起成立的訂單</span>
+                            <a href="old.html" class="small text-decoration-none" id="oldVersionLink" data-carry-query>
+                                <i class="bi bi-arrow-left-circle"></i> 12/10 以前成立的訂單請用舊制計算機
                             </a>
                         </div>
                     </div>
@@ -191,6 +192,11 @@
                                         value="mall">
                                     <label class="btn btn-outline-primary" for="sellerMall">
                                         <i class="bi bi-shop"></i> 商城賣家
+                                    </label>
+                                    <input type="radio" class="btn-check" name="sellerType" id="sellerShop"
+                                        value="shop">
+                                    <label class="btn btn-outline-primary" for="sellerShop">
+                                        <i class="bi bi-bag-heart"></i> 蝦皮小舖
                                     </label>
                                 </div>
                             </div>
@@ -213,10 +219,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-3">
+                        <div class="row mb-3 not-for-shop">
                             <div class="col-12">
                                 <label class="form-label">
-                                    <i class="bi bi-truck"></i> 免運方案
+                                    <i class="bi bi-truck"></i> 免運及進階賣家專案
                                 </label>
                                 <div class="btn-group w-100" role="group">
                                     <input type="radio" class="btn-check" name="shippingOption" id="shipBoth"
@@ -235,12 +241,22 @@
                                         冷凍訂單（≥$100 每單 $80）
                                         <i class="bi bi-info-circle text-muted" data-bs-toggle="tooltip"
                                             data-bs-placement="top"
-                                            title="買家選擇冷凍物流的訂單，單筆 $100 以上活動服務費每筆 $80，取代方案一 6% 或方案二 $60；$99 以下收 6%。"
+                                            title="買家選擇冷凍物流的訂單，單筆 $100 以上活動服務費每筆 $80（原價 $85，推廣優惠至 2027/12/31），取代方案一 6.5% 或方案二 $65；$99 以下仍收 6.5%。"
                                             style="cursor: help;"></i>
-                                        <a href="https://seller.shopee.tw/edu/article/28149" target="_blank" class="text-decoration-none small">
-                                            <i class="bi bi-box-arrow-up-right"></i> 詳情
-                                        </a>
                                     </label>
+                                </div>
+                                <small class="text-muted d-block mt-1">$99 以下訂單兩方案皆收 6.5%；$100 以上方案一收 6.5%、方案二每單 $65
+                                    <a href="https://seller.shopee.tw/edu/article/28149" target="_blank" class="text-decoration-none">
+                                        <i class="bi bi-info-circle"></i> 詳情
+                                    </a>
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row mb-3 only-for-shop" style="display: none;">
+                            <div class="col-12">
+                                <div class="alert alert-info small mb-0">
+                                    <i class="bi bi-bag-heart"></i> <strong>蝦皮小舖</strong>（2027/1/7 起開通）：金流與系統處理費 2.5%；成交手續費依一般賣家費率，每月前 5 筆訂單免收；免收促銷檔期手續費、預購訂單服務費；不能參加免運及進階賣家專案。
+                                    <a href="https://seller.shopee.tw/edu/article/28779" target="_blank" class="text-decoration-none">詳情</a>
                                 </div>
                             </div>
                         </div>
@@ -298,19 +314,25 @@
                                     </button>
                                 </div>
                                 <small class="text-muted">
-                                    依照分類不同而手續費不同
-                                    <a href="https://seller.shopee.tw/edu/article/26470" target="_blank"
+                                    依照分類不同而手續費不同（12/11 新版費率）
+                                    <a href="https://seller.shopee.tw/edu/article/28804" target="_blank"
                                         class="text-decoration-none">
                                         <i class="bi bi-info-circle"></i> 詳情
                                     </a>
                                 </small>
+                                <div class="form-check mt-1 only-for-shop" style="display: none;">
+                                    <input class="form-check-input" type="checkbox" id="shopFirstFive">
+                                    <label class="form-check-label small" for="shopFirstFive">
+                                        本月前 5 筆訂單（免收成交手續費）
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Advanced Settings Section -->
                         <div class="advanced-settings rounded p-4 mt-4 border border-light-subtle">
                             <!-- Pre-order Setting -->
-                            <div class="row">
+                            <div class="row not-for-shop">
                                 <div class="col-12">
                                     <label class="form-label">
                                         <i class="bi bi-clock-history"></i> 預購訂單(較長備貨)
@@ -324,20 +346,27 @@
                                             </label>
                                         </div>
                                         <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="preOrder" id="preOrder2"
+                                                value="2">
+                                            <label class="form-check-label" for="preOrder2">
+                                                備貨 2 天 (2%)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
                                             <input class="form-check-input" type="radio" name="preOrder" id="isPreOrder"
                                                 value="3">
                                             <label class="form-check-label" for="isPreOrder">
-                                                是 (3%)
+                                                備貨 3 天以上 (3%)
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <hr class="my-3 text-secondary opacity-25">
+                            <hr class="my-3 text-secondary opacity-25 not-for-shop">
 
                             <!-- Shopee Coins Cashback Program -->
-                            <div class="row">
+                            <div class="row not-for-shop">
                                 <div class="col-12">
                                     <label class="form-label">
                                         <i class="bi bi-coin"></i> 蝦幣回饋方案
@@ -369,15 +398,37 @@
                                             <label class="form-check-label" for="cashback10">
                                                 10%蝦幣回饋方案 (2.5%)
                                                 <i class="bi bi-info-circle text-muted" data-bs-toggle="tooltip"
-                                                    data-bs-placement="top" title="原為3%，因同時參加免運活動，可折抵0.5%"
+                                                    data-bs-placement="top" title="原為3%，因同時參加免運及進階賣家專案，可減免0.5%"
                                                     style="cursor: help;"></i>
                                             </label>
                                         </div>
                                     </div>
+                                    <div id="cashbackTermOptions" style="display: none;">
+                                    <div class="d-flex flex-column flex-md-row gap-3 mt-2 ps-3 border-start">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="cashbackTerm"
+                                                id="cashbackLong" value="long" checked>
+                                            <label class="form-check-label" for="cashbackLong">
+                                                長期活動（促銷檔期免加收）
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="cashbackTerm"
+                                                id="cashbackShort" value="short">
+                                            <label class="form-check-label" for="cashbackShort">
+                                                短期活動（促銷檔期仍加收）
+                                                <i class="bi bi-info-circle text-muted" data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    title="12/11 起只參加短期蝦幣回饋活動的賣家，促銷檔期仍須加收促銷檔期手續費（一般 +4%、商城 +5%）。可於 12/8 23:59 前申請轉為長期。"
+                                                    style="cursor: help;"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <hr class="my-3 text-secondary opacity-25">
+                            <hr class="my-3 text-secondary opacity-25 not-for-shop">
 
                             <!-- Tax Setting -->
                             <div class="row">
@@ -520,31 +571,25 @@
                     </div>
 
                     <!-- Event Day Info -->
-                    <div class="event-info" id="events">
+                    <div class="event-info not-for-shop" id="events">
                         <h6 style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#eventDayDetails"
                             aria-expanded="false" aria-controls="eventDayDetails">
-                            <i class="bi bi-calendar-event"></i> <strong>2026年促銷檔期（手續費2%）</strong>
+                            <i class="bi bi-calendar-event"></i> <strong>促銷檔期（一般 +4%／商城 +5%）</strong>
                             <i class="bi bi-chevron-down float-end"></i>
                         </h6>
                         <div class="collapse" id="eventDayDetails">
+                            <p class="small mb-2">未參加蝦幣回饋或只參加<strong>短期</strong>蝦幣回饋，促銷檔期當天成交手續費加收；參加<strong>長期</strong>蝦幣回饋免加收。</p>
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     <ul class="mb-0">
-                                        <li>一月：1/11-1/12；1/18；1/25</li>
-                                        <li>二月：2/2-2/3；2/18；2/25</li>
-                                        <li>三月：3/3-3/4；3/18；3/25</li>
-                                        <li>四月：4/4；4/18-4/19；4/25</li>
-                                        <li>五月：5/5-5/6；5/18；5/25</li>
-                                        <li>六月：6/6；6/18-6/19；6/25</li>
+                                        <li>2026 十二月：12/11；12/12；12/17；12/18；12/25<br><small class="text-muted">（12/1 仍適用舊費率）</small></li>
+                                        <li>2027 一月：1/1；1/10；1/11；1/17；1/18；1/25</li>
                                     </ul>
                                 </div>
                                 <div class="col-md-6">
                                     <ul class="mb-0">
-                                        <li>七月：7/7-7/8；7/18；7/25</li>
-                                        <li>八月：8/8-8/9；8/18；8/25</li>
-                                        <li>九月：9/9-9/10；9/18；9/25</li>
-                                        <li>十月：10/1；10/10；10/18；10/25</li>
-                                        <li>十一月：11/1；11/11；11/18；11/25</li>
+                                        <li>2027 二月：2/1；2/2；2/17；2/18；2/25</li>
+                                        <li>2027 三月：3/1；3/2；3/3；3/17；3/18；3/25</li>
                                     </ul>
                                 </div>
                             </div>
@@ -554,6 +599,7 @@
                                     class="btn btn-sm btn-warning fw-bold text-dark" target="_blank">
                                     <i class="bi bi-calendar-plus"></i> 訂閱活動日行事曆
                                 </a>
+                                <div class="small mt-2"><a href="events.html" class="text-decoration-none">完整促銷檔期行事曆與手續費說明 <i class="bi bi-arrow-right"></i></a></div>
                                 <div id="calendarGoogleBox" class="d-none">
                                     <a href="https://calendar.google.com/calendar/render?cid=webcal%3A%2F%2Fp39-caldav.icloud.com%2Fpublished%2F2%2FODEyNzcxNTEzMzgxMjc3McUGBC3fUHVRi6-Ah4xGQymiQBXbg98Y3YkR3E22KPH1TccpJUKoCrtTPu50R2xcHbmP9A4Xamp-o0x0HDoIETI"
                                         class="btn btn-sm btn-warning fw-bold text-dark" target="_blank" rel="noopener">
@@ -578,9 +624,9 @@
                     <!-- Results Section -->
                     <div class="row">
                         <!-- Regular Day + Shipping Option 1 -->
-                        <div class="col-md-6 col-lg-6">
+                        <div class="col-md-6 col-lg-6" id="card-regular-ship1">
                             <div class="result-card regular">
-                                <h5><i class="bi bi-calendar-check"></i> 一般日 + 免運方案一 (6%)</h5>
+                                <h5 id="regular-ship1-title"><i class="bi bi-calendar-check"></i> 一般日 + 免運方案一 (6%)</h5>
                                 <div class="fee-item suggested-price-row" style="display: none;">
                                     <span class="fee-label fw-bold text-primary">建議售價</span>
                                     <span class="fee-value fw-bold text-primary" id="regular-ship1-suggested-price">$
@@ -612,11 +658,11 @@
                                             <span class="fee-value" id="regular-ship1-payment">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="regular-ship1-preorder-row" style="display: none;">
-                                            <span>預購訂單手續費 (3%)</span>
+                                            <span id="regular-ship1-preorder-label">預購訂單服務費 (3%)</span>
                                             <span class="fee-value" id="regular-ship1-preorder">$ 0</span>
                                         </div>
-                                        <div class="fee-subitem">
-                                            <span id="regular-ship1-shipping-label">免運手續費 (6%)</span>
+                                        <div class="fee-subitem" id="regular-ship1-shipping-row">
+                                            <span id="regular-ship1-shipping-label">免運活動服務費 (6.5%)</span>
                                             <span class="fee-value" id="regular-ship1-shipping">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="regular-ship1-cashback-row" style="display: none;">
@@ -679,9 +725,9 @@
                         </div>
 
                         <!-- Regular Day + Shipping Option 2 -->
-                        <div class="col-md-6 col-lg-6">
+                        <div class="col-md-6 col-lg-6" id="card-regular-ship2">
                             <div class="result-card regular">
-                                <h5><i class="bi bi-calendar-check"></i> 一般日 + 免運方案二</h5>
+                                <h5 id="regular-ship2-title"><i class="bi bi-calendar-check"></i> 一般日 + 免運方案二</h5>
                                 <div class="fee-item suggested-price-row" style="display: none;">
                                     <span class="fee-label fw-bold text-primary">建議售價</span>
                                     <span class="fee-value fw-bold text-primary" id="regular-ship2-suggested-price">$
@@ -713,11 +759,11 @@
                                             <span class="fee-value" id="regular-ship2-payment">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="regular-ship2-preorder-row" style="display: none;">
-                                            <span>預購訂單手續費 (3%)</span>
+                                            <span id="regular-ship2-preorder-label">預購訂單服務費 (3%)</span>
                                             <span class="fee-value" id="regular-ship2-preorder">$ 0</span>
                                         </div>
-                                        <div class="fee-subitem">
-                                             <span id="regular-ship2-shipping-label">免運手續費 (+60元)</span>
+                                        <div class="fee-subitem" id="regular-ship2-shipping-row">
+                                             <span id="regular-ship2-shipping-label">免運活動服務費 (+65元)</span>
                                              <span class="fee-value" id="regular-ship2-shipping">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="regular-ship2-cashback-row" style="display: none;">
@@ -780,9 +826,9 @@
                         </div>
 
                         <!-- Event Day + Shipping Option 1 -->
-                        <div class="col-md-6 col-lg-6">
+                        <div class="col-md-6 col-lg-6" id="card-event-ship1">
                             <div class="result-card event">
-                                <h5><i class="bi bi-star-fill"></i> 活動日 + 免運方案一 (6%)</h5>
+                                <h5 id="event-ship1-title"><i class="bi bi-star-fill"></i> 活動日 + 免運方案一 (6%)</h5>
                                 <div class="fee-item suggested-price-row" style="display: none;">
                                     <span class="fee-label fw-bold text-primary">建議售價</span>
                                     <span class="fee-value fw-bold text-primary" id="event-ship1-suggested-price">$
@@ -814,11 +860,11 @@
                                             <span class="fee-value" id="event-ship1-payment">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="event-ship1-preorder-row" style="display: none;">
-                                            <span>預購訂單手續費 (3%)</span>
+                                            <span id="event-ship1-preorder-label">預購訂單服務費 (3%)</span>
                                             <span class="fee-value" id="event-ship1-preorder">$ 0</span>
                                         </div>
-                                        <div class="fee-subitem">
-                                            <span id="event-ship1-shipping-label">免運手續費 (6%)</span>
+                                        <div class="fee-subitem" id="event-ship1-shipping-row">
+                                            <span id="event-ship1-shipping-label">免運活動服務費 (6.5%)</span>
                                             <span class="fee-value" id="event-ship1-shipping">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="event-ship1-cashback-row" style="display: none;">
@@ -879,9 +925,9 @@
                         </div>
 
                         <!-- Event Day + Shipping Option 2 -->
-                        <div class="col-md-6 col-lg-6">
+                        <div class="col-md-6 col-lg-6" id="card-event-ship2">
                             <div class="result-card event">
-                                <h5><i class="bi bi-star-fill"></i> 活動日 + 免運方案二</h5>
+                                <h5 id="event-ship2-title"><i class="bi bi-star-fill"></i> 活動日 + 免運方案二</h5>
                                 <div class="fee-item suggested-price-row" style="display: none;">
                                     <span class="fee-label fw-bold text-primary">建議售價</span>
                                     <span class="fee-value fw-bold text-primary" id="event-ship2-suggested-price">$
@@ -913,11 +959,11 @@
                                             <span class="fee-value" id="event-ship2-payment">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="event-ship2-preorder-row" style="display: none;">
-                                            <span>預購訂單手續費 (3%)</span>
+                                            <span id="event-ship2-preorder-label">預購訂單服務費 (3%)</span>
                                             <span class="fee-value" id="event-ship2-preorder">$ 0</span>
                                         </div>
-                                        <div class="fee-subitem">
-                                             <span id="event-ship2-shipping-label">免運手續費 (+60元)</span>
+                                        <div class="fee-subitem" id="event-ship2-shipping-row">
+                                             <span id="event-ship2-shipping-label">免運活動服務費 (+65元)</span>
                                              <span class="fee-value" id="event-ship2-shipping">$ 0</span>
                                         </div>
                                         <div class="fee-subitem" id="event-ship2-cashback-row" style="display: none;">
@@ -1021,10 +1067,10 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
+                                            <tr id="summary-row-regular-ship1">
                                                 <td class="text-start ps-3">
-                                                    <span class="badge bg-primary me-2">一般日</span>
-                                                    <span class="d-inline-block">免運方案一</span>
+                                                    <span class="badge bg-primary me-2 not-for-shop">一般日</span>
+                                                    <span class="d-inline-block" id="summary-regular-ship1-label">免運方案一</span>
                                                 </td>
                                                 <td class="fw-bold text-primary text-nowrap suggested-price-column"
                                                     style="display: none;" id="summary-regular-ship1-suggested">$ 0</td>
@@ -1037,10 +1083,10 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                                                 <td class="text-muted text-nowrap" id="summary-regular-ship1-margin">0%
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr id="summary-row-regular-ship2">
                                                 <td class="text-start ps-3">
-                                                    <span class="badge bg-primary me-2">一般日</span>
-                                                    <span class="d-inline-block">免運方案二</span>
+                                                    <span class="badge bg-primary me-2 not-for-shop">一般日</span>
+                                                    <span class="d-inline-block" id="summary-regular-ship2-label">免運方案二</span>
                                                 </td>
                                                 <td class="fw-bold text-primary text-nowrap suggested-price-column"
                                                     style="display: none;" id="summary-regular-ship2-suggested">$ 0</td>
@@ -1053,10 +1099,10 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                                                 <td class="text-muted text-nowrap" id="summary-regular-ship2-margin">0%
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr id="summary-row-event-ship1">
                                                 <td class="text-start ps-3">
-                                                    <span class="badge bg-warning text-dark me-2">活動日</span>
-                                                    <span class="d-inline-block">免運方案一</span>
+                                                    <span class="badge bg-warning text-dark me-2">促銷檔期</span>
+                                                    <span class="d-inline-block" id="summary-event-ship1-label">免運方案一</span>
                                                 </td>
                                                 <td class="fw-bold text-primary text-nowrap suggested-price-column"
                                                     style="display: none;" id="summary-event-ship1-suggested">$ 0</td>
@@ -1069,10 +1115,10 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                                                 <td class="text-muted text-nowrap" id="summary-event-ship1-margin">0%
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr id="summary-row-event-ship2">
                                                 <td class="text-start ps-3">
-                                                    <span class="badge bg-warning text-dark me-2">活動日</span>
-                                                    <span class="d-inline-block">免運方案二</span>
+                                                    <span class="badge bg-warning text-dark me-2">促銷檔期</span>
+                                                    <span class="d-inline-block" id="summary-event-ship2-label">免運方案二</span>
                                                 </td>
                                                 <td class="fw-bold text-primary text-nowrap suggested-price-column"
                                                     style="display: none;" id="summary-event-ship2-suggested">$ 0</td>
@@ -1088,6 +1134,7 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="small text-body-secondary px-3 py-2 border-top" id="oldCompareNote"></div>
                             </div>
                         </div>
                     </div>
@@ -1119,7 +1166,8 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                     <!-- Disclaimer Note -->
                     <div class="text-center text-muted mt-4">
                         <small class="d-block">💡 此計算機僅供參考，實際以蝦皮官方公告為準。</small>
-                        <small class="d-block" id="transactionFeeNote">成交手續費:一般賣家成交金額最高 NT$35,000 為上限計算,商城賣家無上限。</small>
+                        <small class="d-block" id="transactionFeeNote">成交手續費：一般賣家（含蝦皮小舖）單件成交金額最高 NT$35,000 為上限計算，商城賣家無上限。</small>
+                        <small class="d-block">費率依蝦皮 2026/11/13 公告，適用 2026/12/11 00:00 起成立之訂單。</small>
                     </div>
                 </div>
 
@@ -1166,6 +1214,10 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                                 <a href="faq.html" class="link-secondary">常見問題</a>
                                 <span class="text-secondary mx-1">·</span>
                                 <a href="faq.html#install" class="link-secondary">加入手機主畫面</a>
+                                <span class="text-secondary mx-1">·</span>
+                                <a href="events.html" class="link-secondary">促銷檔期行事曆</a>
+                                <span class="text-secondary mx-1">·</span>
+                                <a href="old.html" class="link-secondary">舊制計算機</a>
                             </div>
                             <!-- Line 2: License Text -->
                             <div class="text-center text-secondary small mb-2">
@@ -1175,7 +1227,7 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                             </div>
                             <!-- Line 3: Version -->
                             <div class="text-center text-muted small opacity-50">
-                                v1.1.11
+                                v1.2.0
                             </div>
                         </div>
 
@@ -1205,6 +1257,10 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                                 <a href="faq.html" class="link-secondary">常見問題</a>
                                 <span class="text-secondary mx-1">·</span>
                                 <a href="faq.html#install" class="link-secondary">加入手機主畫面</a>
+                                <span class="text-secondary mx-1">·</span>
+                                <a href="events.html" class="link-secondary">促銷檔期行事曆</a>
+                                <span class="text-secondary mx-1">·</span>
+                                <a href="old.html" class="link-secondary">舊制計算機</a>
                             </div>
                             <!-- Author -->
                             <div class="text-secondary small mb-3">
@@ -1227,7 +1283,7 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                             </div>
                             <!-- Version -->
                             <div class="text-muted small opacity-50">
-                                v1.1.11
+                                v1.2.0
                             </div>
                         </div>
                     </div>
@@ -1272,11 +1328,12 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="feeUpdateModalLabel"><i class="bi bi-megaphone-fill text-danger"></i> 蝦皮 12/11 起費用調整</h5>
+                    <h5 class="modal-title" id="feeUpdateModalLabel"><i class="bi bi-megaphone-fill text-danger"></i> 計算機已改為 12/11 新制</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="small text-muted mb-3">蝦皮公告自 <strong>2026/12/11 00:00</strong> 起成立的訂單適用新費率，12/10 以前成立的訂單仍是現行費率。</p>
+                    <p class="small mb-2">首頁計算機已改為 <strong>2026/12/11 00:00</strong> 起成立訂單適用的新制費率。<strong>12/10（含）以前成立的訂單</strong>請改用舊制計算機。</p>
+                    <p class="small text-muted mb-2">新制主要調整：</p>
                     <ul class="small ps-3">
                         <li class="mb-2"><strong>成交手續費依品類調整</strong>：分類細分到第三、四層，各品類調幅不同，部分調降。</li>
                         <li class="mb-2"><strong>促銷檔期加收</strong>：一般賣家 +2% → <strong>+4%</strong>、商城 +3% → <strong>+5%</strong>；參加長期蝦幣回饋免收，只參加短期仍要加收。</li>
@@ -1292,8 +1349,8 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">繼續用現行費率</button>
-                    <a href="new.html" class="btn btn-danger new-version-link">前往 12/11 新制計算機 <i class="bi bi-arrow-right"></i></a>
+                    <a href="old.html" class="btn btn-outline-secondary" data-carry-query><i class="bi bi-clock-history"></i> 前往舊制計算機</a>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">使用新制計算機</button>
                 </div>
             </div>
         </div>
@@ -1333,11 +1390,11 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="calculator.js?20261113e"></script>
-    <script src="fee-lookup.js?20260107"></script>
-    <script src="storage.js?20261113d"></script>
-    <script src="announcement.js?20261116"></script>
-    <script src="site.js?20261116"></script>
+    <script src="calculator-new.js?20261116"></script>
+    <script src="fee-lookup-new.js?20261113c"></script>
+    <script src="storage-new.js?20261116"></script>
+    <script src="announcement.js?20261116b"></script>
+    <script src="site.js?20261116b"></script>
 </body>
 
 </html>

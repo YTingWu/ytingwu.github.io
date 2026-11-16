@@ -14,28 +14,34 @@ const CHECK = process.argv.includes('--check');
 const ACTIVE = 'active" aria-current="page';
 
 const MODAL_BTN_CLOSE = '<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>';
-const MODAL_BTN_KEEP = '<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">繼續用現行費率</button>';
-const MODAL_BTN_GO_NEW = '<a href="new.html" class="btn btn-danger new-version-link">前往 12/11 新制計算機 <i class="bi bi-arrow-right"></i></a>';
+const MODAL_BTN_USE_NEW = '<button type="button" class="btn btn-danger" data-bs-dismiss="modal">使用新制計算機</button>';
+const MODAL_BTN_GO_OLD = '<a href="old.html" class="btn btn-outline-secondary" data-carry-query><i class="bi bi-clock-history"></i> 前往舊制計算機</a>';
+const MODAL_BTN_GO_NEW = '<a href="./" class="btn btn-danger" data-carry-query>前往新制計算機 <i class="bi bi-arrow-right"></i></a>';
+
+const NAV = { active_index: '', active_old: '', active_faq: '', active_events: '' };
 
 // 每頁的變數。新增頁面時在這裡加一筆，並在 HTML 放好 include 標記。
+// new.html 是轉址頁（永久保留），不在這裡。
 const PAGES = {
     'index.html': {
-        active_index: ACTIVE, active_new: '', active_faq: '',
-        events_href: '#events',
+        ...NAV, active_index: ACTIVE,
         modal_autoshow: 'true',
-        modal_buttons: `${MODAL_BTN_KEEP}\n                    ${MODAL_BTN_GO_NEW}`,
+        modal_buttons: `${MODAL_BTN_GO_OLD}\n                    ${MODAL_BTN_USE_NEW}`,
     },
-    'new.html': {
-        active_index: '', active_new: ACTIVE, active_faq: '',
-        events_href: '#events',
-        modal_autoshow: 'false',
-        modal_buttons: MODAL_BTN_CLOSE,
-    },
-    'faq.html': {
-        active_index: '', active_new: '', active_faq: ACTIVE,
-        events_href: 'index.html#events',
+    'old.html': {
+        ...NAV, active_old: ACTIVE,
         modal_autoshow: 'false',
         modal_buttons: `${MODAL_BTN_CLOSE}\n                    ${MODAL_BTN_GO_NEW}`,
+    },
+    'faq.html': {
+        ...NAV, active_faq: ACTIVE,
+        modal_autoshow: 'false',
+        modal_buttons: `${MODAL_BTN_GO_OLD}\n                    ${MODAL_BTN_CLOSE}`,
+    },
+    'events.html': {
+        ...NAV, active_events: ACTIVE,
+        modal_autoshow: 'false',
+        modal_buttons: `${MODAL_BTN_GO_OLD}\n                    ${MODAL_BTN_CLOSE}`,
     },
 };
 

@@ -997,3 +997,79 @@ body.toggled #sidebar-overlay {
 .faq-item .nav-tabs {
     border-color: var(--border-color);
 }
+
+/* --- Events page (促銷檔期行事曆) --- */
+.promo-subscribe {
+    background: var(--event-bg);
+    color: var(--event-text);
+    border-radius: 16px;
+    padding: 20px;
+}
+.promo-subscribe .text-muted {
+    color: var(--event-text) !important;
+    opacity: 0.8;
+}
+.promo-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    color: var(--text-secondary);
+}
+.promo-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: 0;
+}
+.promo-dot-old { background: var(--secondary); }
+.promo-dot-new { background: var(--danger); }
+.promo-month {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+.promo-month h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 10px;
+}
+.promo-days {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.promo-day {
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+.promo-day-new {
+    background: rgba(231, 74, 59, 0.12);
+    border-color: rgba(231, 74, 59, 0.35);
+    color: var(--danger);
+}
+.promo-day-old {
+    background: var(--bg-input-group);
+    color: var(--text-main);
+}
+.promo-day-week {
+    font-weight: 400;
+    font-size: 0.85em;
+}
+.promo-day.is-past {
+    opacity: 0.4;
+    text-decoration: line-through;
+}
+.promo-day.is-today {
+    outline: 2px solid var(--warning);
+    outline-offset: 1px;
+}

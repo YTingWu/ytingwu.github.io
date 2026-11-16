@@ -9,7 +9,7 @@ const SAVE_BTN_ID = 'saveConfigBtn';
 
 let savedConfigs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 
-// 現行頁（index.html）與 12/11 新制頁（new.html）共用同一份儲存列表。
+// 新制首頁（index.html）與舊制頁（old.html）共用同一份儲存列表。
 // 寫入前重新讀取，避免兩個分頁各自持有舊陣列而互相覆蓋。
 const RATES_TAG = 'current';
 function reloadSavedConfigs() {
@@ -296,7 +296,7 @@ function loadConfig(id) {
     showToast('已載入設定: ' + escapeHtml(config.title));
     const savedRates = config.rates === 'new' ? 'new' : 'current';
     if (savedRates !== RATES_TAG) {
-        showToast('此設定是用 12/11 新制存的，現行頁沒有的選項（蝦皮小舖、備貨 2 天、長短期蝦幣回饋等）已改用最接近的設定');
+        showToast('此設定是用 12/11 新制存的，舊制頁沒有的選項（蝦皮小舖、備貨 2 天、長短期蝦幣回饋等）已改用最接近的設定');
     }
 }
 
@@ -460,7 +460,7 @@ function renderSidebar() {
                     <span class="config-title">${escapeHtml(config.title)}</span>
                     ${config.rates === 'new'
                         ? '<span class="badge text-bg-danger ms-1 align-middle">12/11 新制</span>'
-                        : '<span class="badge text-bg-secondary ms-1 align-middle">現行</span>'}
+                        : '<span class="badge text-bg-secondary ms-1 align-middle">舊制</span>'}
                     <div class="config-details">
                         <span>${escapeHtml(config.summary)}</span>
                         <span class="mx-1">•</span>
