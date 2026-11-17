@@ -22,6 +22,26 @@
     // 其他分頁切換時同步
     window.addEventListener('storage', e => { if (e.key === 'theme') applyTheme(readTheme()); });
 
+    // 置頂 header 的高度給其他固定元素用（計算機頁的懸浮摘要列要接在 header 下方）
+    const siteHeader = document.querySelector('.site-header');
+    if (siteHeader) {
+        const setHeaderH = () => root.style.setProperty('--site-header-h', siteHeader.offsetHeight + 'px');
+        // 懸浮摘要列只蓋住內容區，不要壓到左邊的側邊欄
+        const content = document.getElementById('page-content-wrapper');
+        const update = () => {
+            setHeaderH();
+            if (content) root.style.setProperty('--content-left', content.getBoundingClientRect().left + 'px');
+        };
+        update();
+        if (typeof ResizeObserver !== 'undefined') {
+            const ro = new ResizeObserver(update);
+            ro.observe(siteHeader);
+            if (content) ro.observe(content);
+        } else {
+            window.addEventListener('resize', update);
+        }
+    }
+
     if (typeof bootstrap === 'undefined') return;
 
     // 手機選單：點了導覽連結就收起來

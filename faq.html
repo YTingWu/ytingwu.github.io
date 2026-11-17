@@ -106,48 +106,52 @@
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="style.css?v=20261116f">
+    <link rel="stylesheet" href="css/style.css?v=20261117d">
 </head>
 
 <body>
+    <!-- include:header -->
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg site-nav" aria-label="網站導覽">
+            <div class="container-fluid site-nav-inner">
+                <a class="navbar-brand site-brand" href="./">
+                    <img src="favicon.svg" alt="" width="28" height="28"> 蝦皮手續費計算機
+                </a>
+                <div class="d-flex align-items-center gap-1 order-lg-last">
+                    <button type="button" class="btn btn-link site-nav-icon" id="announcementBtn"
+                        title="12/11 新制公告" aria-label="12/11 新制公告">
+                        <i class="bi bi-megaphone-fill fs-5 text-danger"></i>
+                    </button>
+                    <button type="button" class="btn btn-link site-nav-icon" id="themeToggle"
+                        title="切換深色模式" aria-label="切換深色模式">
+                        <i class="bi bi-moon-fill fs-5" id="themeIcon"></i>
+                    </button>
+                    <button class="navbar-toggler site-nav-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#siteNavLinks" aria-controls="siteNavLinks" aria-expanded="false"
+                        aria-label="開啟選單">
+                        <i class="bi bi-list fs-3"></i>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="siteNavLinks">
+                    <ul class="navbar-nav ms-lg-auto">
+                        <li class="nav-item"><a class="nav-link " href="./"><i class="bi bi-calculator"></i> 快速計算(12/11新制)</a></li>
+                        <li class="nav-item"><a class="nav-link " href="shop.html"><i class="bi bi-shop"></i> 賣場總覽</a></li>
+                        <li class="nav-item"><a class="nav-link " href="old.html" data-carry-query><i class="bi bi-clock-history"></i> 舊制</a></li>
+                        <li class="nav-item"><a class="nav-link " href="articles.html"><i class="bi bi-journal-text"></i> 文章</a></li>
+                        <li class="nav-item"><a class="nav-link " href="events.html"><i class="bi bi-calendar-event"></i> 活動日行事曆</a></li>
+                        <li class="nav-item"><a class="nav-link" href="faq.html#install"><i class="bi bi-phone"></i> 加入主畫面</a></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="faq.html"><i class="bi bi-question-circle"></i> 常見問題</a></li>
+                        <li class="nav-item"><a class="nav-link " href="sponsor.html"><i class="bi bi-heart"></i> 贊助</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!-- /include:header -->
+
     <div id="wrapper">
         <div id="page-content-wrapper">
             <div class="container">
-                <!-- include:header -->
-                <nav class="navbar navbar-expand-lg site-nav" aria-label="網站導覽">
-                    <div class="container-fluid px-0">
-                        <a class="navbar-brand site-brand" href="./">
-                            <img src="favicon.svg" alt="" width="28" height="28"> 蝦皮手續費計算機
-                        </a>
-                        <div class="d-flex align-items-center gap-1 order-lg-last">
-                            <button type="button" class="btn btn-link site-nav-icon" id="announcementBtn"
-                                title="12/11 新制公告" aria-label="12/11 新制公告">
-                                <i class="bi bi-megaphone-fill fs-5 text-danger"></i>
-                            </button>
-                            <button type="button" class="btn btn-link site-nav-icon" id="themeToggle"
-                                title="切換深色模式" aria-label="切換深色模式">
-                                <i class="bi bi-moon-fill fs-5" id="themeIcon"></i>
-                            </button>
-                            <button class="navbar-toggler site-nav-toggler" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#siteNavLinks" aria-controls="siteNavLinks" aria-expanded="false"
-                                aria-label="開啟選單">
-                                <i class="bi bi-list fs-3"></i>
-                            </button>
-                        </div>
-                        <div class="collapse navbar-collapse" id="siteNavLinks">
-                            <ul class="navbar-nav ms-lg-auto">
-                                <li class="nav-item"><a class="nav-link " href="./"><i class="bi bi-calculator"></i> 快速計算(12/11新制)</a></li>
-                                <li class="nav-item"><a class="nav-link " href="old.html" data-carry-query><i class="bi bi-clock-history"></i> 舊制</a></li>
-                                <li class="nav-item"><a class="nav-link " href="articles.html"><i class="bi bi-journal-text"></i> 文章</a></li>
-                                <li class="nav-item"><a class="nav-link " href="events.html"><i class="bi bi-calendar-event"></i> 活動日行事曆</a></li>
-                                <li class="nav-item"><a class="nav-link" href="faq.html#install"><i class="bi bi-phone"></i> 加入主畫面</a></li>
-                                <li class="nav-item"><a class="nav-link active" aria-current="page" href="faq.html"><i class="bi bi-question-circle"></i> 常見問題</a></li>
-                                <li class="nav-item"><a class="nav-link " href="sponsor.html"><i class="bi bi-heart"></i> 贊助</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-                <!-- /include:header -->
                 <main class="main-container">
                     <div class="header mb-4">
                         <h1><i class="bi bi-question-circle"></i> 常見問題</h1>
@@ -301,135 +305,108 @@
                         <a href="https://seller.shopee.tw/edu/article/18733" target="_blank" rel="noopener">蝦皮賣家幫助中心「免運及進階賣家專案」</a>（2026/11/13 版），實際規則以蝦皮公告為準。
                     </p>
                 </main>
-                <!-- include:footer -->
-                <footer class="mt-5 pt-4 pb-4 border-top">
-                    <div class="footer-wrapper">
-                        <!-- Desktop View -->
-                        <div class="d-none d-md-block">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <!-- Left: Social Links -->
-                                <div class="d-flex gap-3 fs-5">
-                                    <a href="https://www.instagram.com/bruce_baseball_" target="_blank"
-                                        class="text-decoration-none link-secondary" title="Instagram">
-                                        <i class="bi bi-instagram"></i>
-                                    </a>
-                                    <a href="https://www.threads.com/@bruce_baseball_" target="_blank"
-                                        class="text-decoration-none link-secondary" title="Threads">
-                                        <i class="bi bi-threads"></i>
-                                    </a>
-                                    <a href="https://github.com/YTingWu/shopee-fee" target="_blank"
-                                        class="text-decoration-none link-secondary" title="GitHub">
-                                        <i class="bi bi-github"></i>
-                                    </a>
-                                    <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
-                                        class="text-decoration-none link-secondary" title="Bruce Wu">
-                                        <i class="bi bi-person-badge-fill"></i>
-                                    </a>
-                                </div>
-                                <!-- Middle: Author -->
-                                <div class="text-secondary small">
-                                    本工具由 <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
-                                        class="text-secondary text-decoration-underline"><strong>Bruce Wu</strong></a>
-                                    設計、開發與維護
-                                </div>
-                                <!-- Right: CC Icon -->
-                                <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
-                                    target="_blank">
-                                    <img alt="創用 CC 授權條款" style="border-width:0"
-                                        src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" height="28" />
-                                </a>
-                            </div>
-                            <!-- Site Links -->
-                            <div class="text-center small mb-2 footer-links">
-                                <a href="faq.html" class="link-secondary">常見問題</a>
-                                <span class="text-secondary mx-1">·</span>
-                                <a href="faq.html#install" class="link-secondary">加入手機主畫面</a>
-                                <span class="text-secondary mx-1">·</span>
-                                <a href="events.html" class="link-secondary">促銷檔期行事曆</a>
-                                <span class="text-secondary mx-1">·</span>
-                                <a href="articles.html" class="link-secondary">文章</a>
-                                <span class="text-secondary mx-1">·</span>
-                                <a href="old.html" class="link-secondary">舊制計算機</a>
-                                <span class="text-secondary mx-1">·</span>
-                                <a href="sponsor.html" class="link-secondary">贊助</a>
-                            </div>
-                            <!-- Line 2: License Text -->
-                            <div class="text-center text-secondary small mb-2">
-                                採用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
-                                    class="text-secondary text-decoration-underline" target="_blank">創用 CC
-                                    姓名標示-非商業性-禁止改作 4.0 國際 授權條款</a> 授權
-                            </div>
-                            <!-- Line 3: Version -->
-                            <div class="text-center text-muted small opacity-50">
-                                v1.2.0
-                            </div>
-                        </div>
-
-                        <!-- Mobile View -->
-                        <div class="d-md-none text-center">
-                            <!-- Social Links -->
-                            <div class="d-flex justify-content-center gap-4 mb-3 fs-4">
-                                <a href="https://www.instagram.com/bruce_baseball_" target="_blank"
-                                    class="text-decoration-none link-secondary" title="Instagram">
-                                    <i class="bi bi-instagram"></i>
-                                </a>
-                                <a href="https://www.threads.com/@bruce_baseball_" target="_blank"
-                                    class="text-decoration-none link-secondary" title="Threads">
-                                    <i class="bi bi-threads"></i>
-                                </a>
-                                <a href="https://github.com/YTingWu/shopee-fee" target="_blank"
-                                    class="text-decoration-none link-secondary" title="GitHub">
-                                    <i class="bi bi-github"></i>
-                                </a>
-                                <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
-                                    class="text-decoration-none link-secondary" title="Bruce Wu">
-                                    <i class="bi bi-person-badge-fill"></i>
-                                </a>
-                            </div>
-                            <!-- Site Links -->
-                            <div class="small mb-3 footer-links">
-                                <a href="faq.html" class="link-secondary">常見問題</a>
-                                <span class="text-secondary mx-1">·</span>
-                                <a href="faq.html#install" class="link-secondary">加入手機主畫面</a>
-                                <span class="text-secondary mx-1">·</span>
-                                <a href="events.html" class="link-secondary">促銷檔期行事曆</a>
-                                <span class="text-secondary mx-1">·</span>
-                                <a href="articles.html" class="link-secondary">文章</a>
-                                <span class="text-secondary mx-1">·</span>
-                                <a href="old.html" class="link-secondary">舊制計算機</a>
-                                <span class="text-secondary mx-1">·</span>
-                                <a href="sponsor.html" class="link-secondary">贊助</a>
-                            </div>
-                            <!-- Author -->
-                            <div class="text-secondary small mb-3">
-                                本工具由 <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
-                                    class="text-secondary text-decoration-underline"><strong>Bruce Wu</strong></a>
-                                設計、開發與維護
-                            </div>
-                            <!-- CC Icon & License -->
-                            <div class="mb-3">
-                                <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
-                                    target="_blank" class="d-inline-block mb-2">
-                                    <img alt="創用 CC 授權條款" style="border-width:0"
-                                        src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" />
-                                </a>
-                                <div class="text-secondary small px-2">
-                                    採用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
-                                        class="text-secondary text-decoration-underline" target="_blank">創用 CC
-                                        姓名標示-非商業性-禁止改作 4.0 國際 授權條款</a> 授權
-                                </div>
-                            </div>
-                            <!-- Version -->
-                            <div class="text-muted small opacity-50">
-                                v1.2.0
-                            </div>
-                        </div>
-                    </div>
-                </footer>
-                <!-- /include:footer -->
             </div>
         </div>
     </div>
+
+    <!-- include:footer -->
+    <footer class="site-footer">
+        <div class="footer-wrapper">
+            <!-- Desktop View -->
+            <div class="d-none d-md-block">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <!-- Left: Social Links -->
+                    <div class="d-flex gap-3 fs-5">
+                        <a href="https://www.instagram.com/bruce_baseball_" target="_blank"
+                            class="text-decoration-none link-secondary" title="Instagram">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.threads.com/@bruce_baseball_" target="_blank"
+                            class="text-decoration-none link-secondary" title="Threads">
+                            <i class="bi bi-threads"></i>
+                        </a>
+                        <a href="https://github.com/YTingWu/ytingwu.github.io" target="_blank"
+                            class="text-decoration-none link-secondary" title="GitHub">
+                            <i class="bi bi-github"></i>
+                        </a>
+                        <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
+                            class="text-decoration-none link-secondary" title="Bruce Wu">
+                            <i class="bi bi-person-badge-fill"></i>
+                        </a>
+                    </div>
+                    <!-- Middle: Author -->
+                    <div class="text-secondary small">
+                        本工具由 <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
+                            class="text-secondary text-decoration-underline"><strong>Bruce Wu</strong></a>
+                        設計、開發與維護
+                    </div>
+                    <!-- Right: CC Icon -->
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
+                        target="_blank">
+                        <img alt="創用 CC 授權條款" style="border-width:0"
+                            src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" height="28" />
+                    </a>
+                </div>
+                <!-- Line 2: License Text -->
+                <div class="text-center text-secondary small mb-2">
+                    採用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
+                        class="text-secondary text-decoration-underline" target="_blank">創用 CC
+                        姓名標示-非商業性-禁止改作 4.0 國際 授權條款</a> 授權
+                </div>
+                <!-- Line 3: Version -->
+                <div class="text-center text-muted small opacity-50">
+                    v1.2.0
+                </div>
+            </div>
+
+            <!-- Mobile View -->
+            <div class="d-md-none text-center">
+                <!-- Social Links -->
+                <div class="d-flex justify-content-center gap-4 mb-3 fs-4">
+                    <a href="https://www.instagram.com/bruce_baseball_" target="_blank"
+                        class="text-decoration-none link-secondary" title="Instagram">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                    <a href="https://www.threads.com/@bruce_baseball_" target="_blank"
+                        class="text-decoration-none link-secondary" title="Threads">
+                        <i class="bi bi-threads"></i>
+                    </a>
+                    <a href="https://github.com/YTingWu/ytingwu.github.io" target="_blank"
+                        class="text-decoration-none link-secondary" title="GitHub">
+                        <i class="bi bi-github"></i>
+                    </a>
+                    <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
+                        class="text-decoration-none link-secondary" title="Bruce Wu">
+                        <i class="bi bi-person-badge-fill"></i>
+                    </a>
+                </div>
+                <!-- Author -->
+                <div class="text-secondary small mb-3">
+                    本工具由 <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
+                        class="text-secondary text-decoration-underline"><strong>Bruce Wu</strong></a>
+                    設計、開發與維護
+                </div>
+                <!-- CC Icon & License -->
+                <div class="mb-3">
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
+                        target="_blank" class="d-inline-block mb-2">
+                        <img alt="創用 CC 授權條款" style="border-width:0"
+                            src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" />
+                    </a>
+                    <div class="text-secondary small px-2">
+                        採用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
+                            class="text-secondary text-decoration-underline" target="_blank">創用 CC
+                            姓名標示-非商業性-禁止改作 4.0 國際 授權條款</a> 授權
+                    </div>
+                </div>
+                <!-- Version -->
+                <div class="text-muted small opacity-50">
+                    v1.2.0
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- /include:footer -->
 
     <!-- include:announcement-modal -->
     <div class="modal fade" id="feeUpdateModal" data-autoshow="false" tabindex="-1" aria-labelledby="feeUpdateModalLabel" aria-hidden="true">
@@ -466,8 +443,8 @@
     <!-- /include:announcement-modal -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="announcement.js?20261116b"></script>
-    <script src="site.js?20261116c"></script>
+    <script src="js/announcement.js?20261116b"></script>
+    <script src="js/site.js?20261117a"></script>
     <script>
         (function () {
             // Android 手機預設顯示 Android 分頁

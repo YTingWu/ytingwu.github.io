@@ -1,0 +1,156 @@
+/* shop.css — 我的賣場 */
+.shop-page .header p { margin-bottom: .25rem; }
+.shop-card { border-color: var(--border-color); background: var(--bg-card); }
+.shop-select-group { max-width: 360px; flex: 1 1 220px; }
+.shop-search { max-width: 280px; flex: 1 1 180px; }
+.shop-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; flex: 1 1 auto; min-width: 0; }
+.shop-bar .shop-select-group { flex: 0 1 360px; }
+/* flex-basis auto＝整段文字寬：放不下就整段換行，而不是擠在選單旁邊折成多行 */
+#settingsLine { display: flex; gap: .4rem; align-items: baseline; flex: 0 1 auto; min-width: 0; }
+#settingsLine .settings-text { min-width: 0; }
+#settingsLine a { flex-shrink: 0; white-space: nowrap; }
+.shop-more-menu .dropdown-item-text { display: block; max-width: 16rem; white-space: normal; }
+.shop-toolbar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.shop-tool-select { width: auto; }
+.shop-toolbar-actions { display: flex; gap: .5rem; margin-left: auto; }
+@media (max-width: 767.98px) {
+    .shop-select-group { max-width: none; }
+    .shop-bar .shop-select-group { flex: 1 1 100%; }
+    .shop-search { flex: 1 1 100%; max-width: none; }
+    .shop-tool-select { flex: 1 1 0; min-width: 0; }
+}
+.shop-tabs .nav-link { color: var(--text-secondary); }
+.shop-tabs .nav-link.active { color: var(--primary); font-weight: 600; }
+
+.summary-card { border: 1px solid var(--border-color); border-radius: .5rem; padding: .5rem .75rem; background: var(--bg-card); height: 100%; }
+.summary-card .label { font-size: .75rem; color: var(--text-secondary); }
+.summary-card .value { font-size: 1.15rem; font-weight: 700; }
+.summary-card-btn { display: block; width: 100%; text-align: left; color: inherit; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+.summary-card-btn:hover, .summary-card-btn:focus-visible { border-color: var(--primary); outline: none; }
+.summary-card-btn.active { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary) inset; }
+.summary-card-btn.active .label { color: var(--primary); }
+
+/* 商品總覽：桌機是表格式格線，手機是卡片 */
+.ov-head, .ov-row {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 2.4fr) 100px 150px minmax(0, 1fr) minmax(0, 1fr) 40px;
+    gap: .5rem;
+    align-items: center;
+}
+.ov-head { font-size: .75rem; color: var(--text-secondary); padding: 0 .5rem .25rem; border-bottom: 1px solid var(--border-color); }
+.ov-sort {
+    display: flex; align-items: center; gap: .25rem; width: 100%; min-width: 0;
+    padding: .15rem 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; white-space: nowrap;
+}
+.ov-sort:hover, .ov-sort:focus-visible { color: var(--text-main); }
+.ov-sort.active { color: var(--primary); font-weight: 600; }
+.ov-sort i { font-size: .7rem; opacity: .45; }
+.ov-sort.active i { opacity: 1; }
+.ov-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; margin-top: .75rem; font-size: .85rem; color: var(--text-secondary); }
+.ov-pager:empty { display: none; }
+.ov-pager-size { display: flex; align-items: center; gap: .4rem; }
+.ov-pager-size select { width: auto; }
+.ov-pager-size label { white-space: nowrap; }
+.ov-pager .pagination { flex-wrap: wrap; }
+.ov-item { border-bottom: 1px solid var(--border-color); }
+.ov-row { padding: .5rem; cursor: pointer; }
+.ov-row:hover { background: rgba(78, 115, 223, .05); }
+.ov-row-single { cursor: default; }
+.ov-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.ov-sub { font-size: .75rem; color: var(--text-secondary); }
+.ov-num { text-align: right; font-variant-numeric: tabular-nums; }
+.ov-num .pct { display: block; font-size: .75rem; }
+.ov-cost input { max-width: 100px; }
+.ov-loss { color: var(--bs-danger); font-weight: 700; }
+.ov-low { background: rgba(246, 194, 62, .28); border-radius: .25rem; padding: 0 .25rem; }
+.ov-detail { padding: .25rem .5rem .75rem 2.25rem; }
+.ov-detail table { font-size: .85rem; }
+.ov-bd-trigger { display: inline-block; background: none; border: 0; padding: 0 .15rem; color: inherit; font: inherit; text-align: inherit; border-bottom: 1px dashed currentColor; cursor: help; border-radius: .2rem; }
+.ov-bd-trigger:hover, .ov-bd-trigger[aria-expanded="true"] { background: rgba(78, 115, 223, .12); }
+.ov-bd-pop { position: fixed; z-index: 1080; width: max-content; min-width: 260px; overflow: auto; overscroll-behavior: contain; padding: .25rem .5rem; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); border-radius: .5rem; box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .25); font-size: .85rem; }
+.ov-bd-pop table { --bs-table-bg: transparent; }
+.ov-bd-pop th:first-child, .ov-bd-pop td:first-child { padding-right: 1.25rem; }
+.ov-bd-hint-tap { display: none; }
+@media (hover: none), (pointer: coarse) {
+    .ov-bd-trigger { cursor: pointer; }
+    .ov-bd-hint-hover { display: none; }
+    .ov-bd-hint-tap { display: inline; }
+}
+.legend { display: inline-block; width: .9em; height: .9em; border-radius: .2em; vertical-align: -.1em; }
+.legend-loss { background: var(--bs-danger); }
+.legend-low { background: rgba(246, 194, 62, .6); }
+.badge-soft { background: var(--bg-input-group); color: var(--text-main); font-weight: 500; }
+.mlabel { display: none; }
+
+@media (max-width: 767.98px) {
+    .ov-row {
+        grid-template-columns: 24px 1fr 1fr 32px;
+        grid-template-areas:
+            "chk name name act"
+            ".   cost price price"
+            ".   reg  evt  evt";
+        row-gap: .35rem;
+    }
+    .ov-row > .c-chk { grid-area: chk; }
+    .ov-row > .c-name { grid-area: name; }
+    .ov-row > .c-cost { grid-area: cost; }
+    .ov-row > .c-price { grid-area: price; }
+    .ov-row > .c-reg { grid-area: reg; text-align: left; }
+    .ov-row > .c-evt { grid-area: evt; text-align: left; }
+    .ov-row > .c-act { grid-area: act; }
+    .mlabel { display: block; font-size: .7rem; color: var(--text-secondary); }
+    /* 手機：表頭只留排序按鈕，排成一列可換行 */
+    .ov-head { display: flex; flex-wrap: wrap; gap: .25rem .75rem; padding-bottom: .4rem; }
+    .ov-head > .c-chk, .ov-head > .c-act { display: none; }
+    .ov-sort { width: auto; }
+    .ov-pager { justify-content: center; }
+    .ov-detail { padding-left: .5rem; }
+}
+
+/* 調價與庫存 */
+.rp-head, .rp-row {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 2.2fr) 80px 120px 100px minmax(0, 1fr) minmax(0, 1fr);
+    gap: .5rem;
+    align-items: center;
+}
+.rp-head { font-size: .75rem; color: var(--text-secondary); padding: 0 .5rem .25rem; border-bottom: 1px solid var(--border-color); }
+.rp-group { font-weight: 600; font-size: .85rem; padding: .5rem .5rem .25rem; border-bottom: 1px solid var(--border-color); background: var(--bg-input-group); }
+.rp-row { padding: .3rem .5rem; border-bottom: 1px solid var(--border-color); font-size: .9rem; }
+.rp-row input.form-control { padding: .15rem .4rem; }
+.rp-row .changed { border-color: var(--bs-warning); background: rgba(246, 194, 62, .18); }
+.rp-row .orig { font-size: .7rem; color: var(--text-secondary); }
+.rp-tool { width: auto; }
+.rp-tool .form-control { max-width: 90px; }
+.rp-tool-sm .form-control { max-width: 70px; }
+.rp-footer {
+    position: sticky; bottom: 0; z-index: 5;
+    display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between;
+    margin-top: .75rem; padding: .6rem .75rem; border: 1px solid var(--border-color); border-radius: .5rem;
+    background: var(--float-header-bg); backdrop-filter: blur(6px);
+}
+.status-pill { font-size: .7rem; }
+
+@media (max-width: 767.98px) {
+    .rp-row {
+        grid-template-columns: 24px 1fr 1fr;
+        grid-template-areas:
+            "chk name name"
+            ".   price stock"
+            ".   reg evt";
+        row-gap: .3rem;
+    }
+    .rp-row > .c-chk { grid-area: chk; }
+    .rp-row > .c-name { grid-area: name; }
+    .rp-row > .c-cost { display: none; }
+    .rp-row > .c-price { grid-area: price; }
+    .rp-row > .c-stock { grid-area: stock; }
+    .rp-row > .c-reg { grid-area: reg; text-align: left; }
+    .rp-row > .c-evt { grid-area: evt; text-align: left; }
+}
+
+.settings-form .form-label.fw-bold { font-size: .95rem; }
+.cat-path { font-size: .8rem; color: var(--text-secondary); }
+.im-file { display: flex; gap: .5rem; align-items: center; font-size: .9rem; }
+.im-table { font-size: .85rem; }
+#imGuide summary { cursor: pointer; }

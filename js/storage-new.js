@@ -530,3 +530,19 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSidebar();
     initSidebarEvents();
 });
+
+// 「加入我的賣場」：帶目前的設定到 shop.html；算售價模式改帶「一般日、方案一」的建議售價
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('addToShopBtn');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+        const params = new URLSearchParams(window.location.search);
+        if (document.querySelector('input[name="calcMode"]:checked')?.value === 'price') {
+            const el = document.getElementById('regular-ship1-suggested-price');
+            const sell = el ? parseFloat(el.innerText.replace(/[^\d.-]/g, '')) || 0 : 0;
+            params.set('sell', String(sell));
+        }
+        params.set('add', '1');
+        window.location.href = 'shop.html?' + params.toString();
+    });
+});

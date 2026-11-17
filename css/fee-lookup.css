@@ -36,20 +36,7 @@
     margin: 0;
 }
 
-/* Dark mode adjustments for modal */
-[data-theme="dark"] .modal-content {
-    background-color: var(--bg-card);
-    color: var(--text-main);
-    border-color: var(--border-color);
-}
-
-[data-theme="dark"] .modal-header {
-    border-bottom-color: var(--border-color);
-}
-
-[data-theme="dark"] .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
-}
+/* 對話框深色模式移到 style.css（全站共用） */
 
 [data-theme="dark"] .list-group-item {
     background-color: transparent;

@@ -1,0 +1,546 @@
+// shop-data.js — 我的賣場：資料模型、費率對應、獲利計算、蝦皮匯入合併、調價草稿（不碰 DOM）。
+// 需要 fee-engine.js。node 測試：require('./shop-data.js')（會自己 require fee-engine）。
+(function (root) {
+    'use strict';
+    // 瀏覽器：fee-engine.js 的頂層 const 不會掛在 window 上，直接用全域名稱
+    const engine = (typeof module !== 'undefined' && module.exports)
+        ? require('./fee-engine.js')
+        : { computeScenario, calculateRequiredPrice };
+
+    const STORAGE_KEY = 'shopee_myshop_v1';
+    const STALE_MS = 24 * 60 * 60 * 1000;
+    const PAYMENT_PCT = 2.5; // 金流與系統處理費（不分期）
+    const MAX_STOCK = 9999999; // 防呆用上限（避免 1e21 之類寫成科學記號）
+
+    // 蝦皮分類樹與費率表名稱或層級不一致的對應：蝦皮分類 ID → fee-new.json 路徑
+    const CATEGORY_ALIASES = {
+        '102070': ['母嬰用品', '嬰幼童奶粉、副食品', 'UHT Milk'],            // Ready-to-Drink Milk
+        '102429': ['汽機車百貨／交通用品', '車外裝飾及性能配件', '車貼'],      // 蝦皮多一層「車外裝飾/改裝配件」
+    };
+
+    const DEFAULT_SETTINGS = {
+        seller: 'general', shipPlan: 'ship1', cashback: '0', cashbackTerm: 'long', tax: '0',
+        hasProdInv: false, hasFeeInv: false, first5: false, lowMargin: 5,
+    };
+
+    const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    const cleanName = (t) => String(t == null ? '' : t).replace(/[\x00-\x1f\x7f]/g, '').trim();
+
+    // ---------- 狀態 ----------
+
+    function emptyState() {
+        return { version: 1, activeShopId: null, shops: [], catOverrides: {} };
+    }
+
+    function newShop(name, settings) {
+        return {
+            id: uid(), name: name || '我的賣場', createdAt: Date.now(),
+            settings: { ...DEFAULT_SETTINGS, ...(settings || {}) },
+            shopeeShopId: null, products: [], salesFile: null, lastImportAt: null,
+        };
+    }
+
+    function newProduct(fields) {
+        return {
+            id: uid(), shopeeItemId: null, name: '', note: '', cost: null, costTax: 'inc',
+            hasProdInv: null, frozen: false, preorder: '0', // hasProdInv: null＝跟隨賣場設定
+            fee: { mode: 'manual', catId: null, catLabel: '', path: null, manualRate: 6, needsReview: false },
+            variations: [{ id: uid(), shopeeVarId: null, name: '', price: 0, stock: null, cost: null, draft: null }],
+            missingInLastImport: false, createdAt: Date.now(),
+            ...(fields || {}),
+        };
+    }
+
+    // 舊資料：商品進項發票原本只有商品層開關。賣場預設補 false；商品沒勾的改成跟隨賣場，有勾的保留為單獨設定
+    function migrateShops(shops) {
+        shops.forEach(shop => {
+            if (!shop.settings || shop.settings.hasProdInv != null) return;
+            shop.settings.hasProdInv = false;
+            (shop.products || []).forEach(p => { p.hasProdInv = p.hasProdInv ? true : null; });
+        });
+        return shops;
+    }
+
+    function loadState(storage) {
+        try {
+            const raw = storage.getItem(STORAGE_KEY);
+            if (!raw) return emptyState();
+            const s = JSON.parse(raw);
+            if (!s || !Array.isArray(s.shops)) return emptyState();
+            s.catOverrides = s.catOverrides || {};
+            migrateShops(s.shops);
+            return s;
+        } catch (e) {
+            return emptyState();
+        }
+    }
+
+    function saveState(storage, state) {
+        storage.setItem(STORAGE_KEY, JSON.stringify(state)); // 超過容量會丟例外，由呼叫端提示
+    }
+
+    // ---------- 費率表與分類 ----------
+
+    // fee-new.json → { leaves: Map('a\u0001b\u0001c' → {general, mall}), list: [{path, general, mall}] }
+    function buildFeeIndex(feeJson) {
+        const leaves = new Map();
+        const list = [];
+        (function walk(node, path) {
+            if (Array.isArray(node)) { node.forEach(n => walk(n, path)); return; }
+            if (!node || typeof node !== 'object') return;
+            if (node.general_seller_fee || node.mall_seller_fee) {
+                const rec = { path, general: parseFloat(node.general_seller_fee), mall: parseFloat(node.mall_seller_fee) };
+                leaves.set(path.join('\u0001'), rec);
+                list.push(rec);
+                return;
+            }
+            Object.entries(node).forEach(([k, v]) => walk(v, [...path, k]));
+        })(feeJson, []);
+        return { leaves, list };
+    }
+
+    // shopee-categories.json 的 categories → 中文路徑陣列；ID 不在樹裡回 null
+    function shopeeCategoryPath(catId, cats) {
+        const out = [];
+        let id = String(catId);
+        for (let guard = 0; guard < 10 && id && id !== '0'; guard++) {
+            const node = cats[id];
+            if (!node) return null;
+            out.unshift(cleanName(node[1]));
+            id = String(node[0]);
+        }
+        return out;
+    }
+
+    // 蝦皮分類 ID → fee-new.json 葉節點路徑：別名 → 完全相同 → 最長的前綴葉節點
+    function matchFeePath(catId, cats, feeIndex) {
+        const alias = CATEGORY_ALIASES[String(catId)];
+        if (alias && feeIndex.leaves.has(alias.join('\u0001'))) return { path: alias, how: 'alias' };
+        const sp = shopeeCategoryPath(catId, cats);
+        if (!sp) return null;
+        for (let n = sp.length; n >= 1; n--) {
+            const key = sp.slice(0, n).join('\u0001');
+            if (feeIndex.leaves.has(key)) return { path: sp.slice(0, n), how: n === sp.length ? 'exact' : 'parent' };
+        }
+        return null;
+    }
+
+    // 商品目前採用的類別路徑（auto 模式依分類 ID；使用者曾手動指定該分類 ID 的就用指定值）
+    function resolveFeePath(product, ctx) {
+        const f = product.fee || {};
+        if (f.mode === 'category') return f.path || null;
+        if (f.mode === 'auto' && f.catId) {
+            const ov = ctx.state.catOverrides[String(f.catId)];
+            if (ov) return ov;
+            const m = matchFeePath(f.catId, ctx.cats, ctx.feeIndex);
+            return m ? m.path : null;
+        }
+        return null;
+    }
+
+    // 成交手續費率（%）；查不到回 null（介面顯示「請選類別」）
+    function resolveRate(product, seller, ctx) {
+        const f = product.fee || {};
+        if (f.mode === 'manual') return Number.isFinite(f.manualRate) ? f.manualRate : null;
+        const path = resolveFeePath(product, ctx);
+        if (!path) return null;
+        const leaf = ctx.feeIndex.leaves.get(path.join('\u0001'));
+        if (!leaf) return null;
+        return seller === 'mall' ? leaf.mall : leaf.general;
+    }
+
+    // ---------- 獲利 ----------
+
+    function variationCost(product, v) {
+        if (v.cost != null && v.cost !== '') return Number(v.cost);
+        if (product.cost != null && product.cost !== '') return Number(product.cost);
+        return null;
+    }
+
+    function effectivePrice(v) {
+        return v.draft && v.draft.price != null ? v.draft.price : v.price;
+    }
+
+    // 與 calculator-new.js 的 getSettings() 同一套規則
+    function engineSettings(shop, product, cost, rate) {
+        const st = shop.settings;
+        const isShop = st.seller === 'shop';
+        return {
+            seller: st.seller,
+            cost: cost || 0,
+            isCostInc: product.costTax !== 'exc',
+            transRate: rate || 0,
+            paymentPct: PAYMENT_PCT, // 信用卡分期看買家選擇，賣場一律以不分期計算（分期在快速計算試算）
+            cashbackRate: isShop ? 0 : parseFloat(st.cashback) || 0,
+            cashbackShort: st.cashbackTerm === 'short',
+            preOrderRate: isShop ? 0 : parseFloat(product.preorder) || 0,
+            taxSetting: st.tax,
+            hasProdInv: prodInvOf(shop, product),
+            hasFeeInv: !!st.hasFeeInv,
+            frozen: !isShop && !!product.frozen,
+            first5: isShop && !!st.first5,
+        };
+    }
+
+    // 商品進項發票：商品有單獨設定就用商品的，沒有就吃賣場預設
+    const prodInvOf = (shop, product) => product.hasProdInv == null ? !!shop.settings.hasProdInv : !!product.hasProdInv;
+
+    // 單一規格在一般日／促銷檔期的結果；price 不給就用（草稿優先的）售價
+    function variationMetrics(shop, product, v, ctx, price) {
+        const p = price != null ? price : effectivePrice(v);
+        const cost = variationCost(product, v);
+        const rate = resolveRate(product, shop.settings.seller, ctx);
+        const s = engineSettings(shop, product, cost, rate);
+        const isShip2 = shop.settings.shipPlan === 'ship2';
+        const regular = engine.computeScenario(p, s, false, isShip2);
+        const event = engine.computeScenario(p, s, true, isShip2);
+        const margin = (r) => (p > 0 ? r.profit / p * 100 : null);
+        return {
+            price: p, cost, rate, hasCost: cost != null, hasRate: rate != null,
+            regular: { ...regular, margin: margin(regular) },
+            event: { ...event, margin: margin(event) },
+            settings: s,
+        };
+    }
+
+    function productMetrics(shop, product, ctx) {
+        const rows = product.variations.map(v => ({ v, m: variationMetrics(shop, product, v, ctx) }));
+        const range = (sel) => {
+            const vals = rows.map(r => sel(r)).filter(x => x != null && Number.isFinite(x));
+            return vals.length ? { min: Math.min(...vals), max: Math.max(...vals) } : null;
+        };
+        const complete = rows.filter(r => r.m.hasCost && r.m.hasRate);
+        const rangeOf = (sel) => {
+            const vals = complete.map(sel);
+            return vals.length ? { min: Math.min(...vals), max: Math.max(...vals) } : null;
+        };
+        return {
+            rows,
+            price: range(r => r.m.price),
+            regularProfit: rangeOf(r => r.m.regular.profit),
+            eventProfit: rangeOf(r => r.m.event.profit),
+            regularMargin: rangeOf(r => r.m.regular.margin),
+            eventMargin: rangeOf(r => r.m.event.margin),
+            missingCost: rows.some(r => !r.m.hasCost),
+            missingRate: rows.some(r => !r.m.hasRate),
+            hasDraft: product.variations.some(v => v.draft),
+        };
+    }
+
+    function shopSummary(shop, ctx) {
+        let loss = 0, missingCost = 0, sumR = 0, sumE = 0, n = 0;
+        for (const p of shop.products) {
+            const pm = productMetrics(shop, p, ctx);
+            if (pm.missingCost || pm.missingRate || !pm.regularMargin) { missingCost++; continue; }
+            if (pm.regularProfit.min < 0 || pm.eventProfit.min < 0) loss++;
+            sumR += (pm.regularMargin.min + pm.regularMargin.max) / 2;
+            sumE += (pm.eventMargin.min + pm.eventMargin.max) / 2;
+            n++;
+        }
+        return { count: shop.products.length, loss, incomplete: missingCost, avgRegular: n ? sumR / n : null, avgEvent: n ? sumE / n : null };
+    }
+
+    // 依目標利潤率回推售價（一般日或促銷檔期）
+    function requiredPrice(shop, product, v, ctx, marginPct, isEvent) {
+        const cost = variationCost(product, v);
+        const rate = resolveRate(product, shop.settings.seller, ctx);
+        if (cost == null || cost <= 0 || rate == null) return null;
+        const s = engineSettings(shop, product, cost, rate);
+        return engine.calculateRequiredPrice(s, marginPct, !!isEvent, shop.settings.shipPlan === 'ship2') || null;
+    }
+
+    // ---------- 快速計算 query string ----------
+
+    const SHOP_KEYS = ['seller', 'shipPlan', 'cashback', 'cashbackTerm', 'tax', 'hasProdInv', 'hasFeeInv', 'first5'];
+
+    function settingsFromQuery(q) {
+        const g = (k, d) => (q.get(k) != null && q.get(k) !== '' ? q.get(k) : d);
+        const seller = ['general', 'mall', 'shop'].includes(g('seller')) ? g('seller') : 'general';
+        return {
+            ...DEFAULT_SETTINGS,
+            seller,
+            shipPlan: g('shipping') === 'ship2' ? 'ship2' : 'ship1',
+            cashback: ['0', '1.5', '2.5'].includes(g('cashback')) ? g('cashback') : '0',
+            cashbackTerm: g('cashbackTerm') === 'short' ? 'short' : 'long',
+            tax: ['0', '1', '5', '5_plus'].includes(g('tax')) ? g('tax') : '0',
+            hasProdInv: g('hasProdInv') === '1',
+            hasFeeInv: g('hasFeeInv') === '1',
+            first5: g('first5') === '1',
+        };
+    }
+
+    function productFromQuery(q, name) {
+        const num = (k) => { const n = parseFloat(q.get(k)); return Number.isFinite(n) ? n : null; };
+        const p = newProduct({
+            name: name || '',
+            cost: num('cost'),
+            costTax: q.get('costTax') === 'exc' ? 'exc' : 'inc',
+            frozen: q.get('frozen') === '1',
+            preorder: ['2', '3'].includes(q.get('preorder')) ? q.get('preorder') : '0',
+        });
+        p.fee = { mode: 'manual', catId: null, catLabel: '', path: null, manualRate: num('fee') ?? 6, needsReview: false };
+        p.variations[0].price = Math.round(num('sell') || 0);
+        return p;
+    }
+
+    // 快速計算與賣場設定不同的項目（顯示用）
+    function settingsDiff(a, b) {
+        const LABEL = { seller: '賣場類型', shipPlan: '免運方案', cashback: '蝦幣回饋', cashbackTerm: '蝦幣回饋期間', tax: '稅務', hasProdInv: '商品進項發票', hasFeeInv: '手續費進項發票', first5: '前 5 筆免手續費' };
+        return SHOP_KEYS.filter(k => String(a[k]) !== String(b[k])).map(k => ({ key: k, label: LABEL[k], from: a[k], to: b[k] }));
+    }
+
+    // 賣場設定＋商品＋規格 → 快速計算網址的 query string
+    function quickCalcQuery(shop, product, v, ctx) {
+        const st = shop.settings;
+        const q = new URLSearchParams();
+        q.set('mode', 'profit');
+        q.set('shipping', st.shipPlan);
+        q.set('seller', st.seller);
+        const cost = variationCost(product, v);
+        if (cost != null) q.set('cost', String(cost));
+        q.set('costTax', product.costTax === 'exc' ? 'exc' : 'inc');
+        q.set('sell', String(effectivePrice(v) || 0));
+        const rate = resolveRate(product, st.seller, ctx);
+        if (rate != null) q.set('fee', String(rate));
+        q.set('preorder', product.preorder || '0');
+        q.set('cashback', st.cashback);
+        if (st.cashback !== '0') q.set('cashbackTerm', st.cashbackTerm);
+        q.set('tax', st.tax);
+        if (st.tax === '5' || st.tax === '5_plus') {
+            if (prodInvOf(shop, product)) q.set('hasProdInv', '1');
+            if (st.hasFeeInv) q.set('hasFeeInv', '1');
+        }
+        if (product.frozen) q.set('frozen', '1');
+        if (st.first5) q.set('first5', '1');
+        return q.toString();
+    }
+
+    // 快速計算「已存設定」（storage-new.js 的 data＝query 物件）→ 商品
+    function productFromSavedConfig(cfg) {
+        const q = new URLSearchParams(cfg.data || {});
+        const p = productFromQuery(q, cfg.title || '');
+        // 算售價模式存的是目標利潤率，沒有售價：用 summary 的售價（storage-new.js 存成「進價: $ x 售價: $ y」）
+        if (!p.variations[0].price && cfg.summary) {
+            const m = String(cfg.summary).match(/售價:\s*\$\s*([\d,]+)/);
+            if (m) p.variations[0].price = parseInt(m[1].replace(/,/g, ''), 10) || 0;
+        }
+        p.fee.needsReview = true; // 舊設定只有費率數字（也可能是舊制費率）
+        return p;
+    }
+
+    // ---------- 蝦皮匯入 ----------
+
+    const PREORDER_FROM_DTS = (d) => { const n = parseInt(d, 10); return n >= 3 ? '3' : n === 2 ? '2' : '0'; };
+
+    // files：parseShopeeXlsx 的結果陣列（最多一份 sales、一份 dts）
+    // 回傳 plan（不改 state），介面確認後呼叫 applyImportPlan
+    function planImport(shop, files, ctx) {
+        const sales = files.find(f => f.type === 'sales') || null;
+        const dts = files.find(f => f.type === 'dts') || null;
+        const errors = [];
+        const warnings = [];
+        if (sales && dts && sales.shopId && dts.shopId && sales.shopId !== dts.shopId) {
+            errors.push(`兩份檔案來自不同的蝦皮賣場（${sales.shopId}、${dts.shopId}），請重新下載同一個賣場的檔案。`);
+        }
+        const fileShopId = (sales && sales.shopId) || (dts && dts.shopId) || null;
+        if (shop.shopeeShopId && fileShopId && shop.shopeeShopId !== fileShopId) {
+            warnings.push({ code: 'shop-mismatch', text: `這個賣場之前匯入的是蝦皮賣場 ${shop.shopeeShopId}，這次的檔案是 ${fileShopId}。建議切換到對應的賣場或建立新賣場。` });
+        }
+
+        // 依商品 ID 分組
+        const items = new Map();
+        const ensure = (id) => { if (!items.has(id)) items.set(id, { id, name: '', sales: [], dts: [] }); return items.get(id); };
+        if (sales) sales.rows.forEach(r => { const it = ensure(r.productId); it.name = it.name || r.productName; it.sales.push(r); });
+        if (dts) dts.rows.forEach(r => { const it = ensure(r.productId); it.name = it.name || r.productName; it.dts.push(r); });
+
+        const byItem = new Map(shop.products.filter(p => p.shopeeItemId).map(p => [p.shopeeItemId, p]));
+        const add = [], update = [], needOther = [];
+        for (const it of items.values()) {
+            const existing = byItem.get(it.id);
+            if (existing) update.push({ item: it, product: existing });
+            else if (it.sales.length && it.dts.length) add.push({ item: it });
+            else needOther.push({ item: it, missing: it.sales.length ? 'dts' : 'sales' });
+        }
+        const missing = shop.products.filter(p => p.shopeeItemId && !items.has(p.shopeeItemId));
+
+        // 分類：對不到的（不含使用者已指定過的）
+        const unmatched = new Map();
+        const catStats = { exact: 0, parent: 0, alias: 0, override: 0, none: 0 };
+        for (const { item } of [...add, ...update]) {
+            const row = item.dts[0];
+            if (!row) continue;
+            const catId = row.categoryId;
+            if (ctx.state.catOverrides[catId]) { catStats.override++; continue; }
+            const m = catId ? matchFeePath(catId, ctx.cats, ctx.feeIndex) : null;
+            if (m) catStats[m.how]++;
+            else {
+                catStats.none++;
+                const u = unmatched.get(catId) || { catId, label: row.categoryLabel, path: catId ? shopeeCategoryPath(catId, ctx.cats) : null, count: 0 };
+                u.count++;
+                unmatched.set(catId, u);
+            }
+        }
+
+        // 調價草稿
+        const salesVar = new Map();
+        if (sales) sales.rows.forEach(r => salesVar.set(r.variationId, r));
+        const pendingDrafts = [], exportedMatched = [], exportedMismatched = [];
+        for (const { product } of update) {
+            for (const v of product.variations) {
+                if (!v.draft || !v.shopeeVarId) continue;
+                const r = salesVar.get(v.shopeeVarId);
+                if (!r) continue;
+                const same = (v.draft.price == null || v.draft.price === r.price) && (v.draft.stock == null || v.draft.stock === r.stock);
+                const ref = { product, v, row: r };
+                if (v.draft.status === 'exported') (same ? exportedMatched : exportedMismatched).push(ref);
+                else pendingDrafts.push(ref);
+            }
+        }
+
+        return { sales, dts, fileShopId, errors, warnings, add, update, needOther, missing, unmatched: [...unmatched.values()], catStats, pendingDrafts, exportedMatched, exportedMismatched };
+    }
+
+    // options：{ keepPendingDrafts: true, catPicks: { catId: path }, salesFileB64, now }
+    function applyImportPlan(shop, plan, ctx, options) {
+        const opt = { keepPendingDrafts: true, catPicks: {}, ...(options || {}) };
+        const now = opt.now || Date.now();
+        Object.entries(opt.catPicks).forEach(([catId, path]) => { if (path) ctx.state.catOverrides[catId] = path; });
+
+        const applyDts = (product, rows) => {
+            if (!rows.length) return;
+            const r = rows[0];
+            if (product.fee.mode !== 'category' && r.categoryId) {
+                product.fee = { ...product.fee, mode: 'auto', catId: r.categoryId, catLabel: r.categoryLabel, needsReview: false };
+            }
+            product.preorder = PREORDER_FROM_DTS(Math.max(...rows.map(x => parseInt(x.dts, 10) || 0)));
+        };
+        const applySales = (product, rows, isNew) => {
+            if (!rows.length) return;
+            const byVar = new Map(product.variations.filter(v => v.shopeeVarId).map(v => [v.shopeeVarId, v]));
+            if (isNew) product.variations = [];
+            for (const r of rows) {
+                let v = byVar.get(r.variationId);
+                if (!v) {
+                    v = { id: uid(), shopeeVarId: r.variationId, name: '', price: 0, stock: null, cost: null, draft: null };
+                    product.variations.push(v);
+                    byVar.set(r.variationId, v); // 同一份檔案重複的選項 ID 不要建兩個規格
+                }
+                v.name = r.variationName || '';
+                v.price = r.price;
+                v.stock = r.stock;
+            }
+        };
+
+        for (const { item } of plan.add) {
+            const p = newProduct({ shopeeItemId: item.id, name: item.name });
+            p.fee = { mode: 'auto', catId: null, catLabel: '', path: null, manualRate: null, needsReview: false };
+            applySales(p, item.sales, true);
+            applyDts(p, item.dts);
+            shop.products.push(p);
+        }
+        for (const { item, product } of plan.update) {
+            if (item.name) product.name = item.name;
+            applySales(product, item.sales, false);
+            applyDts(product, item.dts);
+            product.missingInLastImport = false;
+        }
+        plan.missing.forEach(p => { p.missingInLastImport = true; });
+
+        plan.exportedMatched.forEach(({ v }) => { v.draft = null; });
+        plan.exportedMismatched.forEach(({ v }) => { v.draft.status = 'pending'; });
+        if (!opt.keepPendingDrafts) plan.pendingDrafts.forEach(({ v }) => { v.draft = null; });
+
+        if (plan.fileShopId && !shop.shopeeShopId) shop.shopeeShopId = plan.fileShopId;
+        if (plan.sales && opt.salesFileB64) shop.salesFile = { name: plan.sales.fileName, importedAt: now, fileTime: opt.salesFileTime || null, b64: opt.salesFileB64 };
+        shop.lastImportAt = now;
+        return shop;
+    }
+
+    // ---------- 調價草稿與匯出 ----------
+
+    function setDraft(v, field, value) {
+        const base = field === 'price' ? v.price : v.stock;
+        const d = v.draft ? { ...v.draft } : { price: null, stock: null, status: 'pending' };
+        d[field] = value === base ? null : value;
+        d.status = 'pending';
+        v.draft = (d.price == null && d.stock == null) ? null : d;
+    }
+
+    function pendingChanges(shop) {
+        const out = [];
+        for (const p of shop.products) {
+            if (!p.shopeeItemId) continue;
+            for (const v of p.variations) {
+                if (v.draft && v.draft.status === 'pending' && v.shopeeVarId) out.push({ product: p, v });
+            }
+        }
+        return out;
+    }
+
+    // 蝦皮規則：價格 1–499999 整數；同一商品最貴規格 ≤ 最便宜 × 5；庫存 ≥ 0 整數
+    function validateChanges(shop, changes) {
+        const problems = [];
+        const products = new Set(changes.map(c => c.product));
+        for (const { product, v } of changes) {
+            const price = effectivePrice(v);
+            if (!Number.isInteger(price) || price < 1 || price > 499999) problems.push({ product, v, text: '價格要是 1～499999 的整數' });
+            const stock = v.draft && v.draft.stock != null ? v.draft.stock : v.stock;
+            if (!Number.isInteger(stock) || stock < 0 || stock > MAX_STOCK) problems.push({ product, v, text: `庫存要是 0～${MAX_STOCK.toLocaleString('en-US')} 的整數` });
+        }
+        for (const p of products) {
+            const prices = p.variations.map(effectivePrice).filter(x => x > 0);
+            if (prices.length > 1 && Math.max(...prices) > Math.min(...prices) * 5) {
+                problems.push({ product: p, v: null, text: `最貴規格 $${Math.max(...prices)} 超過最便宜 $${Math.min(...prices)} 的 5 倍` });
+            }
+        }
+        return problems;
+    }
+
+    function markExported(changes) {
+        changes.forEach(({ v }) => { if (v.draft) v.draft.status = 'exported'; });
+    }
+
+    // 資料時間：優先用蝦皮檔名的產生時間（匯入三天前下載的檔案也要算過期）
+    function salesDataTime(shop) {
+        if (!shop.salesFile) return null;
+        return shop.salesFile.fileTime || shop.salesFile.importedAt;
+    }
+
+    function isStale(shop, now) {
+        const t = salesDataTime(shop);
+        return t != null && (now || Date.now()) - t > STALE_MS;
+    }
+
+    // ---------- 匯出 ----------
+
+    function csvEscape(x) {
+        const t = x == null ? '' : String(x);
+        return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+    }
+
+    function shopCsv(shop, ctx) {
+        const head = ['商品名稱', '規格', '蝦皮商品ID', '蝦皮選項ID', '進價', '售價', '庫存', '成交手續費率', '一般日淨利', '一般日利潤率', '促銷檔期淨利', '促銷檔期利潤率', '備註'];
+        const lines = [head.join(',')];
+        for (const p of shop.products) {
+            for (const v of p.variations) {
+                const m = variationMetrics(shop, p, v, ctx);
+                const ok = m.hasCost && m.hasRate;
+                lines.push([p.name, v.name, p.shopeeItemId || '', v.shopeeVarId || '', m.cost ?? '', m.price, v.stock ?? '', m.rate ?? '',
+                    ok ? Math.round(m.regular.profit) : '', ok && m.regular.margin != null ? m.regular.margin.toFixed(1) + '%' : '',
+                    ok ? Math.round(m.event.profit) : '', ok && m.event.margin != null ? m.event.margin.toFixed(1) + '%' : '', p.note].map(csvEscape).join(','));
+            }
+        }
+        return '﻿' + lines.join('\r\n');
+    }
+
+    const api = {
+        STORAGE_KEY, STALE_MS, CATEGORY_ALIASES, DEFAULT_SETTINGS,
+        uid, cleanName, emptyState, newShop, newProduct, loadState, saveState, migrateShops, prodInvOf,
+        buildFeeIndex, shopeeCategoryPath, matchFeePath, resolveFeePath, resolveRate,
+        variationCost, effectivePrice, engineSettings, variationMetrics, productMetrics, shopSummary, requiredPrice,
+        settingsFromQuery, productFromQuery, settingsDiff, quickCalcQuery, productFromSavedConfig,
+        planImport, applyImportPlan, setDraft, pendingChanges, validateChanges, markExported, isStale, salesDataTime, shopCsv, MAX_STOCK,
+    };
+    if (typeof module !== 'undefined' && module.exports) module.exports = api;
+    else root.ShopData = api;
+})(typeof window !== 'undefined' ? window : globalThis);

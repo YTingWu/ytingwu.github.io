@@ -53,13 +53,6 @@ body {
     padding: 0;
 }
 
-@media (min-width: 768px) {
-    body {
-        height: 100vh;
-        height: 100dvh;
-        overflow: hidden;
-    }
-}
 
 .main-container {
     position: relative;
@@ -263,9 +256,7 @@ body {
 }
 
 .footer-wrapper {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
 }
 
 @media (max-width: 768px) {
@@ -368,21 +359,23 @@ body {
 /* Floating Header */
 .floating-header {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: var(--site-header-h, 0px);
+    left: var(--content-left, 0px);
     right: 0;
     background: var(--float-header-bg);
     backdrop-filter: blur(10px);
     padding: 10px 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    z-index: 1000;
+    z-index: 1025;
     transform: translateY(-100%);
-    transition: transform 0.3s ease;
+    visibility: hidden;
+    transition: transform 0.3s ease, visibility 0.3s;
     cursor: pointer;
 }
 
 .floating-header.visible {
     transform: translateY(0);
+    visibility: visible;
 }
 
 
@@ -455,6 +448,36 @@ body {
 /* Dark Mode Overrides for Bootstrap classes */
 [data-theme="dark"] .text-muted {
     color: var(--text-secondary) !important;
+}
+
+/* Bootstrap 自己的次要文字色與框線色（text-body-secondary、border-top 等）跟著深色模式 */
+[data-theme="dark"] {
+    --bs-secondary-color: var(--text-secondary);
+    --bs-border-color: var(--border-color);
+}
+
+/* 對話框（公告、類別查詢）：全站共用 */
+[data-theme="dark"] .modal-content {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border-color: var(--border-color);
+}
+[data-theme="dark"] .modal-header {
+    border-bottom-color: var(--border-color);
+}
+[data-theme="dark"] .modal-footer {
+    border-top-color: var(--border-color);
+}
+[data-theme="dark"] .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+[data-theme="dark"] .modal .btn-outline-secondary {
+    color: var(--text-main);
+    border-color: var(--border-color);
+}
+[data-theme="dark"] .modal .btn-outline-secondary:hover {
+    background-color: var(--bg-input-group);
+    color: var(--text-main);
 }
 
 [data-theme="dark"] .card {
@@ -573,11 +596,11 @@ body {
     align-items: stretch;
 }
 
+/* 桌機：整頁捲動。header（上）與 footer（下）橫跨整個視窗，
+   側邊欄夾在中間、黏在 header 下方 */
 @media (min-width: 768px) {
     #wrapper {
-        height: 100vh;
-        height: 100dvh;
-        overflow: hidden;
+        align-items: flex-start;
     }
 }
 
@@ -660,9 +683,11 @@ body.toggled #sidebar-wrapper {
         left: 0;
         margin-left: 0;
         width: var(--sidebar-width);
-        position: relative; 
-        height: min-content; /* Only take needed height or... */
-        max-height: calc(100vh - 40px);
+        position: sticky;
+        top: calc(var(--site-header-h, 56px) + 20px);
+        min-height: 0;
+        height: calc(100vh - var(--site-header-h, 56px) - 40px);
+        height: calc(100dvh - var(--site-header-h, 56px) - 40px);
         overflow-y: auto; 
         z-index: 1000;
         border-right: 1px solid var(--border-color);
@@ -679,9 +704,9 @@ body.toggled #sidebar-wrapper {
         flex: 1;
         width: calc(100% - var(--sidebar-width));
         transition: none;
-        height: 100%;
-        overflow-y: auto; 
-        padding: 20px 0;
+        height: auto;
+        overflow: visible;
+        padding: 0;
     }
 
     /* Collapsed State on Desktop */
@@ -854,14 +879,25 @@ body.toggled #sidebar-overlay {
 }
 
 /* --- Shared site header (partials/header.html) --- */
-.site-nav {
-    max-width: 1200px;
-    margin: 0 auto 16px;
-    padding: 8px 20px;
+/* 全寬、置頂凍結；只用下底線分隔，不做框 */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    width: 100%;
     background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    border-bottom: 1px solid var(--border-color);
+    padding-top: env(safe-area-inset-top);
+}
+.site-nav {
+    padding: 8px 0;
+}
+.site-nav .site-nav-inner {
+    padding-left: 24px;
+    padding-right: 24px;
+}
+#page-content-wrapper > .container:first-child {
+    padding-top: 20px;
 }
 .site-nav .site-brand {
     display: flex;
@@ -905,13 +941,6 @@ body.toggled #sidebar-overlay {
 #events {
     scroll-margin-top: 80px;
 }
-.footer-links a {
-    text-decoration: none;
-}
-.footer-links a:hover {
-    text-decoration: underline;
-}
-
 @media (max-width: 991.98px) {
     .site-nav .navbar-nav {
         padding: 8px 0 4px;
@@ -919,18 +948,30 @@ body.toggled #sidebar-overlay {
 }
 
 @media (max-width: 768px) {
-    .site-nav {
-        margin: 0;
-        padding: calc(8px + env(safe-area-inset-top)) 15px 8px;
-        border: none;
-        border-bottom: 1px solid var(--border-color);
-        border-radius: 0;
-        box-shadow: none;
+    .site-nav .site-nav-inner {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    #page-content-wrapper > .container:first-child {
+        padding-top: 0;
     }
     /* header 已處理瀏海安全區，下方卡片不用再留 */
-    .site-nav + .main-container {
+    #page-content-wrapper > .container:first-child > .main-container:first-child {
         padding-top: 20px;
     }
+}
+
+/* 全寬 footer：上底線橫跨整個內容區，左右對齊 header */
+.site-footer {
+    margin-top: 48px;
+    padding: 24px 0;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-card);
+}
+
+/* 錨點跳轉時不要被置頂 header 蓋住 */
+html {
+    scroll-padding-top: 80px;
 }
 
 /* --- FAQ page --- */
@@ -1074,6 +1115,37 @@ body.toggled #sidebar-overlay {
     .site-nav .navbar-nav .nav-link {
         padding-left: 6px;
         padding-right: 6px;
+    }
+}
+
+/* 計算機頁桌機版旁邊有側邊欄，header 實際寬度比視窗窄：依 header 自己的寬度再壓縮 */
+.site-header {
+    container-type: inline-size;
+}
+@container (min-width: 992px) and (max-width: 1100px) {
+    .site-nav .navbar-nav .nav-link > i {
+        display: none;
+    }
+    .site-nav .navbar-nav .nav-link {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+}
+/* 只在桌機版（選單已展開）才壓縮，手機的下拉選單維持原樣 */
+@media (min-width: 992px) {
+    @container (max-width: 991.98px) {
+        .site-nav .navbar-nav .nav-link > i {
+            display: none;
+        }
+        .site-nav .navbar-nav .nav-link {
+            padding-left: 5px;
+            padding-right: 5px;
+            font-size: 0.875rem;
+        }
+        .site-nav .site-nav-inner {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
     }
 }
 
