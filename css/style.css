@@ -985,6 +985,21 @@ body.toggled #sidebar-overlay {
     }
 }
 
+/* 內容不足一屏時，把 footer 推到視窗底部（sticky footer） */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+body > #wrapper {
+    flex: 1 0 auto;
+}
+body > .site-header,
+body > .site-footer {
+    flex-shrink: 0;
+}
+
 /* 全寬 footer：上底線橫跨整個內容區，左右對齊 header */
 .site-footer {
     margin-top: 48px;
