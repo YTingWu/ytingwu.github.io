@@ -33,8 +33,9 @@
 /* 商品總覽：桌機是表格式格線，手機是卡片 */
 .ov-head, .ov-row {
     display: grid;
-    grid-template-columns: 28px minmax(0, 2.4fr) 100px 150px minmax(0, 1fr) minmax(0, 1fr) 40px;
-    gap: .5rem;
+    /* 金額欄固定寬：以 5 位數（-$ 99,999／～ $ 99,999）不換行為準，其餘空間全給商品名稱 */
+    grid-template-columns: 28px minmax(0, 1fr) 96px 104px 112px 112px 36px;
+    gap: .75rem;
     align-items: center;
 }
 .ov-head { font-size: .75rem; color: var(--text-secondary); padding: 0 .5rem .25rem; border-bottom: 1px solid var(--border-color); }
@@ -56,11 +57,33 @@
 .ov-row { padding: .5rem; cursor: pointer; }
 .ov-row:hover { background: rgba(78, 115, 223, .05); }
 .ov-row-single { cursor: default; }
-.ov-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.ov-sub { font-size: .75rem; color: var(--text-secondary); }
+.ov-name { font-weight: 600; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.ov-sub { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .35rem; font-size: .75rem; color: var(--text-secondary); }
+.ov-note { align-self: center; }
+/* 名稱下方標籤：外框＋圖示，警示類用色塊，其餘中性 */
+.ov-chip {
+    --chip-fg: var(--text-secondary); --chip-bd: var(--border-color); --chip-bg: transparent;
+    display: inline-flex; align-items: center; gap: .25rem;
+    padding: .1rem .5rem; border: 1px solid var(--chip-bd); border-radius: 999px;
+    background: var(--chip-bg); color: var(--chip-fg);
+    font-size: .75rem; font-weight: 500; line-height: 1.5; white-space: nowrap;
+    max-width: 100%; overflow: hidden; text-overflow: ellipsis;
+}
+.ov-chip i { font-size: .8em; }
+.ov-chip-warn { --chip-fg: #8a5a00; --chip-bd: #f0c36d; --chip-bg: #fff6e0; font-weight: 600; }
+.ov-chip-info { --chip-fg: #0b6b80; --chip-bd: #8fd3e2; --chip-bg: #e6f7fb; }
+.ov-chip-shopee { --chip-fg: #c4401f; --chip-bd: #f3b7a5; --chip-bg: transparent; }
+.ov-chip-muted { --chip-fg: var(--text-secondary); --chip-bd: var(--border-color); --chip-bg: var(--bg-input-group); }
+[data-theme="dark"] .ov-chip-warn { --chip-fg: #ffd277; --chip-bd: rgba(255, 193, 7, .55); --chip-bg: rgba(255, 193, 7, .14); }
+[data-theme="dark"] .ov-chip-info { --chip-fg: #7fd8ec; --chip-bd: rgba(13, 202, 240, .5); --chip-bg: rgba(13, 202, 240, .12); }
+[data-theme="dark"] .ov-chip-shopee { --chip-fg: #ff9a7a; --chip-bd: rgba(238, 77, 45, .55); }
 .ov-num { text-align: right; font-variant-numeric: tabular-nums; }
-.ov-num .pct { display: block; font-size: .75rem; }
-.ov-cost input { max-width: 100px; }
+.ov-num .pct { display: block; font-size: .75rem; color: var(--text-secondary); }
+.ov-money { display: block; font-weight: 600; }
+.ov-money .rg { display: block; white-space: nowrap; }
+.ov-money .rg-to { font-size: .85em; font-weight: 500; color: var(--text-secondary); }
+.ov-loss .rg-to { color: inherit; }
+.ov-cost input { width: 100%; font-variant-numeric: tabular-nums; }
 .ov-loss { color: var(--bs-danger); font-weight: 700; }
 .ov-low { background: rgba(246, 194, 62, .28); border-radius: .25rem; padding: 0 .25rem; }
 .ov-detail { padding: .25rem .5rem .75rem 2.25rem; }
@@ -70,11 +93,8 @@
 .ov-bd-pop { position: fixed; z-index: 1080; width: max-content; min-width: 260px; overflow: auto; overscroll-behavior: contain; padding: .25rem .5rem; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); border-radius: .5rem; box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .25); font-size: .85rem; }
 .ov-bd-pop table { --bs-table-bg: transparent; }
 .ov-bd-pop th:first-child, .ov-bd-pop td:first-child { padding-right: 1.25rem; }
-.ov-bd-hint-tap { display: none; }
 @media (hover: none), (pointer: coarse) {
     .ov-bd-trigger { cursor: pointer; }
-    .ov-bd-hint-hover { display: none; }
-    .ov-bd-hint-tap { display: inline; }
 }
 .legend { display: inline-block; width: .9em; height: .9em; border-radius: .2em; vertical-align: -.1em; }
 .legend-loss { background: var(--bs-danger); }
@@ -94,7 +114,7 @@
     .ov-row > .c-chk { grid-area: chk; }
     .ov-row > .c-name { grid-area: name; }
     .ov-row > .c-cost { grid-area: cost; }
-    .ov-row > .c-price { grid-area: price; }
+    .ov-row > .c-price { grid-area: price; text-align: left; }
     .ov-row > .c-reg { grid-area: reg; text-align: left; }
     .ov-row > .c-evt { grid-area: evt; text-align: left; }
     .ov-row > .c-act { grid-area: act; }

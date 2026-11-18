@@ -36,6 +36,8 @@
     const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const money = n => (n == null || !Number.isFinite(n)) ? '—' : (n < 0 ? '-$ ' : '$ ') + Math.abs(Math.round(n)).toLocaleString('zh-TW');
     const pct = n => (n == null || !Number.isFinite(n)) ? '—' : n.toFixed(1) + '%';
+    // 總覽表格用：區間拆成兩行（最小值／～最大值），欄寬只需容納單一金額
+    const rangeStack = (r, f) => !r ? '—' : (f(r.min) === f(r.max) ? `<span class="rg">${f(r.min)}</span>` : `<span class="rg">${f(r.min)}</span><span class="rg rg-to">～ ${f(r.max)}</span>`);
     const rangeOf = (r, f) => !r ? '—' : (f(r.min) === f(r.max) ? f(r.min) : `${f(r.min)} ～ ${f(r.max)}`);
     const fmtTime = t => { const d = new Date(t); const p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}/${p(d.getMonth() + 1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; };
     const modal = id => bootstrap.Modal.getOrCreateInstance($(id));
@@ -233,7 +235,7 @@
         if (!profit) return `<div class="${cls} ov-num"><span class="mlabel">${label}</span>${bd ? bdTrigger('—') : '—'}</div>`;
         const loss = profit.min < 0;
         const lowM = margin && margin.min < low;
-        const val = `<span class="${loss ? 'ov-loss' : ''}">${rangeOf(profit, money)}</span>` +
+        const val = `<span class="ov-money${loss ? ' ov-loss' : ''}">${rangeStack(profit, money)}</span>` +
             `<span class="pct"><span class="${lowM && !loss ? 'ov-low' : ''}${loss ? 'ov-loss' : ''}">${rangeOf(margin, pct)}</span></span>`;
         return `<div class="${cls} ov-num"><span class="mlabel">${label}</span>${bd ? bdTrigger(val) : val}</div>`;
     }
@@ -273,7 +275,16 @@
         const pageStart = (ui.ovPage - 1) * ui.ovPageSize;
         const pageRows = rows.slice(pageStart, pageStart + ui.ovPageSize);
         renderOvHead(shop.products.length > 0);
-        renderOvPager(rows.length, pages, pageStart, pageRows.length);
+        renderOvPager(rows.length, pages);
+        // 全展開／全收合：對象是目前篩選後所有多規格商品（跨頁），全部已展開才顯示「全部收合」
+        const multiIds = rows.filter(r => r.p.variations.length > 1).map(r => r.p.id);
+        const allOpen = multiIds.length > 0 && multiIds.every(id => ui.expanded.has(id));
+        const exBtn = $('ovExpandAll');
+        exBtn.classList.toggle('d-none', !multiIds.length);
+        exBtn.dataset.mode = allOpen ? 'collapse' : 'expand';
+        exBtn.setAttribute('aria-pressed', String(allOpen));
+        exBtn.innerHTML = allOpen ? '<i class="bi bi-arrows-collapse"></i> 規格全部收合' : '<i class="bi bi-arrows-expand"></i> 規格全部展開';
+        ui.ovMultiIds = multiIds;
         $('ovCount').textContent = rows.length === shop.products.length ? `${rows.length} 個商品` : `列出 ${rows.length}／${shop.products.length} 個商品`;
         if (!shop.products.length) {
             $('ovList').innerHTML = `<div class="text-center text-muted py-4"><p class="mb-3">還沒有商品。從蝦皮賣家中心的商品檔匯入最快，也可以手動新增。</p>` +
@@ -287,15 +298,17 @@
             $('ovList').innerHTML = pageRows.map(({ p, pm }) => {
                 const fee = feeDescription(p, shop);
                 const badges = [];
-                if (p.variations.length > 1) badges.push(`<span class="badge badge-soft">${p.variations.length} 個規格</span>`);
-                badges.push(fee.rate == null ? `<span class="badge bg-warning text-dark">請選類別</span>` : `<span class="badge badge-soft" title="${esc(fee.path ? fee.path.join(' > ') : '')}">${esc(fee.text)}</span>`);
-                if (p.fee.needsReview) badges.push('<span class="badge bg-warning text-dark">請重選類別</span>');
-                if (pm.missingCost) badges.push('<span class="badge bg-warning text-dark">待補進價</span>');
-                if (p.preorder !== '0' && !isShop) badges.push(`<span class="badge badge-soft">預購 ${p.preorder}%</span>`);
-                if (p.frozen && !isShop) badges.push('<span class="badge badge-soft">冷凍</span>');
-                if (pm.hasDraft) badges.push('<span class="badge bg-info text-dark">調價中</span>');
-                if (p.missingInLastImport) badges.push('<span class="badge bg-secondary">本次未匯入</span>');
-                if (p.shopeeItemId) badges.push('<span class="badge badge-soft"><i class="bi bi-link-45deg"></i>蝦皮</span>');
+                const chip = (cls, icon, text, title) => `<span class="ov-chip${cls ? ' ' + cls : ''}"${title ? ` title="${esc(title)}"` : ''}>${icon ? `<i class="bi bi-${icon}" aria-hidden="true"></i>` : ''}${text}</span>`;
+                if (pm.missingCost) badges.push(chip('ov-chip-warn', 'exclamation-triangle-fill', '待補進價'));
+                if (fee.rate == null) badges.push(chip('ov-chip-warn', 'exclamation-triangle-fill', '請選類別'));
+                if (p.fee.needsReview) badges.push(chip('ov-chip-warn', 'exclamation-triangle-fill', '請重選類別'));
+                if (pm.hasDraft) badges.push(chip('ov-chip-info', 'pencil-fill', '調價中'));
+                if (p.missingInLastImport) badges.push(chip('ov-chip-muted', 'cloud-slash', '本次未匯入'));
+                if (p.variations.length > 1) badges.push(chip('', 'layers', `${p.variations.length} 個規格`));
+                if (fee.rate != null) badges.push(chip('', 'tag', esc(fee.text), fee.path ? fee.path.join(' > ') : ''));
+                if (p.preorder !== '0' && !isShop) badges.push(chip('', 'clock-history', `預購 ${p.preorder}%`));
+                if (p.frozen && !isShop) badges.push(chip('', 'snow', '冷凍'));
+                if (p.shopeeItemId) badges.push(chip('ov-chip-shopee', 'link-45deg', '蝦皮', '從蝦皮匯入的商品'));
                 const others = state.shops.length > 1;
                 // 單一規格：不展開，商品列的淨利直接浮出費用拆解
                 const single = p.variations.length === 1;
@@ -304,9 +317,9 @@
                 return `<div class="ov-item" data-pid="${p.id}">
   <div class="ov-row ov-bd-scope${single ? ' ov-row-single' : ''}"${single ? '' : ` data-action="toggle-detail"`} data-pid="${p.id}">${bd ? `<template class="ov-bd-tpl">${breakdownHtml(shop, p, p.variations[0], sm)}</template>` : ''}
     <div class="c-chk"><input type="checkbox" class="form-check-input ov-chk" data-pid="${p.id}" ${ui.selected.has(p.id) ? 'checked' : ''} aria-label="選取"></div>
-    <div class="c-name"><div class="ov-name">${esc(p.name || '（未命名）')}</div><div class="ov-sub">${badges.join(' ')}${p.note ? ` <span>${esc(p.note)}</span>` : ''}</div></div>
+    <div class="c-name"><div class="ov-name">${esc(p.name || '（未命名）')}</div><div class="ov-sub">${badges.join('')}${p.note ? `<span class="ov-note">${esc(p.note)}</span>` : ''}</div></div>
     <div class="c-cost ov-cost"><span class="mlabel">進價</span><input type="number" class="form-control form-control-sm ov-cost-input" data-pid="${p.id}" value="${p.cost ?? ''}" placeholder="待補" min="0" step="any" aria-label="進價"></div>
-    <div class="c-price"><span class="mlabel">售價</span>${rangeOf(pm.price, money)}</div>
+    <div class="c-price ov-num"><span class="mlabel">售價</span><span class="ov-money">${rangeStack(pm.price, money)}</span></div>
     ${numCell('c-reg', '一般日淨利', pm.regularProfit, pm.regularMargin, low, isShop, bd)}
     ${numCell('c-evt', '促銷檔期淨利', pm.eventProfit, pm.eventMargin, low, isShop, bd)}
     <div class="c-act"><div class="dropdown">
@@ -347,7 +360,7 @@
         });
     }
 
-    function renderOvPager(total, pages, start, n) {
+    function renderOvPager(total, pages) {
         const pager = $('ovPager');
         if (!total) { pager.innerHTML = ''; return; }
         const cur = ui.ovPage;
@@ -364,7 +377,7 @@
         items.push(btn(cur + 1, '<i class="bi bi-chevron-right"></i>', { disabled: cur >= pages, aria: '下一頁' }));
         pager.innerHTML = `<div class="ov-pager-size"><label for="ovPageSize">每頁</label>` +
             `<select class="form-select form-select-sm" id="ovPageSize">${OV_PAGE_SIZES.map(x => `<option value="${x}"${x === ui.ovPageSize ? ' selected' : ''}>${x}</option>`).join('')}</select>` +
-            `<span>筆，第 ${start + 1}–${start + n} 筆／共 ${total} 筆</span></div>` +
+            `<span>筆，共 ${total} 筆</span></div>` +
             (pages > 1 ? `<nav aria-label="商品分頁"><ul class="pagination pagination-sm mb-0">${items.join('')}</ul></nav>` : '');
     }
 
@@ -410,12 +423,11 @@ ${isShop ? '' : profitCell(v, m, ok, m.event)}
         }).join('');
         const noRate = pm.rows.some(r => !r.m.hasRate)
             ? `<div class="small text-warning"><i class="bi bi-exclamation-triangle"></i> 還沒有成交手續費率，請<a href="#" data-action="product-edit" data-pid="${p.id}">選類別</a>。</div>` : '';
-        const hint = noRate ? '' : `<div class="small text-muted"><i class="bi bi-info-circle"></i> <span class="ov-bd-hint-hover">滑鼠移到淨利</span><span class="ov-bd-hint-tap">點淨利</span>可看費用拆解</div>`;
         const catInfo = p.fee.mode !== 'manual' && p.fee.catLabel ? `<div class="small text-muted mt-1">蝦皮分類：${esc(p.fee.catId)} ${esc(p.fee.catLabel)}</div>` : '';
         return `<div class="ov-detail"><div class="table-responsive"><table class="table table-sm align-middle mb-2">
 <thead><tr><th>規格</th><th class="text-end">售價</th><th class="text-end">庫存</th><th>進價（覆寫）</th><th class="text-end">一般日淨利</th>${isShop ? '' : '<th class="text-end">促銷檔期淨利</th>'}<th></th></tr></thead>
 <tbody>${varRows}</tbody></table></div>
-${noRate}${hint}${catInfo}</div>`;
+${noRate}${catInfo}</div>`;
     }
 
     // ---------- 費用拆解浮動選單 ----------
@@ -1176,6 +1188,13 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
                 if (e.target.closest('input, button, a, .dropdown, label')) return;
                 const pid = t.dataset.pid;
                 ui.expanded.has(pid) ? ui.expanded.delete(pid) : ui.expanded.add(pid);
+                renderOverview();
+                return;
+            }
+            if (a === 'ov-expand-all') {
+                const ids = ui.ovMultiIds || [];
+                if (t.dataset.mode === 'collapse') ids.forEach(id => ui.expanded.delete(id));
+                else ids.forEach(id => ui.expanded.add(id));
                 renderOverview();
                 return;
             }
