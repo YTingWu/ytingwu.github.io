@@ -1,30 +1,27 @@
-    <div class="modal fade" id="feeUpdateModal" data-autoshow="{{modal_autoshow}}" tabindex="-1" aria-labelledby="feeUpdateModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="feeUpdateModalLabel"><i class="bi bi-megaphone-fill text-danger"></i> 計算機已改為 12/11 新制</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="small mb-2">首頁計算機已改為 <strong>2026/12/11 00:00</strong> 起成立訂單適用的新制費率。<strong>12/10（含）以前成立的訂單</strong>請改用舊制計算機。</p>
-                    <p class="small text-muted mb-2">新制主要調整：</p>
-                    <ul class="small ps-3">
-                        <li class="mb-2"><strong>成交手續費依品類調整</strong>：分類細分到第三、四層，各品類調幅不同，部分調降。</li>
-                        <li class="mb-2"><strong>促銷檔期加收</strong>：一般賣家 +2% → <strong>+4%</strong>、商城 +3% → <strong>+5%</strong>；參加長期蝦幣回饋免收，只參加短期仍要加收。</li>
-                        <li class="mb-2"><strong>免運及進階賣家專案</strong>：方案一 6% → <strong>6.5%</strong>；方案二 $60 → <strong>$65</strong>（$99 以下 6% → 6.5%）；冷凍訂單 $100 以上維持每單 $80。</li>
-                        <li class="mb-2"><strong>預購訂單服務費</strong>：備貨 2 天降為 <strong>2%</strong>，3 天以上維持 3%。</li>
-                        <li class="mb-2"><strong>促銷檔期增加</strong>：每月 5–6 天（例：12/11、12/12、12/17、12/18、12/25）。</li>
-                        <li class="mb-2"><strong>新賣場類型「蝦皮小舖」</strong>（2027/1/7 開通）：每月前 5 筆免成交手續費。</li>
-                    </ul>
-                    <p class="small mb-0">
-                        <a href="https://seller.shopee.tw/edu/article/28668" target="_blank" class="text-decoration-none">
-                            <i class="bi bi-box-arrow-up-right"></i> 蝦皮官方公告
-                        </a>
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    {{modal_buttons}}
-                </div>
+    <dialog class="modal" id="feeUpdateModal" data-autoshow="{{modal_autoshow}}" aria-labelledby="feeUpdateModalLabel">
+        <div class="modal-head">
+            <div>
+                <div class="eyebrow">公告 · 2026/12/11</div>
+                <h2 id="feeUpdateModalLabel" class="mt-1">計算機已改為 12/11 新制</h2>
             </div>
+            <button type="button" class="btn btn-ghost btn-icon btn-sm" data-ui-close aria-label="關閉"><i class="bi bi-x-lg"></i></button>
         </div>
-    </div>
+        <div class="modal-body">
+            <p class="mb-3">首頁計算機已改為 <strong>2026/12/11 00:00</strong> 起成立訂單適用的新制費率。<strong>12/10（含）以前成立的訂單</strong>請改用舊制計算機。</p>
+            <p class="text-muted mb-2">新制主要調整：</p>
+            <ul class="list-disc pl-5 space-y-2 mb-3">
+                <li><strong>成交手續費依品類調整</strong>：分類細分到第三、四層，各品類調幅不同，部分調降。</li>
+                <li><strong>促銷檔期加收</strong>：一般賣家 +2% → <strong>+4%</strong>、商城 +3% → <strong>+5%</strong>；參加長期蝦幣回饋免收，只參加短期仍要加收。</li>
+                <li><strong>免運及進階賣家專案</strong>：方案一 6% → <strong>6.5%</strong>；方案二 $60 → <strong>$65</strong>（$99 以下 6% → 6.5%）；冷凍訂單 $100 以上維持每單 $80。</li>
+                <li><strong>預購訂單服務費</strong>：備貨 2 天降為 <strong>2%</strong>，3 天以上維持 3%。</li>
+                <li><strong>促銷檔期增加</strong>：每月 5–6 天（例：12/11、12/12、12/17、12/18、12/25）。</li>
+                <li><strong>新賣場類型「蝦皮小舖」</strong>（2027/1/7 開通）：每月前 5 筆免成交手續費。</li>
+            </ul>
+            <a href="https://seller.shopee.tw/edu/article/28668" target="_blank" rel="noopener">
+                <i class="bi bi-box-arrow-up-right"></i> 蝦皮官方公告
+            </a>
+        </div>
+        <div class="modal-foot">
+            {{modal_buttons}}
+        </div>
+    </dialog>

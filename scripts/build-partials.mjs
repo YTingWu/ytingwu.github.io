@@ -11,12 +11,12 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CHECK = process.argv.includes('--check');
 
-const ACTIVE = 'active" aria-current="page';
+const ACTIVE = 'aria-current="page"';
 
-const MODAL_BTN_CLOSE = '<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>';
-const MODAL_BTN_USE_NEW = '<button type="button" class="btn btn-danger" data-bs-dismiss="modal">使用新制計算機</button>';
-const MODAL_BTN_GO_OLD = '<a href="old.html" class="btn btn-outline-secondary" data-carry-query><i class="bi bi-clock-history"></i> 前往舊制計算機</a>';
-const MODAL_BTN_GO_NEW = '<a href="./" class="btn btn-danger" data-carry-query>前往新制計算機 <i class="bi bi-arrow-right"></i></a>';
+const MODAL_BTN_CLOSE = '<button type="button" class="btn btn-outline" data-ui-close>關閉</button>';
+const MODAL_BTN_USE_NEW = '<button type="button" class="btn btn-primary" data-ui-close>使用新制計算機</button>';
+const MODAL_BTN_GO_OLD = '<a href="old.html" class="btn btn-outline" data-carry-query><i class="bi bi-clock-history"></i> 前往舊制計算機</a>';
+const MODAL_BTN_GO_NEW = '<a href="./" class="btn btn-primary" data-carry-query>前往新制計算機 <i class="bi bi-arrow-right"></i></a>';
 
 const NAV = { active_index: '', active_shop: '', active_old: '', active_faq: '', active_events: '', active_articles: '', active_sponsor: '' };
 

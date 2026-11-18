@@ -44,7 +44,7 @@
     };
 
     // Load fee data when modal is first opened
-    document.getElementById('feeLookupModal').addEventListener('show.bs.modal', function() {
+    document.getElementById('feeLookupModal').addEventListener('ui:show', function() {
         if (!feeData) {
             loadFeeData();
         }
@@ -182,7 +182,7 @@
 
         elements.categoryList.innerHTML = categories.map(cat => `
             <button type="button" 
-                    class="list-group-item list-group-item-action category-item ${cat.hasChildren ? 'has-children' : 'leaf-category'}"
+                    class="category-item ${cat.hasChildren ? 'has-children' : 'leaf-category'}"
                     data-category="${cat.name}"
                     data-has-children="${cat.hasChildren}"
                     data-fee="${cat.fee || ''}">
@@ -236,8 +236,7 @@
         renderCategories(feeData, []);
         
         // Close modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('feeLookupModal'));
-        modal.hide();
+        UI.modal.hide('#feeLookupModal');
         
         // Show success feedback
         console.log(`已選擇類別: ${path.join(' > ')} - ${fee}`);
@@ -330,12 +329,12 @@
             
             return `
                 <button type="button" 
-                        class="list-group-item list-group-item-action category-item leaf-category"
+                        class="category-item leaf-category"
                         data-fee="${fee}"
                         data-path="${cat.path.join(',')}">
                     <div>
                         <div>${highlightedName}</div>
-                        <small class="text-muted d-block">${highlightedPath}</small>
+                        <small class="block text-xs text-muted">${highlightedPath}</small>
                     </div>
                     <span class="category-fee">${fee}</span>
                 </button>

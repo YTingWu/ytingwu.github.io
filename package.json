@@ -1,0 +1,13 @@
+{
+  "name": "shopee-fee-calculator",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i css/src/app.css -o css/site.css --minify",
+    "watch:css": "tailwindcss -i css/src/app.css -o css/site.css --watch",
+    "build": "node scripts/build-partials.mjs && npm run build:css"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.4",
+    "tailwindcss": "4.3.4"
+  }
+}

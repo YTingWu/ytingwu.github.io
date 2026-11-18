@@ -19,21 +19,20 @@
     }, true);
 
     const modalEl = document.getElementById('feeUpdateModal');
-    if (!modalEl || typeof bootstrap === 'undefined') return;
+    if (!modalEl || !window.UI) return;
 
-    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-    modalEl.addEventListener('show.bs.modal', syncCarryQueryLinks);
+    modalEl.addEventListener('ui:show', syncCarryQueryLinks);
 
     const btn = document.getElementById('announcementBtn');
-    if (btn) btn.addEventListener('click', () => modal.show());
+    if (btn) btn.addEventListener('click', () => UI.modal.show(modalEl));
 
     if (modalEl.dataset.autoshow !== 'true') return;
 
     let seen = false;
     try { seen = localStorage.getItem(SEEN_KEY) === '1'; } catch (e) { /* storage blocked */ }
     // 使用者關閉過一次才記錄，之後不再自動跳出
-    modalEl.addEventListener('hidden.bs.modal', () => {
+    modalEl.addEventListener('ui:hidden', () => {
         try { localStorage.setItem(SEEN_KEY, '1'); } catch (e) { /* storage blocked */ }
     });
-    if (!seen) modal.show();
+    if (!seen) UI.modal.show(modalEl);
 })();

@@ -26,8 +26,8 @@
     <meta name="apple-mobile-web-app-title" content="蝦皮手續費計算機">
 
     <script>
-        // 先套用已存的主題，避免閃白
-        try { document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light'); } catch (e) { }
+        // 先套用主題（已存的選擇，否則跟隨系統），避免閃白
+        (function () { var t; try { t = localStorage.getItem('theme'); } catch (e) { } if (t !== 'dark' && t !== 'light') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; document.documentElement.setAttribute('data-theme', t); })();
     </script>
 
     <script type="application/ld+json">
@@ -72,220 +72,130 @@
 
         gtag('config', 'G-TLR5X0J725');
     </script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&display=swap">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=20261118b">
+    <link rel="stylesheet" href="css/site.css?v=20261118">
 </head>
 
 <body>
     <!-- include:header -->
     <header class="site-header">
-        <nav class="navbar navbar-expand-lg site-nav" aria-label="網站導覽">
-            <div class="container-fluid site-nav-inner">
-                <a class="navbar-brand site-brand" href="./">
-                    <img src="favicon.svg" alt="" width="28" height="28"> 蝦皮手續費計算機
-                </a>
-                <div class="d-flex align-items-center gap-1 order-lg-last">
-                    <button type="button" class="btn btn-link site-nav-icon" id="announcementBtn"
-                        title="12/11 新制公告" aria-label="12/11 新制公告">
-                        <i class="bi bi-megaphone-fill fs-5 text-danger"></i>
-                    </button>
-                    <button type="button" class="btn btn-link site-nav-icon" id="themeToggle"
-                        title="切換深色模式" aria-label="切換深色模式">
-                        <i class="bi bi-moon-fill fs-5" id="themeIcon"></i>
-                    </button>
-                    <button class="navbar-toggler site-nav-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#siteNavLinks" aria-controls="siteNavLinks" aria-expanded="false"
-                        aria-label="開啟選單">
-                        <i class="bi bi-list fs-3"></i>
-                    </button>
-                </div>
-                <div class="collapse navbar-collapse" id="siteNavLinks">
-                    <ul class="navbar-nav ms-lg-auto">
-                        <li class="nav-item"><a class="nav-link " href="./"><i class="bi bi-calculator"></i> 快速計算(12/11新制)</a></li>
-                        <li class="nav-item"><a class="nav-link " href="shop.html"><i class="bi bi-shop"></i> 賣場總覽</a></li>
-                        <li class="nav-item"><a class="nav-link " href="old.html" data-carry-query><i class="bi bi-clock-history"></i> 舊制</a></li>
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="articles.html"><i class="bi bi-journal-text"></i> 文章</a></li>
-                        <li class="nav-item"><a class="nav-link " href="events.html"><i class="bi bi-calendar-event"></i> 活動日行事曆</a></li>
-                        <li class="nav-item"><a class="nav-link" href="faq.html#install"><i class="bi bi-phone"></i> 加入主畫面</a></li>
-                        <li class="nav-item"><a class="nav-link " href="faq.html"><i class="bi bi-question-circle"></i> 常見問題</a></li>
-                        <li class="nav-item"><a class="nav-link " href="sponsor.html"><i class="bi bi-heart"></i> 贊助</a></li>
-                    </ul>
-                </div>
+        <nav class="site-nav" aria-label="網站導覽">
+            <a class="site-brand" href="./">
+                <img src="favicon.svg" alt="" width="24" height="24"> 蝦皮手續費計算機
+            </a>
+            <div class="site-tools">
+                <button type="button" class="btn btn-ghost btn-icon" id="announcementBtn"
+                    title="12/11 新制公告" aria-label="12/11 新制公告">
+                    <i class="bi bi-megaphone-fill text-accent"></i>
+                </button>
+                <button type="button" class="btn btn-ghost btn-icon" id="themeToggle"
+                    title="切換深色模式" aria-label="切換深色模式">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+                <button type="button" class="btn btn-ghost btn-icon lg:hidden" id="siteNavToggle"
+                    aria-controls="siteNavLinks" aria-expanded="false" aria-label="開啟選單">
+                    <i class="bi bi-list text-2xl"></i>
+                </button>
+            </div>
+            <div class="site-links" id="siteNavLinks">
+                <ul>
+                    <li><a  href="./"><i class="bi bi-calculator"></i> 快速計算(12/11新制)</a></li>
+                    <li><a  href="shop.html"><i class="bi bi-shop"></i> 賣場總覽</a></li>
+                    <li><a  href="old.html" data-carry-query><i class="bi bi-clock-history"></i> 舊制</a></li>
+                    <li><a aria-current="page" href="articles.html"><i class="bi bi-journal-text"></i> 文章</a></li>
+                    <li><a  href="events.html"><i class="bi bi-calendar-event"></i> 活動日行事曆</a></li>
+                    <li><a href="faq.html#install"><i class="bi bi-phone"></i> 加入主畫面</a></li>
+                    <li><a  href="faq.html"><i class="bi bi-question-circle"></i> 常見問題</a></li>
+                    <li><a  href="sponsor.html"><i class="bi bi-heart"></i> 贊助</a></li>
+                </ul>
             </div>
         </nav>
     </header>
     <!-- /include:header -->
+    <main class="page max-w-[64rem]">
+        <header class="page-head">
+            <div class="eyebrow">賣家實用文章</div>
+            <h1>文章</h1>
+            <p>蝦皮手續費、促銷檔期、免運方案的規則與調整整理</p>
+        </header>
 
-    <div id="wrapper">
-        <div id="page-content-wrapper">
-            <div class="container">
-                <main class="main-container">
-                    <div class="header mb-4">
-                        <h1><i class="bi bi-journal-text"></i> 文章</h1>
-                        <p>蝦皮手續費、促銷檔期、免運方案的規則與調整整理</p>
-                    </div>
-
-                    <!-- 新增文章：在最上面加一張 .article-card（新的在前），並同步更新 JSON-LD 的 ItemList、sitemap.xml -->
-                    <div class="article-list">
-                        <article class="article-card">
-                            <div class="article-meta"><time datetime="2026-11-18">2026/11/18</time> · 使用教學</div>
-                            <h2><a href="article-shop-overview.html" class="stretched-link">蝦皮賣家如何一次算出所有商品淨利？賣場總覽使用教學</a></h2>
-                            <p class="mb-0">匯入蝦皮賣家中心的批次模板，一頁看完每個規格在一般日、促銷檔期的淨利；找出賠錢的商品、依目標利潤率批次調價，再產生批次更新檔上傳回蝦皮。附截圖與操作步驟。</p>
-                        </article>
-                        <article class="article-card">
-                            <div class="article-meta"><time datetime="2026-11-16">2026/11/16</time> · 蝦皮小舖</div>
-                            <h2><a href="article-shopee-xiaopu.html" class="stretched-link">蝦皮小舖是什麼？跟一般賣場差在哪？2027 新服務懶人包</a></h2>
-                            <p class="mb-0">2027/1/7 上線的新賣場類型：蝦皮搜尋不到，但每月前 5 筆免成交手續費、促銷檔期不加收、不用付免運服務費。整理收費、功能限制、手續費試算、適合哪種賣家，報名到 11/30。</p>
-                        </article>
-                        <article class="article-card">
-                            <div class="article-meta"><time datetime="2026-11-16">2026/11/16</time> · 新制</div>
-                            <h2><a href="article-1211-new-fees.html" class="stretched-link">蝦皮 12/11 新制懶人包：手續費、促銷檔期、免運方案調整整理</a></h2>
-                            <p class="mb-0">12/11 起成立的訂單，成交手續費依品類調整、促銷檔期改加收 4%／5%、免運方案調到 6.5%／$65、預購新增 2% 級距，還有新賣場類型「蝦皮小舖」。一次看懂改了什麼、對獲利的影響、賣家要做哪些事。</p>
-                        </article>
-                    </div>
-                </main>
-
-            </div>
+        <!-- 新增文章：在最上面加一張 .article-card（新的在前），並同步更新 JSON-LD 的 ItemList、sitemap.xml -->
+        <div class="article-list">
+            <article class="article-card">
+                <div class="article-meta"><time datetime="2026-11-18">2026/11/18</time> · 使用教學</div>
+                <h2><a href="article-shop-overview.html" class="ct-stretch">蝦皮賣家如何一次算出所有商品淨利？賣場總覽使用教學</a></h2>
+                <p>匯入蝦皮賣家中心的批次模板，一頁看完每個規格在一般日、促銷檔期的淨利；找出賠錢的商品、依目標利潤率批次調價，再產生批次更新檔上傳回蝦皮。附截圖與操作步驟。</p>
+            </article>
+            <article class="article-card">
+                <div class="article-meta"><time datetime="2026-11-16">2026/11/16</time> · 蝦皮小舖</div>
+                <h2><a href="article-shopee-xiaopu.html" class="ct-stretch">蝦皮小舖是什麼？跟一般賣場差在哪？2027 新服務懶人包</a></h2>
+                <p>2027/1/7 上線的新賣場類型：蝦皮搜尋不到，但每月前 5 筆免成交手續費、促銷檔期不加收、不用付免運服務費。整理收費、功能限制、手續費試算、適合哪種賣家，報名到 11/30。</p>
+            </article>
+            <article class="article-card">
+                <div class="article-meta"><time datetime="2026-11-16">2026/11/16</time> · 新制</div>
+                <h2><a href="article-1211-new-fees.html" class="ct-stretch">蝦皮 12/11 新制懶人包：手續費、促銷檔期、免運方案調整整理</a></h2>
+                <p>12/11 起成立的訂單，成交手續費依品類調整、促銷檔期改加收 4%／5%、免運方案調到 6.5%／$65、預購新增 2% 級距，還有新賣場類型「蝦皮小舖」。一次看懂改了什麼、對獲利的影響、賣家要做哪些事。</p>
+            </article>
         </div>
-    </div>
+    </main>
 
     <!-- include:footer -->
     <footer class="site-footer">
-        <div class="footer-wrapper">
-            <!-- Desktop View -->
-            <div class="d-none d-md-block">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <!-- Left: Social Links -->
-                    <div class="d-flex gap-3 fs-5">
-                        <a href="https://www.instagram.com/bruce_baseball_" target="_blank"
-                            class="text-decoration-none link-secondary" title="Instagram">
-                            <i class="bi bi-instagram"></i>
-                        </a>
-                        <a href="https://www.threads.com/@bruce_baseball_" target="_blank"
-                            class="text-decoration-none link-secondary" title="Threads">
-                            <i class="bi bi-threads"></i>
-                        </a>
-                        <a href="https://github.com/YTingWu/ytingwu.github.io" target="_blank"
-                            class="text-decoration-none link-secondary" title="GitHub">
-                            <i class="bi bi-github"></i>
-                        </a>
-                        <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
-                            class="text-decoration-none link-secondary" title="Bruce Wu">
-                            <i class="bi bi-person-badge-fill"></i>
-                        </a>
-                    </div>
-                    <!-- Middle: Author -->
-                    <div class="text-secondary small">
-                        本工具由 <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
-                            class="text-secondary text-decoration-underline"><strong>Bruce Wu</strong></a>
-                        設計、開發與維護
-                    </div>
-                    <!-- Right: CC Icon -->
-                    <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
-                        target="_blank">
-                        <img alt="創用 CC 授權條款" style="border-width:0"
-                            src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" height="28" />
-                    </a>
-                </div>
-                <!-- Line 2: License Text -->
-                <div class="text-center text-secondary small mb-2">
-                    採用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
-                        class="text-secondary text-decoration-underline" target="_blank">創用 CC
-                        姓名標示-非商業性-禁止改作 4.0 國際 授權條款</a> 授權
-                </div>
-                <!-- Line 3: Version -->
-                <div class="text-center text-muted small opacity-50">
-                    v1.3.0
-                </div>
+        <div class="page flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-center">
+            <div class="flex justify-center gap-4 text-lg">
+                <a href="https://www.instagram.com/bruce_baseball_" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                <a href="https://www.threads.com/@bruce_baseball_" target="_blank" rel="noopener" title="Threads" aria-label="Threads"><i class="bi bi-threads"></i></a>
+                <a href="https://github.com/YTingWu/ytingwu.github.io" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><i class="bi bi-github"></i></a>
+                <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer" title="Bruce Wu" aria-label="Bruce Wu"><i class="bi bi-person-badge-fill"></i></a>
             </div>
-
-            <!-- Mobile View -->
-            <div class="d-md-none text-center">
-                <!-- Social Links -->
-                <div class="d-flex justify-content-center gap-4 mb-3 fs-4">
-                    <a href="https://www.instagram.com/bruce_baseball_" target="_blank"
-                        class="text-decoration-none link-secondary" title="Instagram">
-                        <i class="bi bi-instagram"></i>
-                    </a>
-                    <a href="https://www.threads.com/@bruce_baseball_" target="_blank"
-                        class="text-decoration-none link-secondary" title="Threads">
-                        <i class="bi bi-threads"></i>
-                    </a>
-                    <a href="https://github.com/YTingWu/ytingwu.github.io" target="_blank"
-                        class="text-decoration-none link-secondary" title="GitHub">
-                        <i class="bi bi-github"></i>
-                    </a>
-                    <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
-                        class="text-decoration-none link-secondary" title="Bruce Wu">
-                        <i class="bi bi-person-badge-fill"></i>
-                    </a>
-                </div>
-                <!-- Author -->
-                <div class="text-secondary small mb-3">
-                    本工具由 <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
-                        class="text-secondary text-decoration-underline"><strong>Bruce Wu</strong></a>
-                    設計、開發與維護
-                </div>
-                <!-- CC Icon & License -->
-                <div class="mb-3">
-                    <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
-                        target="_blank" class="d-inline-block mb-2">
-                        <img alt="創用 CC 授權條款" style="border-width:0"
-                            src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" />
-                    </a>
-                    <div class="text-secondary small px-2">
-                        採用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
-                            class="text-secondary text-decoration-underline" target="_blank">創用 CC
-                            姓名標示-非商業性-禁止改作 4.0 國際 授權條款</a> 授權
-                    </div>
-                </div>
-                <!-- Version -->
-                <div class="text-muted small opacity-50">
-                    v1.3.0
-                </div>
+            <div class="space-y-1 md:flex-1">
+                <div>本網站由 <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer" class="underline font-semibold">Bruce Wu</a> 設計、開發與維護</div>
+                <div class="text-xs text-balance">採用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" class="underline">創用 CC 姓名標示-非商業性-禁止改作 4.0 國際 授權條款</a> 授權<span class="block md:inline num"><span class="hidden md:inline"> · </span>v2.0.0</span></div>
             </div>
+            <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" class="self-center opacity-80 hover:opacity-100">
+                <img alt="創用 CC 授權條款" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" width="88" height="31">
+            </a>
         </div>
     </footer>
     <!-- /include:footer -->
 
     <!-- include:announcement-modal -->
-    <div class="modal fade" id="feeUpdateModal" data-autoshow="false" tabindex="-1" aria-labelledby="feeUpdateModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="feeUpdateModalLabel"><i class="bi bi-megaphone-fill text-danger"></i> 計算機已改為 12/11 新制</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="small mb-2">首頁計算機已改為 <strong>2026/12/11 00:00</strong> 起成立訂單適用的新制費率。<strong>12/10（含）以前成立的訂單</strong>請改用舊制計算機。</p>
-                    <p class="small text-muted mb-2">新制主要調整：</p>
-                    <ul class="small ps-3">
-                        <li class="mb-2"><strong>成交手續費依品類調整</strong>：分類細分到第三、四層，各品類調幅不同，部分調降。</li>
-                        <li class="mb-2"><strong>促銷檔期加收</strong>：一般賣家 +2% → <strong>+4%</strong>、商城 +3% → <strong>+5%</strong>；參加長期蝦幣回饋免收，只參加短期仍要加收。</li>
-                        <li class="mb-2"><strong>免運及進階賣家專案</strong>：方案一 6% → <strong>6.5%</strong>；方案二 $60 → <strong>$65</strong>（$99 以下 6% → 6.5%）；冷凍訂單 $100 以上維持每單 $80。</li>
-                        <li class="mb-2"><strong>預購訂單服務費</strong>：備貨 2 天降為 <strong>2%</strong>，3 天以上維持 3%。</li>
-                        <li class="mb-2"><strong>促銷檔期增加</strong>：每月 5–6 天（例：12/11、12/12、12/17、12/18、12/25）。</li>
-                        <li class="mb-2"><strong>新賣場類型「蝦皮小舖」</strong>（2027/1/7 開通）：每月前 5 筆免成交手續費。</li>
-                    </ul>
-                    <p class="small mb-0">
-                        <a href="https://seller.shopee.tw/edu/article/28668" target="_blank" class="text-decoration-none">
-                            <i class="bi bi-box-arrow-up-right"></i> 蝦皮官方公告
-                        </a>
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <a href="old.html" class="btn btn-outline-secondary" data-carry-query><i class="bi bi-clock-history"></i> 前往舊制計算機</a>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
-                </div>
+    <dialog class="modal" id="feeUpdateModal" data-autoshow="false" aria-labelledby="feeUpdateModalLabel">
+        <div class="modal-head">
+            <div>
+                <div class="eyebrow">公告 · 2026/12/11</div>
+                <h2 id="feeUpdateModalLabel" class="mt-1">計算機已改為 12/11 新制</h2>
             </div>
+            <button type="button" class="btn btn-ghost btn-icon btn-sm" data-ui-close aria-label="關閉"><i class="bi bi-x-lg"></i></button>
         </div>
-    </div>
+        <div class="modal-body">
+            <p class="mb-3">首頁計算機已改為 <strong>2026/12/11 00:00</strong> 起成立訂單適用的新制費率。<strong>12/10（含）以前成立的訂單</strong>請改用舊制計算機。</p>
+            <p class="text-muted mb-2">新制主要調整：</p>
+            <ul class="list-disc pl-5 space-y-2 mb-3">
+                <li><strong>成交手續費依品類調整</strong>：分類細分到第三、四層，各品類調幅不同，部分調降。</li>
+                <li><strong>促銷檔期加收</strong>：一般賣家 +2% → <strong>+4%</strong>、商城 +3% → <strong>+5%</strong>；參加長期蝦幣回饋免收，只參加短期仍要加收。</li>
+                <li><strong>免運及進階賣家專案</strong>：方案一 6% → <strong>6.5%</strong>；方案二 $60 → <strong>$65</strong>（$99 以下 6% → 6.5%）；冷凍訂單 $100 以上維持每單 $80。</li>
+                <li><strong>預購訂單服務費</strong>：備貨 2 天降為 <strong>2%</strong>，3 天以上維持 3%。</li>
+                <li><strong>促銷檔期增加</strong>：每月 5–6 天（例：12/11、12/12、12/17、12/18、12/25）。</li>
+                <li><strong>新賣場類型「蝦皮小舖」</strong>（2027/1/7 開通）：每月前 5 筆免成交手續費。</li>
+            </ul>
+            <a href="https://seller.shopee.tw/edu/article/28668" target="_blank" rel="noopener">
+                <i class="bi bi-box-arrow-up-right"></i> 蝦皮官方公告
+            </a>
+        </div>
+        <div class="modal-foot">
+            <a href="old.html" class="btn btn-outline" data-carry-query><i class="bi bi-clock-history"></i> 前往舊制計算機</a>
+                    <button type="button" class="btn btn-outline" data-ui-close>關閉</button>
+        </div>
+    </dialog>
     <!-- /include:announcement-modal -->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/announcement.js?20261116b"></script>
-    <script src="js/site.js?20261117a"></script>
+    <script src="js/ui.js?20261118"></script>
+    <script src="js/announcement.js?20261118"></script>
+    <script src="js/site.js?20261118"></script>
 </body>
 
 </html>

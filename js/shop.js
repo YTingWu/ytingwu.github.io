@@ -41,11 +41,13 @@
     const money = n => (n == null || !Number.isFinite(n)) ? '—' : (n < 0 ? '-$ ' : '$ ') + Math.abs(Math.round(n)).toLocaleString('zh-TW');
     const pct = n => (n == null || !Number.isFinite(n)) ? '—' : n.toFixed(1) + '%';
     const fmtTime = t => { const d = new Date(t); const p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}/${p(d.getMonth() + 1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; };
-    const modal = id => bootstrap.Modal.getOrCreateInstance($(id));
+    // 對話框：ui.js 的 <dialog>（show／hide 與 Bootstrap 版同名，呼叫端不用改）
+    const modal = id => ({ show: () => UI.modal.show($(id)), hide: () => UI.modal.hide($(id)) });
+    // 對話框關閉後只做一次（取代 hidden.bs.modal）
+    const onceHidden = (id, fn) => $(id).addEventListener('ui:hidden', fn, { once: true });
 
     function toast(msg) {
-        $('shopToastBody').textContent = msg;
-        bootstrap.Toast.getOrCreateInstance($('shopToast'), { delay: 3500 }).show();
+        UI.toast(esc(msg), { delay: 3500 });
     }
 
     function currentShop() {
@@ -98,7 +100,7 @@
         if (alt) {
             const b = document.createElement('button');
             b.type = 'button';
-            b.className = 'btn btn-outline-primary confirm-alt';
+            b.className = 'btn btn-outline confirm-alt';
             b.textContent = alt.text;
             confirmAltCb = alt.cb;
             b.addEventListener('click', () => { modal('confirmModal').hide(); confirmAltCb && confirmAltCb(); });
@@ -113,7 +115,8 @@
         $('nameModalInput').value = value || '';
         nameCb = cb;
         modal('nameModal').show();
-        $('nameModal').addEventListener('shown.bs.modal', () => { $('nameModalInput').focus(); $('nameModalInput').select(); }, { once: true });
+        $('nameModalInput').focus();
+        $('nameModalInput').select();
     }
 
 
@@ -129,7 +132,7 @@
 
     // ---------- 初始化 ----------
     async function init() {
-        if (storage._mem) $('storageWarning').classList.remove('d-none');
+        if (storage._mem) $('storageWarning').hidden = false;
         // 快速計算以前存的（新制）設定搬進自建商品；快速計算頁也會做，誰先開誰搬
         let mig = { moved: 0 };
         try { mig = SD.migrateQuickConfigsInStorage(storage); } catch (e) { /* 搬不了不影響賣場頁 */ }
@@ -148,6 +151,7 @@
         }
         bindEvents();
         bindBreakdownPopover();
+        bindMenus();
         render();
         if (mig.moved) { showTab('own'); toast(`快速計算的 ${mig.moved} 筆已存設定已搬到「${mig.shopName}」的自建商品，獲利改依賣場設定計算`); }
 
@@ -157,24 +161,20 @@
             ctx.state = state;
             render();
         });
-        // 深色模式切換時同步 Bootstrap 主題
-        new MutationObserver(() => {
-            document.documentElement.setAttribute('data-bs-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
-        }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     }
 
     // ---------- 整頁 ----------
     function render() {
         const shop = currentShop();
-        $('privacyBackupHint').classList.toggle('d-none', !shop);
+        $('privacyBackupHint').hidden = !shop;
         if (!shop) {
-            $('onboarding').classList.remove('d-none');
-            $('shopApp').classList.add('d-none');
+            $('onboarding').hidden = false;
+            $('shopApp').hidden = true;
             return;
         }
         state.activeShopId = shop.id;
-        $('onboarding').classList.add('d-none');
-        $('shopApp').classList.remove('d-none');
+        $('onboarding').hidden = true;
+        $('shopApp').hidden = false;
         $('shopSelect').innerHTML = state.shops.map(s => `<option value="${esc(s.id)}"${s.id === shop.id ? ' selected' : ''}>${esc(s.name)}（${s.products.length}）</option>`).join('');
         renderSettingsLine(shop);
         renderSettings();
@@ -188,8 +188,9 @@
     }
 
     function showTab(name) {
+        // ui.js 以點擊委派切換分頁，並發出 ui:tab
         const btn = document.querySelector(`.shop-tabs [data-tab="${name}"]`);
-        if (btn) bootstrap.Tab.getOrCreateInstance(btn).show();
+        if (btn && btn.getAttribute('aria-selected') !== 'true') btn.click();
     }
 
     function renderSettingsLine(shop) {
@@ -212,10 +213,10 @@
     // ---------- 共用：摘要卡片、淨利格、分頁、表頭排序 ----------
     function cardsHtml(scope, items, curFilter) {
         return items.map(({ label, value, cls, filter }) => {
-            const body = `<div class="label">${label}${filter ? ' <i class="bi bi-funnel" aria-hidden="true"></i>' : ''}</div><div class="value ${cls || ''}">${value}</div>`;
-            return `<div class="col-6 col-md">` + (filter
-                ? `<button type="button" class="summary-card summary-card-btn${curFilter === filter ? ' active' : ''}" data-action="card-filter" data-scope="${scope}" data-filter="${filter}" aria-pressed="${curFilter === filter}" title="${curFilter === filter ? '取消篩選' : '只列出這些'}">${body}</button>`
-                : `<div class="summary-card">${body}</div>`) + `</div>`;
+            const body = `<div class="shop-stat-label">${label}${filter ? ' <i class="bi bi-funnel" aria-hidden="true"></i>' : ''}</div><div class="shop-stat-value num ${cls || ''}">${value}</div>`;
+            return filter
+                ? `<button type="button" class="shop-stat shop-stat-btn${curFilter === filter ? ' active' : ''}" data-action="card-filter" data-scope="${scope}" data-filter="${filter}" aria-pressed="${curFilter === filter}" title="${curFilter === filter ? '取消篩選' : '只列出這些'}">${body}</button>`
+                : `<div class="shop-stat">${body}</div>`;
         }).join('');
     }
 
@@ -249,17 +250,17 @@
         const nums = [...new Set([1, cur - 1, cur, cur + 1, pages])].filter(x => x >= 1 && x <= pages).sort((a, b) => a - b);
         const items = [];
         const btn = (page, label, { disabled = false, active = false, aria = '' } = {}) =>
-            `<li class="page-item${disabled ? ' disabled' : ''}${active ? ' active' : ''}"><button type="button" class="page-link" data-action="page" data-scope="${scope}" data-page="${page}"${disabled ? ' disabled' : ''}${active ? ' aria-current="page"' : ''}${aria ? ` aria-label="${aria}"` : ''}>${label}</button></li>`;
+            `<button type="button" class="ov-page${active ? ' active' : ''}" data-action="page" data-scope="${scope}" data-page="${page}"${disabled ? ' disabled' : ''}${active ? ' aria-current="page"' : ''}${aria ? ` aria-label="${aria}"` : ''}>${label}</button>`;
         items.push(btn(cur - 1, '<i class="bi bi-chevron-left"></i>', { disabled: cur <= 1, aria: '上一頁' }));
         nums.forEach((x, k) => {
-            if (k && x - nums[k - 1] > 1) items.push('<li class="page-item disabled"><span class="page-link">…</span></li>');
+            if (k && x - nums[k - 1] > 1) items.push('<span class="ov-page-gap" aria-hidden="true">…</span>');
             items.push(btn(x, x, { active: x === cur }));
         });
         items.push(btn(cur + 1, '<i class="bi bi-chevron-right"></i>', { disabled: cur >= pages, aria: '下一頁' }));
         return `<div class="ov-pager-size"><label for="${scope}PageSize">每頁</label>` +
-            `<select class="form-select form-select-sm page-size" id="${scope}PageSize" data-scope="${scope}">${PAGE_SIZES.map(x => `<option value="${x}"${x === st.size ? ' selected' : ''}>${x}</option>`).join('')}</select>` +
+            `<select class="field field-sm page-size" id="${scope}PageSize" data-scope="${scope}">${PAGE_SIZES.map(x => `<option value="${x}"${x === st.size ? ' selected' : ''}>${x}</option>`).join('')}</select>` +
             `<span>筆，共 ${total} ${scope === 'sp' ? '個商品' : '筆'}</span></div>` +
-            (pages > 1 ? `<nav aria-label="分頁"><ul class="pagination pagination-sm mb-0">${items.join('')}</ul></nav>` : '');
+            (pages > 1 ? `<nav class="ov-pages num" aria-label="分頁">${items.join('')}</nav>` : '');
     }
 
     function paginate(st, rows) {
@@ -276,14 +277,14 @@
         return `<button type="button" class="ov-sort${on ? ' active' : ''}${cls ? ' ' + cls : ''}" data-action="own-sort" data-key="${key}" aria-sort="${!on ? 'none' : s.dir > 0 ? 'ascending' : 'descending'}" title="${title}">${label}<i class="bi ${icon}" aria-hidden="true"></i></button>`;
     }
 
-    const chip = (cls, icon, text, title) => `<span class="ov-chip${cls ? ' ' + cls : ''}"${title ? ` title="${esc(title)}"` : ''}>${icon ? `<i class="bi bi-${icon}" aria-hidden="true"></i>` : ''}${text}</span>`;
+    const chip = (cls, icon, text, title) => `<span class="chip ov-chip${cls ? ' ' + cls : ''}"${title ? ` title="${esc(title)}"` : ''}>${icon ? `<i class="bi bi-${icon}" aria-hidden="true"></i>` : ''}${text}</span>`;
 
     function productChips(shop, p) {
         const isShop = shop.settings.seller === 'shop';
         const fee = feeDescription(p, shop);
         const out = [];
-        if (fee.rate == null) out.push(chip('ov-chip-warn', 'exclamation-triangle-fill', '請選類別'));
-        if (p.fee.needsReview) out.push(chip('ov-chip-warn', 'exclamation-triangle-fill', '請重選類別'));
+        if (fee.rate == null) out.push(chip('chip-accent', 'exclamation-triangle-fill', '請選類別'));
+        if (p.fee.needsReview) out.push(chip('chip-accent', 'exclamation-triangle-fill', '請重選類別'));
         if (p.missingInLastImport) out.push(chip('ov-chip-muted', 'cloud-slash', '本次未匯入'));
         if (fee.rate != null) out.push(chip('', 'tag', esc(fee.text), fee.path ? fee.path.join(' > ') : ''));
         if (p.preorder !== '0' && !isShop) out.push(chip('', 'clock-history', `預購 ${p.preorder}%`));
@@ -296,17 +297,18 @@
         const others = state.shops.length > 1;
         const own = !p.shopeeItemId;
         const single = p.variations.length === 1;
-        return `<div class="dropdown sx-menu">
-  <button class="btn btn-sm btn-link text-secondary" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-expanded="false" aria-label="更多操作：${esc(p.name)}"><i class="bi bi-three-dots-vertical"></i></button>
-  <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item" data-action="product-edit" data-pid="${p.id}"><i class="bi bi-pencil"></i> 編輯${own ? '' : '（類別、預購、發票…）'}</button></li>
-    ${single ? `<li><a class="dropdown-item" href="index.html?${SD.quickCalcQuery(shop, p, p.variations[0], ctx)}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> 在快速計算開啟</a></li>` : ''}
-    ${own ? `<li><button class="dropdown-item" data-action="product-copy" data-pid="${p.id}"><i class="bi bi-copy"></i> 複製</button></li>` : ''}
-    ${others ? `<li><button class="dropdown-item" data-action="product-move" data-pid="${p.id}"><i class="bi bi-box-arrow-right"></i> 搬到其他賣場</button></li>
-    <li><button class="dropdown-item" data-action="product-copyto" data-pid="${p.id}"><i class="bi bi-files"></i> 複製到其他賣場</button></li>` : ''}
-    <li><hr class="dropdown-divider"></li>
-    <li><button class="dropdown-item text-danger" data-action="product-delete" data-pid="${p.id}"><i class="bi bi-trash"></i> 刪除${own ? '' : '整個商品'}</button></li>
-  </ul></div>`;
+        const mid = `pmenu-${p.id}`;
+        return `<div class="sx-menu">
+  <button type="button" class="btn btn-ghost btn-icon btn-sm" data-menu="#${mid}" aria-haspopup="menu" aria-expanded="false" aria-label="更多操作：${esc(p.name)}"><i class="bi bi-three-dots-vertical"></i></button>
+  <div class="shop-menu" id="${mid}" role="menu" popover>
+    <button type="button" role="menuitem" data-action="product-edit" data-pid="${p.id}"><i class="bi bi-pencil"></i> 編輯${own ? '' : '（類別、預購、發票…）'}</button>
+    ${single ? `<a role="menuitem" href="index.html?${SD.quickCalcQuery(shop, p, p.variations[0], ctx)}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> 在快速計算開啟</a>` : ''}
+    ${own ? `<button type="button" role="menuitem" data-action="product-copy" data-pid="${p.id}"><i class="bi bi-copy"></i> 複製</button>` : ''}
+    ${others ? `<button type="button" role="menuitem" data-action="product-move" data-pid="${p.id}"><i class="bi bi-box-arrow-right"></i> 搬到其他賣場</button>
+    <button type="button" role="menuitem" data-action="product-copyto" data-pid="${p.id}"><i class="bi bi-files"></i> 複製到其他賣場</button>` : ''}
+    <hr>
+    <button type="button" role="menuitem" data-action="product-delete" data-pid="${p.id}"><i class="bi bi-trash"></i> 刪除${own ? '' : '整個商品'}</button>
+  </div></div>`;
     }
 
     const ownProducts = shop => shop.products.filter(p => !p.shopeeItemId);
@@ -354,10 +356,10 @@
         const filter = $('ownFilter').value;
         $('ownCards').innerHTML = cardsHtml('own', [
             { label: '商品數', value: sum.products },
-            { label: '虧本商品', value: sum.loss, cls: sum.loss ? 'text-danger' : '', filter: 'loss' },
+            { label: '虧本商品', value: sum.loss, cls: sum.loss ? 'text-loss' : '', filter: 'loss' },
             { label: '平均利潤率（一般日）', value: pct(sum.avgRegular) },
             ...(isShop ? [] : [{ label: '平均利潤率（促銷檔期）', value: pct(sum.avgEvent) }]),
-            { label: '待補進價／類別', value: sum.incomplete, cls: sum.incomplete ? 'text-warning' : '', filter: 'incomplete' },
+            { label: '待補進價／類別', value: sum.incomplete, cls: sum.incomplete ? 'text-accent' : '', filter: 'incomplete' },
         ], filter);
 
         const rows = ownRows(shop);
@@ -365,33 +367,33 @@
         $('ownPager').innerHTML = pagerHtml('own', ui.own, rows.length, pages);
         $('ownCount').textContent = !all.length ? '' : rows.length === all.length ? `${all.length} 個商品` : `列出 ${rows.length}／${all.length} 個商品`;
         const n = ui.own.selected.size;
-        $('ownBulkDelete').classList.toggle('d-none', n === 0);
+        $('ownBulkDelete').hidden = n === 0;
         $('ownBulkDelete').querySelector('span').textContent = n;
 
         if (!all.length) {
-            $('ownBody').innerHTML = `<div class="sp-empty"><i class="bi bi-box-seam sp-empty-icon" aria-hidden="true"></i><h2 class="h6 fw-bold mb-1">還沒有自建商品</h2>` +
-                `<p class="small text-muted mb-3">還沒上架、想先試算的商品，或不在蝦皮賣的商品放這裡；和快速計算左側的列表是同一份。蝦皮匯入的商品在「蝦皮商品」分頁。</p>` +
-                `<div class="d-flex flex-wrap justify-content-center gap-2"><button class="btn btn-primary" data-action="product-new"><i class="bi bi-plus-lg"></i> 新增商品</button>` +
-                `<a class="btn btn-outline-secondary" href="index.html"><i class="bi bi-calculator"></i> 到快速計算試算後儲存</a></div></div>`;
+            $('ownBody').innerHTML = `<div class="sp-empty"><i class="bi bi-box-seam sp-empty-icon" aria-hidden="true"></i><h2 class="font-serif text-lg font-bold mb-1">還沒有自建商品</h2>` +
+                `<p class="hint mb-4">還沒上架、想先試算的商品，或不在蝦皮賣的商品放這裡；和快速計算左側的列表是同一份。蝦皮匯入的商品在「蝦皮商品」分頁。</p>` +
+                `<div class="flex flex-wrap justify-center gap-2"><button type="button" class="btn btn-primary" data-action="product-new"><i class="bi bi-plus-lg"></i> 新增商品</button>` +
+                `<a class="btn btn-outline" href="index.html"><i class="bi bi-calculator"></i> 到快速計算試算後儲存</a></div></div>`;
             return;
         }
-        if (!rows.length) { $('ownBody').innerHTML = '<div class="text-center text-muted py-4">沒有符合條件的商品</div>'; return; }
+        if (!rows.length) { $('ownBody').innerHTML = '<div class="text-center text-muted text-sm py-6">沒有符合條件的商品</div>'; return; }
 
         const allChecked = pageRows.every(r => ui.own.selected.has(r.p.id));
         const head = `<tr>
-<th class="sx-sticky sx-c-name"><div class="sx-namecell"><input class="form-check-input own-all" type="checkbox" ${allChecked ? 'checked' : ''} aria-label="全選本頁商品" title="全選本頁商品">${sortTh('name', '商品')}</div></th>
+<th class="sx-sticky sx-c-name"><div class="sx-namecell"><input class="own-all" type="checkbox" ${allChecked ? 'checked' : ''} aria-label="全選本頁商品" title="全選本頁商品">${sortTh('name', '商品')}</div></th>
 <th class="sx-c-in">${sortTh('cost', '進價')}</th>
 <th class="sx-c-in">${sortTh('price', '售價')}</th>
-<th class="sx-c-num">${sortTh('profit', '一般日淨利', 'justify-content-end')}</th>
-${isShop ? '' : `<th class="sx-c-num">${sortTh('eventProfit', '促銷檔期淨利', 'justify-content-end')}</th>`}
-<th class="sx-c-act"><span class="visually-hidden">操作</span></th></tr>`;
+<th class="sx-c-num">${sortTh('profit', '一般日淨利', 'justify-end')}</th>
+${isShop ? '' : `<th class="sx-c-num">${sortTh('eventProfit', '促銷檔期淨利', 'justify-end')}</th>`}
+<th class="sx-c-act"><span class="sr-only">操作</span></th></tr>`;
         const body = pageRows.map(({ p, m }) => {
             const v = p.variations[0];
             return `<tr class="ov-bd-scope" data-pid="${p.id}">
-<td class="sx-sticky sx-c-name"><div class="sx-namecell"><input type="checkbox" class="form-check-input own-chk" data-pid="${p.id}" ${ui.own.selected.has(p.id) ? 'checked' : ''} aria-label="選取 ${esc(p.name)}">
+<td class="sx-sticky sx-c-name"><div class="sx-namecell"><input type="checkbox" class="own-chk" data-pid="${p.id}" ${ui.own.selected.has(p.id) ? 'checked' : ''} aria-label="選取 ${esc(p.name)}">
 <div class="sx-name-main"><div class="ov-name" title="${esc(p.name)}">${esc(p.name || '（未命名）')}</div><div class="ov-sub">${productChips(shop, p)}</div></div></div>${m.hasRate ? `<template class="ov-bd-tpl">${breakdownHtml(shop, p, v, m)}</template>` : ''}</td>
-<td class="sx-c-in"><input type="number" class="form-control form-control-sm sx-input own-cost${m.hasCost ? '' : ' sx-input-missing'}" data-pid="${p.id}" value="${p.cost ?? ''}" placeholder="待補" min="0" step="any" aria-label="進價"></td>
-<td class="sx-c-in"><input type="number" class="form-control form-control-sm sx-input own-price" data-pid="${p.id}" value="${v.price || ''}" min="0" step="1" aria-label="售價"></td>
+<td class="sx-c-in"><input type="number" class="field field-sm sx-input own-cost${m.hasCost ? '' : ' sx-input-missing'}" data-pid="${p.id}" value="${p.cost ?? ''}" placeholder="待補" min="0" step="any" aria-label="進價"></td>
+<td class="sx-c-in"><input type="number" class="field field-sm sx-input own-price" data-pid="${p.id}" value="${v.price || ''}" min="0" step="1" aria-label="售價"></td>
 <td class="sx-c-num c-reg">${profitCell(m, m.regular, low)}</td>
 ${isShop ? '' : `<td class="sx-c-num c-evt">${profitCell(m, m.event, low)}</td>`}
 <td class="sx-c-act">${productMenu(shop, p)}</td></tr>`;
@@ -421,14 +423,14 @@ ${isShop ? '' : `<td class="sx-c-num c-evt">${profitCell(m, m.event, low)}</td>`
     function spVarRow(shop, p, v, m, low, isShop) {
         const d = v.draft;
         const pill = d ? (d.status === 'exported'
-            ? '<span class="ov-chip ov-chip-muted sx-pill" title="已匯出，等蝦皮更新後重新匯入就會清除"><i class="bi bi-cloud-arrow-up" aria-hidden="true"></i>已匯出</span>'
-            : '<span class="ov-chip ov-chip-info sx-pill"><i class="bi bi-pencil-fill" aria-hidden="true"></i>待匯出</span>') : '';
+            ? '<span class="chip ov-chip ov-chip-muted sx-pill" title="已匯出，等蝦皮更新後重新匯入就會清除"><i class="bi bi-cloud-arrow-up" aria-hidden="true"></i>已匯出</span>'
+            : '<span class="chip chip-accent ov-chip sx-pill"><i class="bi bi-pencil-fill" aria-hidden="true"></i>待匯出</span>') : '';
         return `<tr class="sx-var ov-bd-scope" data-pid="${p.id}" data-vid="${v.id}">
-<td class="sx-sticky sx-c-name"><div class="sx-namecell"><input type="checkbox" class="form-check-input sp-chk" data-vid="${v.id}" ${ui.sp.selected.has(v.id) ? 'checked' : ''} aria-label="選取規格 ${esc(v.name || '單一規格')}">
+<td class="sx-sticky sx-c-name"><div class="sx-namecell"><input type="checkbox" class="sp-chk" data-vid="${v.id}" ${ui.sp.selected.has(v.id) ? 'checked' : ''} aria-label="選取規格 ${esc(v.name || '單一規格')}">
 <div class="sx-name-main"><span class="sx-var-name">${esc(v.name || '（單一規格）')}</span>${pill}</div></div>${m.hasRate ? `<template class="ov-bd-tpl">${breakdownHtml(shop, p, v, m)}</template>` : ''}</td>
-<td class="sx-c-in"><input type="number" class="form-control form-control-sm sx-input sp-cost${m.hasCost ? '' : ' sx-input-missing'}" data-pid="${p.id}" data-vid="${v.id}" value="${v.cost ?? ''}" placeholder="待補" min="0" step="any" aria-label="進價"></td>
-<td class="sx-c-in"><input type="number" class="form-control form-control-sm sx-input sp-price${d && d.price != null ? ' changed' : ''}" data-pid="${p.id}" data-vid="${v.id}" value="${SD.effectivePrice(v)}" min="1" max="499999" step="1" aria-label="售價">${d && d.price != null ? `<div class="orig">原 ${money(v.price)}</div>` : ''}</td>
-<td class="sx-c-in sx-c-stock"><input type="number" class="form-control form-control-sm sx-input sp-stock${d && d.stock != null ? ' changed' : ''}" data-pid="${p.id}" data-vid="${v.id}" value="${d && d.stock != null ? d.stock : (v.stock ?? '')}" min="0" step="1" aria-label="庫存">${d && d.stock != null ? `<div class="orig">原 ${v.stock ?? '—'}</div>` : ''}</td>
+<td class="sx-c-in"><input type="number" class="field field-sm sx-input sp-cost${m.hasCost ? '' : ' sx-input-missing'}" data-pid="${p.id}" data-vid="${v.id}" value="${v.cost ?? ''}" placeholder="待補" min="0" step="any" aria-label="進價"></td>
+<td class="sx-c-in"><input type="number" class="field field-sm sx-input sp-price${d && d.price != null ? ' changed' : ''}" data-pid="${p.id}" data-vid="${v.id}" value="${SD.effectivePrice(v)}" min="1" max="499999" step="1" aria-label="售價">${d && d.price != null ? `<div class="orig">原 ${money(v.price)}</div>` : ''}</td>
+<td class="sx-c-in sx-c-stock"><input type="number" class="field field-sm sx-input sp-stock${d && d.stock != null ? ' changed' : ''}" data-pid="${p.id}" data-vid="${v.id}" value="${d && d.stock != null ? d.stock : (v.stock ?? '')}" min="0" step="1" aria-label="庫存">${d && d.stock != null ? `<div class="orig">原 ${v.stock ?? '—'}</div>` : ''}</td>
 <td class="sx-c-num c-reg">${profitCell(m, m.regular, low)}</td>
 ${isShop ? '' : `<td class="sx-c-num c-evt">${profitCell(m, m.event, low)}</td>`}
 </tr>`;
@@ -439,9 +441,9 @@ ${isShop ? '' : `<td class="sx-c-num c-evt">${profitCell(m, m.event, low)}</td>`
         if (!shop) return;
         const all = shopeeProducts(shop);
         const has = all.length > 0;
-        $('spEmpty').classList.toggle('d-none', has);
-        $('spBody').classList.toggle('d-none', !has);
-        $('rpFooter').classList.toggle('d-none', !has);
+        $('spEmpty').hidden = has;
+        $('spBody').hidden = !has;
+        $('rpFooter').hidden = !has;
         const vids = new Set(all.flatMap(p => p.variations.map(v => v.id)));
         [...ui.sp.selected].forEach(id => { if (!vids.has(id)) ui.sp.selected.delete(id); });
         updatePendingBadge();
@@ -453,19 +455,19 @@ ${isShop ? '' : `<td class="sx-c-num c-evt">${profitCell(m, m.event, low)}</td>`
         const filter = $('spFilter').value;
         $('spCards').innerHTML = cardsHtml('sp', [
             { label: '商品／規格', value: `${sum.products}<span class="value-sub">／${sum.variations}</span>` },
-            { label: '虧本規格', value: sum.loss, cls: sum.loss ? 'text-danger' : '', filter: 'loss' },
+            { label: '虧本規格', value: sum.loss, cls: sum.loss ? 'text-loss' : '', filter: 'loss' },
             { label: '平均利潤率（一般日）', value: pct(sum.avgRegular) },
             ...(isShop ? [] : [{ label: '平均利潤率（促銷檔期）', value: pct(sum.avgEvent) }]),
-            { label: '待補進價／類別', value: sum.incomplete, cls: sum.incomplete ? 'text-warning' : '', filter: 'incomplete' },
+            { label: '待補進價／類別', value: sum.incomplete, cls: sum.incomplete ? 'text-accent' : '', filter: 'incomplete' },
         ], filter);
 
         if (shop.salesFile) {
             const stale = SD.isStale(shop);
             const ft = shop.salesFile.fileTime;
-            $('spFreshness').innerHTML = `<div class="sp-fresh${stale ? ' sp-fresh-stale' : ''}"><i class="bi bi-clock-history" aria-hidden="true"></i><span>售價與庫存來自 <strong>${fmtTime(SD.salesDataTime(shop))}</strong> ${ft ? '從蝦皮下載' : '匯入'}的檔案` +
+            $('spFreshness').innerHTML = `<div class="sp-fresh ${stale ? 'note' : 'note-plain'}"><i class="bi bi-clock-history" aria-hidden="true"></i><span>售價與庫存來自 <strong>${fmtTime(SD.salesDataTime(shop))}</strong> ${ft ? '從蝦皮下載' : '匯入'}的檔案` +
                 (stale ? '，已超過 24 小時，期間的訂單可能讓庫存變少；建議重新下載、匯入後再改。' : '。') + `</span></div>`;
         } else {
-            $('spFreshness').innerHTML = `<div class="sp-fresh sp-fresh-stale"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i><span>還沒有「價格及庫存」原檔，產生批次更新檔前請先<a href="#" data-action="import-shopee">重新匯入</a>。</span></div>`;
+            $('spFreshness').innerHTML = `<div class="sp-fresh note"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i><span>還沒有「價格及庫存」原檔，產生批次更新檔前請先<a href="#" data-action="import-shopee">重新匯入</a>。</span></div>`;
         }
 
         const groups = spGroups(shop);
@@ -475,20 +477,20 @@ ${isShop ? '' : `<td class="sx-c-num c-evt">${profitCell(m, m.event, low)}</td>`
         $('spCount').textContent = filter === 'all' && !$('spSearch').value.trim() ? `${sum.products} 個商品、${sum.variations} 個規格` : `列出 ${groups.length} 個商品、${shownVars} 個規格`;
 
         if (!groups.length) {
-            $('spList').innerHTML = '<div class="text-center text-muted py-4">沒有符合條件的規格</div>';
+            $('spList').innerHTML = '<div class="text-center text-muted text-sm py-6">沒有符合條件的規格</div>';
         } else {
             const pageVids = pageRows.flatMap(g => g.vs.map(x => x.v.id));
             const allChecked = pageVids.length > 0 && pageVids.every(id => ui.sp.selected.has(id));
             const cols = isShop ? 5 : 6;
             const head = `<tr>
-<th class="sx-sticky sx-c-name"><div class="sx-namecell"><input class="form-check-input sp-all" type="checkbox" ${allChecked ? 'checked' : ''} aria-label="全選本頁規格" title="全選本頁規格"><span>商品／規格</span></div></th>
+<th class="sx-sticky sx-c-name"><div class="sx-namecell"><input class="sp-all" type="checkbox" ${allChecked ? 'checked' : ''} aria-label="全選本頁規格" title="全選本頁規格"><span>商品／規格</span></div></th>
 <th class="sx-c-in">進價</th><th class="sx-c-in">售價</th><th class="sx-c-in sx-c-stock">庫存</th>
 <th class="sx-c-num">一般日淨利</th>${isShop ? '' : '<th class="sx-c-num">促銷檔期淨利</th>'}</tr>`;
             const body = pageRows.map(({ p, vs }) => {
                 const gChecked = vs.every(x => ui.sp.selected.has(x.v.id));
                 // 標題列跨滿整列；內層 sticky，手機橫滑時名稱與 ⋯ 留在畫面上
                 return `<tr class="sx-group" data-pid="${p.id}">
-<td colspan="${cols}" class="sx-group-cell"><div class="sx-namecell sx-group-inner"><input type="checkbox" class="form-check-input sp-gchk" data-pid="${p.id}" ${gChecked ? 'checked' : ''} aria-label="選取「${esc(p.name)}」列出的所有規格" title="選取這個商品列出的所有規格">
+<td colspan="${cols}" class="sx-group-cell"><div class="sx-namecell sx-group-inner"><input type="checkbox" class="sp-gchk" data-pid="${p.id}" ${gChecked ? 'checked' : ''} aria-label="選取「${esc(p.name)}」列出的所有規格" title="選取這個商品列出的所有規格">
 <div class="sx-name-main"><div class="ov-name" title="${esc(p.name)}">${esc(p.name)}</div><div class="ov-sub">${productChips(shop, p)}</div></div>${productMenu(shop, p)}</div></td></tr>` +
                     vs.map(({ v, m }) => spVarRow(shop, p, v, m, low, isShop)).join('');
             }).join('');
@@ -502,10 +504,10 @@ ${isShop ? '' : `<td class="sx-c-num c-evt">${profitCell(m, m.event, low)}</td>`
     function updateSpSelection() {
         const n = ui.sp.selected.size;
         $('spSelCount').textContent = n;
-        $('spSelCount').classList.toggle('d-none', n === 0);
+        $('spSelCount').hidden = n === 0;
         $('spBatchHeader').textContent = n ? `已勾選 ${n} 個規格` : '先在表格勾選規格';
         document.querySelectorAll('#spBatchMenu [data-need-sel]').forEach(b => { b.disabled = n === 0; });
-        $('spClearSel').classList.toggle('d-none', n === 0);
+        $('spClearSel').hidden = n === 0;
         const c = $('spPanelCount');
         if (c) c.textContent = n;
         if (ui.sp.panel && n === 0) { ui.sp.panel = null; renderSpPanel(); }
@@ -514,29 +516,29 @@ ${isShop ? '' : `<td class="sx-c-num c-evt">${profitCell(m, m.event, low)}</td>`
     const PANELS = {
         adjust: {
             title: '漲跌％／加減金額', icon: 'percent',
-            body: `<div class="input-group input-group-sm sp-panel-group">
-  <select class="form-select" id="spAdjType" aria-label="調整方式"><option value="pct">漲跌 %</option><option value="amt">加減 $</option></select>
-  <input type="number" class="form-control" id="spAdjValue" placeholder="例 5 或 -10" step="any" aria-label="調整數字">
-  <select class="form-select" id="spRound" aria-label="取整"><option value="1">取到個位</option><option value="10">取到十位</option><option value="9">尾數 9</option></select>
+            body: `<div class="input-group sp-panel-group">
+  <select class="field field-sm" id="spAdjType" aria-label="調整方式"><option value="pct">漲跌 %</option><option value="amt">加減 $</option></select>
+  <input type="number" class="field field-sm" id="spAdjValue" placeholder="例 5 或 -10" step="any" aria-label="調整數字">
+  <select class="field field-sm" id="spRound" aria-label="取整"><option value="1">取到個位</option><option value="10">取到十位</option><option value="9">尾數 9</option></select>
 </div>`, hint: '以蝦皮匯入的原價為基準，重複套用不會累加。', ok: '套用',
         },
         margin: {
             title: '依目標利潤率回推售價', icon: 'bullseye',
-            body: `<div class="input-group input-group-sm sp-panel-group">
-  <span class="input-group-text">目標利潤率</span>
-  <input type="number" class="form-control" id="spMargin" value="10" step="any" aria-label="目標利潤率">
-  <span class="input-group-text">%</span>
-  <select class="form-select" id="spMarginScenario" aria-label="情境"><option value="regular">一般日</option><option value="event">促銷檔期</option></select>
+            body: `<div class="input-group sp-panel-group">
+  <span class="addon">目標利潤率</span>
+  <input type="number" class="field field-sm" id="spMargin" value="10" step="any" aria-label="目標利潤率">
+  <span class="addon">%</span>
+  <select class="field field-sm" id="spMarginScenario" aria-label="情境"><option value="regular">一般日</option><option value="event">促銷檔期</option></select>
 </div>`, hint: '缺進價或類別的規格會略過。', ok: '回推售價',
         },
         stock: {
             title: '設定庫存', icon: 'box',
-            body: `<div class="input-group input-group-sm sp-panel-group sp-panel-narrow"><span class="input-group-text">庫存</span><input type="number" class="form-control" id="spStock" min="0" step="1" aria-label="庫存"></div>`,
+            body: `<div class="input-group sp-panel-group sp-panel-narrow"><span class="addon">庫存</span><input type="number" class="field field-sm" id="spStock" min="0" step="1" aria-label="庫存"></div>`,
             hint: '', ok: '設定',
         },
         cost: {
             title: '設定進價', icon: 'cash-coin',
-            body: `<div class="input-group input-group-sm sp-panel-group sp-panel-narrow"><span class="input-group-text">進價 $</span><input type="number" class="form-control" id="spCost" min="0" step="any" aria-label="進價"></div>`,
+            body: `<div class="input-group sp-panel-group sp-panel-narrow"><span class="addon">進價 $</span><input type="number" class="field field-sm" id="spCost" min="0" step="any" aria-label="進價"></div>`,
             hint: '進價只用來算獲利，不會寫進蝦皮檔案，設定後直接生效。', ok: '設定',
         },
     };
@@ -544,12 +546,12 @@ ${isShop ? '' : `<td class="sx-c-num c-evt">${profitCell(m, m.event, low)}</td>`
     function renderSpPanel() {
         const el = $('spPanel');
         const def = ui.sp.panel && PANELS[ui.sp.panel];
-        el.classList.toggle('d-none', !def);
+        el.hidden = !def;
         if (!def) { el.innerHTML = ''; return; }
         el.innerHTML = `<div class="sp-panel-head"><i class="bi bi-${def.icon}" aria-hidden="true"></i><strong>${def.title}</strong><span class="text-muted">· 套用到勾選的 <span id="spPanelCount">${ui.sp.selected.size}</span> 個規格</span>
-<button type="button" class="btn-close btn-close-sm ms-auto" data-action="sp-panel-close" aria-label="收起"></button></div>
-<form class="sp-panel-body" id="spPanelForm" onsubmit="return false">${def.body}<button type="submit" class="btn btn-primary btn-sm">${def.ok}</button><button type="button" class="btn btn-outline-secondary btn-sm" data-action="sp-panel-close">取消</button></form>
-${def.hint ? `<div class="small text-muted mt-1">${def.hint}</div>` : ''}`;
+<button type="button" class="btn btn-ghost btn-icon btn-sm ml-auto" data-action="sp-panel-close" aria-label="收起"><i class="bi bi-x-lg"></i></button></div>
+<form class="sp-panel-body" id="spPanelForm" onsubmit="return false">${def.body}<button type="submit" class="btn btn-primary btn-sm">${def.ok}</button><button type="button" class="btn btn-outline btn-sm" data-action="sp-panel-close">取消</button></form>
+${def.hint ? `<p class="hint mt-2">${def.hint}</p>` : ''}`;
         el.querySelector('input')?.focus();
     }
 
@@ -560,10 +562,10 @@ ${def.hint ? `<div class="small text-muted mt-1">${def.hint}</div>` : ''}`;
 
     function breakdownHtml(shop, p, v, m) {
         const isShop = shop.settings.seller === 'shop';
-        const line = (label, a, b) => `<tr><td>${label}</td><td class="text-end">${a}</td>${isShop ? '' : `<td class="text-end">${b}</td>`}</tr>`;
+        const line = (label, a, b) => `<tr><td>${label}</td><td class="text-right">${a}</td>${isShop ? '' : `<td class="text-right">${b}</td>`}</tr>`;
         const R = m.regular, E = m.event;
         const cost = m.hasCost ? money(p.costTax === 'exc' ? m.cost * 1.05 : m.cost) : '待補';
-        return `<table class="table table-sm mb-0"><thead><tr><th>費用拆解：${esc(v.name || p.name)}（售價 ${money(m.price)}）</th><th class="text-end">一般日</th>${isShop ? '' : '<th class="text-end">促銷檔期</th>'}</tr></thead><tbody>` +
+        return `<table class="table"><thead><tr><th>費用拆解：${esc(v.name || p.name)}（售價 ${money(m.price)}）</th><th class="text-right">一般日</th>${isShop ? '' : '<th class="text-right">促銷檔期</th>'}</tr></thead><tbody>` +
             line(`成交手續費`, `${money(R.transFee)} <small>(${R.transPct}%)</small>`, `${money(E.transFee)} <small>(${E.transPct}%)</small>`) +
             line(`金流與系統處理費 (${m.settings.paymentPct}%)`, money(R.payFee), money(E.payFee)) +
             (isShop ? '' : line(esc(R.shipLabel || '免運活動服務費'), money(R.shipFee), money(E.shipFee))) +
@@ -648,6 +650,85 @@ ${def.hint ? `<div class="small text-muted mt-1">${def.hint}</div>` : ''}`;
         new MutationObserver(() => { if (cur && !cur.isConnected) hide(); }).observe(document.body, { childList: true, subtree: true });
     }
 
+    // ---------- 下拉選單（取代 Bootstrap dropdown） ----------
+    // <button data-menu="#id" aria-haspopup="menu" aria-expanded="false"> + <div class="shop-menu" id="id" role="menu" popover>
+    // 用 manual popover 放到 top layer（表格在橫向捲動／container 容器裡，一般 fixed 會被裁切）；
+    // 點外面、Esc、Tab 離開都會關閉；方向鍵在項目間移動。
+    function bindMenus() {
+        const supportsPopover = HTMLElement.prototype.hasOwnProperty('popover');
+        let menu = null, btn = null;
+        const items = () => menu ? [...menu.querySelectorAll('[role="menuitem"]')].filter(x => !x.disabled) : [];
+
+        const place = () => {
+            if (!menu || !btn) return;
+            const M = 8, GAP = 4;
+            const r = btn.getBoundingClientRect();
+            const vw = document.documentElement.clientWidth, vh = window.innerHeight;
+            menu.style.maxHeight = `${vh - M * 2}px`;
+            const w = menu.offsetWidth, h = menu.offsetHeight;
+            let top = r.bottom + GAP;
+            if (top + h > vh - M && r.top - GAP - h >= M) top = r.top - GAP - h; // 下方放不下就往上
+            top = Math.max(M, Math.min(top, vh - M - h));
+            const left = Math.max(M, Math.min(r.right - w, vw - M - w));       // 靠觸發鈕右緣對齊
+            menu.style.top = `${top}px`;
+            menu.style.left = `${left}px`;
+        };
+        const close = (focusBtn) => {
+            if (!menu) return;
+            const b = btn;
+            menu.classList.remove('is-open');
+            if (supportsPopover && menu.isConnected && menu.matches(':popover-open')) menu.hidePopover();
+            if (b) b.setAttribute('aria-expanded', 'false');
+            menu = null; btn = null;
+            if (focusBtn && b && b.isConnected) b.focus();
+        };
+        const open = (trigger, viaKeyboard) => {
+            const m = document.querySelector(trigger.dataset.menu);
+            if (!m) return;
+            close();
+            menu = m; btn = trigger;
+            if (supportsPopover) m.showPopover();
+            else document.body.appendChild(m); // 沒有 popover：移到 body 下才不會被捲動容器裁切
+            m.classList.add('is-open');
+            trigger.setAttribute('aria-expanded', 'true');
+            place();
+            if (viaKeyboard) items()[0]?.focus();
+        };
+
+        document.addEventListener('click', e => {
+            const trigger = e.target.closest('[data-menu]');
+            if (trigger) {
+                if (menu && btn === trigger) close();
+                else open(trigger, e.detail === 0);
+                return;
+            }
+            if (!menu) return;
+            if (!menu.contains(e.target)) { close(); return; }
+            if (e.target.closest('[role="menuitem"]')) close(); // 點了項目：先收起，data-action 照常執行
+        });
+        document.addEventListener('keydown', e => {
+            if (!menu) {
+                // 觸發鈕上按向下鍵也能開
+                const trigger = e.key === 'ArrowDown' && e.target.closest && e.target.closest('[data-menu]');
+                if (trigger) { e.preventDefault(); open(trigger, true); }
+                return;
+            }
+            if (e.key === 'Escape') { e.preventDefault(); close(true); return; }
+            if (e.key === 'Tab') { close(); return; }
+            const list = items();
+            if (!list.length || !['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return;
+            e.preventDefault();
+            const i = list.indexOf(document.activeElement);
+            const next = e.key === 'Home' ? 0 : e.key === 'End' ? list.length - 1
+                : e.key === 'ArrowDown' ? (i + 1) % list.length : (i - 1 + list.length) % list.length;
+            list[next].focus();
+        });
+        window.addEventListener('scroll', e => { if (menu && !(e.target instanceof Node && menu.contains(e.target))) place(); }, true);
+        window.addEventListener('resize', () => { if (menu) place(); });
+        // 列表重繪後原本的選單已不在 DOM
+        new MutationObserver(() => { if (menu && (!menu.isConnected || !btn.isConnected)) close(); }).observe(document.body, { childList: true, subtree: true });
+    }
+
     // ---------- 商品編輯 ----------
     let editing = null; // { pid|null, fee }
     function openProductModal(pid) {
@@ -660,9 +741,9 @@ ${def.hint ? `<div class="small text-muted mt-1">${def.hint}</div>` : ''}`;
         $('pmCost').value = p.cost ?? '';
         $('pmCostInc').checked = p.costTax !== 'exc';
         $('pmPrice').value = p.variations[0].price || '';
-        document.querySelectorAll('#productModal .pm-own-only').forEach(el => el.classList.toggle('d-none', editing.shopee));
-        $('pmShopeeHint').classList.toggle('d-none', !editing.shopee);
-        $('pmCostIncHint').classList.toggle('d-none', !editing.shopee);
+        document.querySelectorAll('#productModal .pm-own-only').forEach(el => { el.hidden = editing.shopee; });
+        $('pmShopeeHint').hidden = !editing.shopee;
+        $('pmCostIncHint').hidden = !editing.shopee;
         document.querySelector(`input[name="pmPre"][value="${p.preorder || '0'}"]`).checked = true;
         renderPmProdInv();
         $('pmFrozen').checked = !!p.frozen;
@@ -695,8 +776,7 @@ ${def.hint ? `<div class="small text-muted mt-1">${def.hint}</div>` : ''}`;
         }
         $('pmFeeText').textContent = text;
         $('pmFeeText').title = text;
-        $('pmFeeText').classList.toggle('text-warning-emphasis', warn);
-        $('pmFeeText').classList.toggle('text-muted', !warn);
+        $('pmFeeText').classList.toggle('text-accent', warn);
     }
 
     function saveProductModal() {
@@ -740,7 +820,7 @@ ${def.hint ? `<div class="small text-muted mt-1">${def.hint}</div>` : ''}`;
         $('catSearch').value = initialQuery || '';
         renderCatList();
         modal('catModal').show();
-        $('catModal').addEventListener('shown.bs.modal', () => $('catSearch').focus(), { once: true });
+        $('catSearch').focus();
     }
 
     function renderCatList() {
@@ -751,11 +831,11 @@ ${def.hint ? `<div class="small text-muted mt-1">${def.hint}</div>` : ''}`;
         let list = ctx.feeIndex.list;
         if (terms.length) list = list.filter(l => { const t = l.path.join(' ').toLowerCase(); return terms.every(x => t.includes(x)); });
         const shown = list.slice(0, 120);
-        $('catList').innerHTML = shown.map((l, i) => `<button type="button" class="list-group-item list-group-item-action" data-cat-index="${ctx.feeIndex.list.indexOf(l)}">
-<div class="d-flex justify-content-between gap-2"><strong>${esc(catLeafName(l.path))}</strong><span class="text-nowrap">${mall ? l.mall : l.general}%</span></div>
-<div class="cat-path">${esc(l.path.join(' > '))}</div></button>`).join('') +
-            (list.length > shown.length ? `<div class="small text-muted p-2">還有 ${list.length - shown.length} 筆，請輸入關鍵字縮小範圍</div>` : '') +
-            (!list.length ? '<div class="small text-muted p-2">找不到符合的類別</div>' : '');
+        $('catList').innerHTML = shown.map((l, i) => `<button type="button" class="cat-item" data-cat-index="${ctx.feeIndex.list.indexOf(l)}">
+<span class="flex justify-between gap-2"><strong>${esc(catLeafName(l.path))}</strong><span class="num whitespace-nowrap font-semibold">${mall ? l.mall : l.general}%</span></span>
+<span class="cat-path">${esc(l.path.join(' > '))}</span></button>`).join('') +
+            (list.length > shown.length ? `<p class="hint px-5 py-3">還有 ${list.length - shown.length} 筆，請輸入關鍵字縮小範圍</p>` : '') +
+            (!list.length ? '<p class="hint px-5 py-3">找不到符合的類別</p>' : '');
     }
 
     // ---------- 從蝦皮匯入 ----------
@@ -780,21 +860,21 @@ ${def.hint ? `<div class="small text-muted mt-1">${def.hint}</div>` : ''}`;
             try {
                 const buf = await f.arrayBuffer();
                 const r = await SX.parseShopeeXlsx(buf, f.name);
-                if (!r.type) { status.push(`<div class="im-file text-danger"><i class="bi bi-x-circle"></i> ${esc(f.name)}：不是「價格及庫存」或「備貨天數」模板</div>`); continue; }
-                if (parsed.some(x => x.type === r.type)) { status.push(`<div class="im-file text-warning"><i class="bi bi-exclamation-circle"></i> ${esc(f.name)}：重複的${r.type === 'sales' ? '「價格及庫存」' : '「備貨天數」'}，只用第一份</div>`); continue; }
+                if (!r.type) { status.push(`<div class="im-file"><i class="bi bi-x-circle text-accent"></i> ${esc(f.name)}：不是「價格及庫存」或「備貨天數」模板</div>`); continue; }
+                if (parsed.some(x => x.type === r.type)) { status.push(`<div class="im-file"><i class="bi bi-exclamation-circle text-accent"></i> ${esc(f.name)}：重複的${r.type === 'sales' ? '「價格及庫存」' : '「備貨天數」'}，只用第一份</div>`); continue; }
                 parsed.push(r);
                 if (r.type === 'sales') { im.b64 = bufToB64(buf); im.fileTime = SX.fileTimestamp(f.name); }
                 const ft = SX.fileTimestamp(f.name);
                 const old = ft && Date.now() - ft > SD.STALE_MS;
-                status.push(`<div class="im-file text-success"><i class="bi bi-check-circle"></i> ${esc(f.name)}：${r.type === 'sales' ? '價格及庫存' : '備貨天數'}，${r.rows.length} 個規格（蝦皮賣場 ${esc(r.shopId || '?')}${ft ? `，${fmtTime(ft)} 下載` : ''}）</div>` +
-                    (old && r.type === 'sales' ? `<div class="im-file text-warning"><i class="bi bi-clock-history"></i> 這份檔案是 ${fmtTime(ft)} 從蝦皮下載的，已超過 24 小時，庫存可能已經變動；要調價或改庫存的話建議重新下載。</div>` : ''));
+                status.push(`<div class="im-file"><i class="bi bi-check-circle"></i> ${esc(f.name)}：${r.type === 'sales' ? '價格及庫存' : '備貨天數'}，${r.rows.length} 個規格（蝦皮賣場 ${esc(r.shopId || '?')}${ft ? `，${fmtTime(ft)} 下載` : ''}）</div>` +
+                    (old && r.type === 'sales' ? `<div class="im-file"><i class="bi bi-clock-history text-accent"></i> 這份檔案是 ${fmtTime(ft)} 從蝦皮下載的，已超過 24 小時，庫存可能已經變動；要調價或改庫存的話建議重新下載。</div>` : ''));
             } catch (e) {
-                status.push(`<div class="im-file text-danger"><i class="bi bi-x-circle"></i> ${esc(f.name)}：${esc(e.message)}</div>`);
+                status.push(`<div class="im-file"><i class="bi bi-x-circle text-accent"></i> ${esc(f.name)}：${esc(e.message)}</div>`);
             }
         }
         const has = t => parsed.some(x => x.type === t);
-        if (parsed.length && !has('sales')) status.push('<div class="im-file text-warning"><i class="bi bi-exclamation-triangle"></i> 缺「價格及庫存」：新商品需要它才有售價；只更新既有商品的分類／備貨天數可以不用。</div>');
-        if (parsed.length && !has('dts')) status.push('<div class="im-file text-warning"><i class="bi bi-exclamation-triangle"></i> 缺「備貨天數」：新商品需要它才能對應手續費率；只更新既有商品的售價／庫存可以不用。</div>');
+        if (parsed.length && !has('sales')) status.push('<div class="im-file"><i class="bi bi-exclamation-triangle text-accent"></i> 缺「價格及庫存」：新商品需要它才有售價；只更新既有商品的分類／備貨天數可以不用。</div>');
+        if (parsed.length && !has('dts')) status.push('<div class="im-file"><i class="bi bi-exclamation-triangle text-accent"></i> 缺「備貨天數」：新商品需要它才能對應手續費率；只更新既有商品的售價／庫存可以不用。</div>');
         $('imFileStatus').innerHTML = status.join('');
         im.files = parsed;
         im.catPicks = {};
@@ -812,30 +892,30 @@ ${def.hint ? `<div class="small text-muted mt-1">${def.hint}</div>` : ''}`;
         const plan = SD.planImport(target, im.files, ctx);
         im.plan = plan;
         const out = [];
-        out.push(`<div class="mb-2"><label class="form-label small mb-1" for="imTarget">匯入到</label><select class="form-select form-select-sm" id="imTarget">${state.shops.map(s => `<option value="${esc(s.id)}"${s.id === im.targetId ? ' selected' : ''}>${esc(s.name)}${s.shopeeShopId ? `（蝦皮賣場 ${esc(s.shopeeShopId)}）` : ''}</option>`).join('')}<option value="__new__"${im.targetId === '__new__' ? ' selected' : ''}>＋ 建立新賣場（沿用目前賣場的設定）</option></select></div>`);
-        plan.errors.forEach(e => out.push(`<div class="alert alert-danger small py-2">${esc(e)}</div>`));
-        plan.warnings.forEach(w => out.push(`<div class="alert alert-warning small py-2"><i class="bi bi-exclamation-triangle"></i> ${esc(w.text)}</div>`));
-        out.push(`<table class="table table-sm im-table mb-2"><tbody>
-<tr><td>新增商品</td><td class="text-end">${plan.add.length}</td></tr>
-<tr><td>更新既有商品（售價、庫存、名稱、分類、備貨天數以新檔為準；進價、備註、手動類別保留）</td><td class="text-end">${plan.update.length}</td></tr>
-${plan.missing.length ? `<tr><td>這次檔案沒有的商品（保留，標示「本次未匯入」）</td><td class="text-end">${plan.missing.length}</td></tr>` : ''}
-${plan.needOther.length ? `<tr class="text-warning"><td>新商品缺另一份檔案，這次不會新增</td><td class="text-end">${plan.needOther.length}</td></tr>` : ''}
+        out.push(`<div><label class="label" for="imTarget">匯入到</label><select class="field" id="imTarget">${state.shops.map(s => `<option value="${esc(s.id)}"${s.id === im.targetId ? ' selected' : ''}>${esc(s.name)}${s.shopeeShopId ? `（蝦皮賣場 ${esc(s.shopeeShopId)}）` : ''}</option>`).join('')}<option value="__new__"${im.targetId === '__new__' ? ' selected' : ''}>＋ 建立新賣場（沿用目前賣場的設定）</option></select></div>`);
+        plan.errors.forEach(e => out.push(`<div class="note"><i class="bi bi-x-circle text-accent"></i> ${esc(e)}</div>`));
+        plan.warnings.forEach(w => out.push(`<div class="note"><i class="bi bi-exclamation-triangle text-accent"></i> ${esc(w.text)}</div>`));
+        out.push(`<table class="table im-table"><tbody>
+<tr><td>新增商品</td><td class="text-right">${plan.add.length}</td></tr>
+<tr><td>更新既有商品（售價、庫存、名稱、分類、備貨天數以新檔為準；進價、備註、手動類別保留）</td><td class="text-right">${plan.update.length}</td></tr>
+${plan.missing.length ? `<tr><td>這次檔案沒有的商品（保留，標示「本次未匯入」）</td><td class="text-right">${plan.missing.length}</td></tr>` : ''}
+${plan.needOther.length ? `<tr><td><i class="bi bi-exclamation-triangle text-accent"></i> 新商品缺另一份檔案，這次不會新增</td><td class="text-right">${plan.needOther.length}</td></tr>` : ''}
 </tbody></table>`);
         const cs = plan.catStats;
-        if (plan.dts) out.push(`<div class="small text-muted mb-2">手續費類別自動對應：完全相同 ${cs.exact}、套用上層類別費率 ${cs.parent}${cs.alias ? `、別名 ${cs.alias}` : ''}${cs.override ? `、沿用你指定的 ${cs.override}` : ''}${cs.none ? `、<span class="text-warning">對不到 ${cs.none}</span>` : ''}</div>`);
+        if (plan.dts) out.push(`<p class="hint">手續費類別自動對應：完全相同 ${cs.exact}、套用上層類別費率 ${cs.parent}${cs.alias ? `、別名 ${cs.alias}` : ''}${cs.override ? `、沿用你指定的 ${cs.override}` : ''}${cs.none ? `、<span class="text-accent">對不到 ${cs.none}</span>` : ''}</p>`);
         if (plan.unmatched.length) {
-            out.push(`<div class="alert alert-warning small py-2"><div class="mb-1">以下蝦皮分類對不到費率表，請選擇對應的類別（之後同一個分類會自動套用）；不選的話商品會標「請選類別」。</div>
-${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2 py-1 border-top"><span class="flex-grow-1">${esc(u.path ? u.path.join(' > ') : u.label)} <span class="text-muted">（${esc(u.catId)}，${u.count} 個商品）</span>${im.catPicks[u.catId] ? `<br><span class="text-success"><i class="bi bi-check"></i> ${esc(im.catPicks[u.catId].join(' > '))}</span>` : ''}</span><button type="button" class="btn btn-sm btn-outline-secondary" data-action="im-pick" data-cat="${esc(u.catId)}">選類別</button></div>`).join('')}</div>`);
+            out.push(`<div class="note"><div class="mb-1">以下蝦皮分類對不到費率表，請選擇對應的類別（之後同一個分類會自動套用）；不選的話商品會標「請選類別」。</div>
+${plan.unmatched.map(u => `<div class="flex flex-wrap items-center gap-2 py-2 border-t border-line"><span class="flex-1 min-w-0">${esc(u.path ? u.path.join(' > ') : u.label)} <span class="text-muted">（${esc(u.catId)}，${u.count} 個商品）</span>${im.catPicks[u.catId] ? `<br><span class="font-semibold"><i class="bi bi-check"></i> ${esc(im.catPicks[u.catId].join(' > '))}</span>` : ''}</span><button type="button" class="btn btn-sm btn-outline" data-action="im-pick" data-cat="${esc(u.catId)}">選類別</button></div>`).join('')}</div>`);
         }
         if (plan.pendingDrafts.length) {
-            out.push(`<div class="alert alert-info small py-2"><div class="mb-1">有 ${plan.pendingDrafts.length} 個規格的調價／庫存修改還沒匯出：</div>
-<div class="form-check"><input class="form-check-input" type="radio" name="imKeep" id="imKeep1" value="1" ${im.keepDrafts ? 'checked' : ''}><label class="form-check-label" for="imKeep1">保留修改（仍會出現在「蝦皮商品」）</label></div>
-<div class="form-check"><input class="form-check-input" type="radio" name="imKeep" id="imKeep0" value="0" ${im.keepDrafts ? '' : 'checked'}><label class="form-check-label" for="imKeep0">捨棄修改，以蝦皮最新資料為準</label></div></div>`);
+            out.push(`<div class="note-plain"><div class="mb-2">有 ${plan.pendingDrafts.length} 個規格的調價／庫存修改還沒匯出：</div>
+<div class="flex flex-col gap-2"><label class="check" for="imKeep1"><input type="radio" name="imKeep" id="imKeep1" value="1" ${im.keepDrafts ? 'checked' : ''}> <span>保留修改（仍會出現在「蝦皮商品」）</span></label>
+<label class="check" for="imKeep0"><input type="radio" name="imKeep" id="imKeep0" value="0" ${im.keepDrafts ? '' : 'checked'}> <span>捨棄修改，以蝦皮最新資料為準</span></label></div></div>`);
         }
-        if (plan.exportedMatched.length) out.push(`<div class="small text-success mb-1"><i class="bi bi-check-circle"></i> ${plan.exportedMatched.length} 個已匯出的修改在蝦皮已生效，會清除標記。</div>`);
+        if (plan.exportedMatched.length) out.push(`<p class="text-sm"><i class="bi bi-check-circle"></i> ${plan.exportedMatched.length} 個已匯出的修改在蝦皮已生效，會清除標記。</p>`);
         if (plan.exportedMismatched.length) {
-            out.push(`<div class="alert alert-warning small py-2"><div class="mb-1"><i class="bi bi-exclamation-triangle"></i> ${plan.exportedMismatched.length} 個已匯出的修改和蝦皮目前的值不同，可能還沒上傳或上傳失敗（請看蝦皮回傳檔的「失敗原因」欄）。這些修改會改回「待匯出」：</div>
-<ul class="mb-0 ps-3">${plan.exportedMismatched.slice(0, 8).map(({ product, v, row }) => `<li>${esc(product.name.slice(0, 30))} ${esc(v.name)}：修改 ${v.draft.price != null ? money(v.draft.price) : ''}${v.draft.stock != null ? ` 庫存 ${v.draft.stock}` : ''}，蝦皮 ${money(row.price)} 庫存 ${row.stock}</li>`).join('')}${plan.exportedMismatched.length > 8 ? '<li>…</li>' : ''}</ul></div>`);
+            out.push(`<div class="note"><div class="mb-1"><i class="bi bi-exclamation-triangle text-accent"></i> ${plan.exportedMismatched.length} 個已匯出的修改和蝦皮目前的值不同，可能還沒上傳或上傳失敗（請看蝦皮回傳檔的「失敗原因」欄）。這些修改會改回「待匯出」：</div>
+<ul class="list-disc pl-5">${plan.exportedMismatched.slice(0, 8).map(({ product, v, row }) => `<li>${esc(product.name.slice(0, 30))} ${esc(v.name)}：修改 ${v.draft.price != null ? money(v.draft.price) : ''}${v.draft.stock != null ? ` 庫存 ${v.draft.stock}` : ''}，蝦皮 ${money(row.price)} 庫存 ${row.stock}</li>`).join('')}${plan.exportedMismatched.length > 8 ? '<li>…</li>' : ''}</ul></div>`);
         }
         $('imPlan').innerHTML = out.join('');
         $('imApply').disabled = plan.errors.length > 0 || (plan.add.length + plan.update.length) === 0;
@@ -884,7 +964,7 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
         const shop = currentShop();
         const n = shop ? SD.pendingChanges(shop).length : 0;
         $('pendingBadge').textContent = n;
-        $('pendingBadge').classList.toggle('d-none', n === 0);
+        $('pendingBadge').hidden = n === 0;
     }
 
     function findVar(pid, vid) {
@@ -999,7 +1079,7 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
             : selectedVariations().map(x => x.v).filter(v => v.draft);
         if (!targets.length) { toast('沒有可以恢復的修改'); return; }
         const doIt = () => { targets.forEach(v => { v.draft = null; }); save(); renderShopee(); toast(`已恢復 ${targets.length} 個規格`); };
-        if (all) confirmBox('全部恢復', `<p class="mb-0">要取消 ${targets.length} 個規格的修改（含已匯出、待蝦皮更新的標記），回到蝦皮匯入的售價與庫存嗎？</p>`, '全部恢復', doIt);
+        if (all) confirmBox('全部恢復', `<p>要取消 ${targets.length} 個規格的修改（含已匯出、待蝦皮更新的標記），回到蝦皮匯入的售價與庫存嗎？</p>`, '全部恢復', doIt);
         else doIt();
     }
 
@@ -1010,8 +1090,8 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
         const byP = new Map();
         sel.forEach(({ p, v }) => { if (!byP.has(p)) byP.set(p, []); byP.get(p).push(v); });
         const list = [...byP].slice(0, 8).map(([p, vs]) => `<li>${esc(p.name.slice(0, 40))}：${vs.length === p.variations.length ? '<strong>整個商品</strong>' : vs.map(v => esc(v.name || '（單一規格）')).join('、')}</li>`).join('');
-        confirmBox('刪除勾選的規格', `<p>要刪除 ${sel.length} 個規格嗎？規格全部被刪的商品會整個刪掉。</p><ul class="small ps-3">${list}${byP.size > 8 ? '<li>…</li>' : ''}</ul>` +
-            `<p class="small text-muted mb-0">只刪這裡的資料，不影響蝦皮。下次匯入時這些規格會再出現，填過的進價不會保留。</p>`, '刪除', () => {
+        confirmBox('刪除勾選的規格', `<p>要刪除 ${sel.length} 個規格嗎？規格全部被刪的商品會整個刪掉。</p><ul class="list-disc pl-5">${list}${byP.size > 8 ? '<li>…</li>' : ''}</ul>` +
+            `<p class="hint">只刪這裡的資料，不影響蝦皮。下次匯入時這些規格會再出現，填過的進價不會保留。</p>`, '刪除', () => {
             const r = SD.deleteVariations(shop, sel.map(x => x.v.id));
             ui.sp.selected.clear();
             save(); render();
@@ -1023,7 +1103,7 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
         const shop = currentShop();
         const n = shopeeProducts(shop).length;
         confirmBox('一鍵清除蝦皮資料', `<p>會清除「${esc(shop.name)}」的 <strong>${n} 個蝦皮商品</strong>（含你填的進價與還沒匯出的調價）、保存的「價格及庫存」原檔，以及綁定的蝦皮賣場 ID，回到上傳檔案的畫面。</p>` +
-            `<p class="small text-muted mb-0">自建商品與賣場設定不受影響。清除後無法復原，需要的話請先用右上「⋯」選單匯出備份。</p>`, '清除', () => {
+            `<p class="hint">自建商品與賣場設定不受影響。清除後無法復原，需要的話請先用右上「⋯」選單匯出備份。</p>`, '清除', () => {
             SD.clearShopee(shop);
             ui.sp.selected.clear();
             ui.sp.panel = null;
@@ -1047,30 +1127,30 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
         const problems = SD.validateChanges(shop, changes);
         exportCtx = { changes };
         const out = [];
-        if (!shop.salesFile || !inFile) out.push('<div class="alert alert-danger small">找不到可用的「價格及庫存」原檔，請先重新匯入。</div>');
-        else if (SD.isStale(shop)) out.push(`<div class="alert alert-warning small"><i class="bi bi-clock-history"></i> 資料來自 ${fmtTime(SD.salesDataTime(shop))}，已超過 24 小時。下表每一列的庫存都會寫回檔案，期間若有賣出可能造成超賣；建議先到蝦皮重新下載、匯入後再產生。</div>`);
+        if (!shop.salesFile || !inFile) out.push('<div class="note"><i class="bi bi-x-circle text-accent"></i> 找不到可用的「價格及庫存」原檔，請先重新匯入。</div>');
+        else if (SD.isStale(shop)) out.push(`<div class="note"><i class="bi bi-clock-history text-accent"></i> 資料來自 ${fmtTime(SD.salesDataTime(shop))}，已超過 24 小時。下表每一列的庫存都會寫回檔案，期間若有賣出可能造成超賣；建議先到蝦皮重新下載、匯入後再產生。</div>`);
         if (problems.length) {
-            out.push(`<div class="alert alert-danger small"><div class="mb-1">以下問題要先修正（蝦皮會拒收）：</div><ul class="mb-0 ps-3">${problems.map(x => `<li>${esc(x.product.name.slice(0, 40))}${x.v ? ' ' + esc(x.v.name) : ''}：${esc(x.text)}</li>`).join('')}</ul></div>`);
+            out.push(`<div class="note"><div class="mb-1"><i class="bi bi-x-circle text-accent"></i> 以下問題要先修正（蝦皮會拒收）：</div><ul class="list-disc pl-5">${problems.map(x => `<li>${esc(x.product.name.slice(0, 40))}${x.v ? ' ' + esc(x.v.name) : ''}：${esc(x.text)}</li>`).join('')}</ul></div>`);
         }
         if (skipped.length) {
-            out.push(`<div class="alert alert-secondary small"><div class="mb-1">${skipped.length} 個修改不在目前保存的「價格及庫存」原檔裡（可能已在蝦皮刪除），這次不會匯出，修改仍保留：</div><ul class="mb-0 ps-3">${skipped.slice(0, 8).map(({ product, v }) => `<li>${esc(product.name.slice(0, 40))} ${esc(v.name)}</li>`).join('')}${skipped.length > 8 ? '<li>…</li>' : ''}</ul></div>`);
+            out.push(`<div class="note-plain"><div class="mb-1">${skipped.length} 個修改不在目前保存的「價格及庫存」原檔裡（可能已在蝦皮刪除），這次不會匯出，修改仍保留：</div><ul class="list-disc pl-5">${skipped.slice(0, 8).map(({ product, v }) => `<li>${esc(product.name.slice(0, 40))} ${esc(v.name)}</li>`).join('')}${skipped.length > 8 ? '<li>…</li>' : ''}</ul></div>`);
         }
         if (changes.length) {
-            out.push(`<p class="small mb-1">檔案只會包含下列 <strong>${changes.length}</strong> 個規格，其他規格不會出現在檔案裡，蝦皮也不會更動。</p>
-<p class="small text-warning-emphasis mb-2"><i class="bi bi-exclamation-triangle"></i> 蝦皮的批次模板規定<strong>售價和庫存都必填</strong>，所以只改售價的規格，庫存也會照下表的數字（匯入當時的庫存）寫回；只改庫存的規格，售價同理。</p>`);
-            out.push(`<div class="table-responsive"><table class="table table-sm small align-middle"><thead><tr><th>商品／規格</th><th class="text-end">寫入售價</th><th class="text-end">一般日淨利</th><th class="text-end">寫入庫存</th></tr></thead><tbody>` +
+            out.push(`<p>檔案只會包含下列 <strong>${changes.length}</strong> 個規格，其他規格不會出現在檔案裡，蝦皮也不會更動。</p>
+<p class="note"><i class="bi bi-exclamation-triangle text-accent"></i> 蝦皮的批次模板規定<strong>售價和庫存都必填</strong>，所以只改售價的規格，庫存也會照下表的數字（匯入當時的庫存）寫回；只改庫存的規格，售價同理。</p>`);
+            out.push(`<div class="table-scroll"><table class="table"><thead><tr><th>商品／規格</th><th class="text-right">寫入售價</th><th class="text-right">一般日淨利</th><th class="text-right">寫入庫存</th></tr></thead><tbody>` +
                 changes.map(({ product, v }) => {
                     const before = SD.variationMetrics(shop, product, v, ctx, v.price);
                     const after = SD.variationMetrics(shop, product, v, ctx);
                     const ok = after.hasCost && after.hasRate;
                     const d = v.draft;
                     return `<tr><td>${esc(product.name.slice(0, 40))}<br><span class="text-muted">${esc(v.name || '（單一規格）')}</span></td>
-<td class="text-end text-nowrap">${d.price != null ? `${money(v.price)} → <strong>${money(d.price)}</strong>` : `${money(v.price)}<br><small class="text-muted">匯入時的售價</small>`}</td>
-<td class="text-end text-nowrap">${ok ? (d.price != null ? `${money(before.regular.profit)} → <strong class="${after.regular.profit < 0 ? 'ov-loss' : ''}">${money(after.regular.profit)}</strong>` : money(after.regular.profit)) : '—'}</td>
-<td class="text-end text-nowrap">${d.stock != null ? `${v.stock ?? '—'} → <strong>${d.stock}</strong>` : `${v.stock ?? '—'}<br><small class="text-muted">匯入時的庫存</small>`}</td></tr>`;
+<td class="text-right whitespace-nowrap">${d.price != null ? `${money(v.price)} → <strong>${money(d.price)}</strong>` : `${money(v.price)}<br><small class="text-muted">匯入時的售價</small>`}</td>
+<td class="text-right whitespace-nowrap">${ok ? (d.price != null ? `${money(before.regular.profit)} → <strong class="${after.regular.profit < 0 ? 'ov-loss' : ''}">${money(after.regular.profit)}</strong>` : money(after.regular.profit)) : '—'}</td>
+<td class="text-right whitespace-nowrap">${d.stock != null ? `${v.stock ?? '—'} → <strong>${d.stock}</strong>` : `${v.stock ?? '—'}<br><small class="text-muted">匯入時的庫存</small>`}</td></tr>`;
                 }).join('') + '</tbody></table></div>');
         }
-        out.push(`<div class="small text-muted"><i class="bi bi-info-circle"></i> 下載後到蝦皮賣家中心 →「我的商品」→「商品批次編輯工具」→「更新商品資料」→ 上傳檔案。上傳後蝦皮會回傳結果，失敗的列會寫在「失敗原因」欄。下次從蝦皮匯入時，已生效的修改會自動清除標記。</div>`);
+        out.push(`<p class="hint"><i class="bi bi-info-circle"></i> 下載後到蝦皮賣家中心 →「我的商品」→「商品批次編輯工具」→「更新商品資料」→ 上傳檔案。上傳後蝦皮會回傳結果，失敗的列會寫在「失敗原因」欄。下次從蝦皮匯入時，已生效的修改會自動清除標記。</p>`);
         $('exportBody').innerHTML = out.join('');
         $('exportOk').disabled = !inFile || problems.length > 0 || !changes.length;
         modal('exportModal').show();
@@ -1121,10 +1201,10 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
         $('stFirst5').checked = !!st.first5;
         $('stLowMargin').value = st.lowMargin;
         const isShop = st.seller === 'shop';
-        f.querySelectorAll('.st-not-shop').forEach(el => el.classList.toggle('d-none', isShop));
-        f.querySelectorAll('.st-only-shop').forEach(el => el.classList.toggle('d-none', !isShop));
-        $('stCashTermWrap').classList.toggle('d-none', st.cashback === '0');
-        $('stFeeInvWrap').classList.toggle('d-none', !(st.tax === '5' || st.tax === '5_plus'));
+        f.querySelectorAll('.st-not-shop').forEach(el => { el.hidden = isShop; });
+        f.querySelectorAll('.st-only-shop').forEach(el => { el.hidden = !isShop; });
+        $('stCashTermWrap').hidden = st.cashback === '0';
+        $('stFeeInvWrap').hidden = !(st.tax === '5' || st.tax === '5_plus');
         $('stShopeeId').textContent = shop.shopeeShopId ? `已綁定蝦皮賣場 ID：${shop.shopeeShopId}（匯入其他賣場的檔案時會提醒）` : '';
     }
 
@@ -1170,7 +1250,7 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
         SD.migrateShops(incoming.shops);
         const n = incoming.shops.length;
         const products = incoming.shops.reduce((a, s) => a + (s.products || []).length, 0);
-        confirmBox('從備份還原', `<p>備份裡有 ${n} 個賣場、${products} 個商品（${esc(data.exportedAt || '')}）。</p><p class="small text-muted mb-0">「取代」會刪掉目前這台裝置上的所有賣場資料；「合併」會把備份的賣場加在後面。</p>`, '取代目前資料', () => {
+        confirmBox('從備份還原', `<p>備份裡有 ${n} 個賣場、${products} 個商品（${esc(data.exportedAt || '')}）。</p><p class="hint">「取代」會刪掉目前這台裝置上的所有賣場資料；「合併」會把備份的賣場加在後面。</p>`, '取代目前資料', () => {
             state = { ...SD.emptyState(), ...incoming, catOverrides: incoming.catOverrides || {} };
             ctx.state = state;
             save();
@@ -1239,7 +1319,7 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
             if (t.tagName === 'A') e.preventDefault();
             switch (a) {
                 case 'shop-new': nameBox('新增賣場', '我的賣場 ' + (state.shops.length + 1), name => { createShop(name, shop ? shop.settings : null); render(); }); break;
-                case 'shop-delete': confirmBox('刪除賣場', `<p class="mb-0">確定要刪除「${esc(shop.name)}」和其中 ${shop.products.length} 個商品嗎？刪除後無法復原（可先用「備份」匯出）。</p>`, '刪除', () => {
+                case 'shop-delete': confirmBox('刪除賣場', `<p>確定要刪除「${esc(shop.name)}」和其中 ${shop.products.length} 個商品嗎？刪除後無法復原（可先用「備份」匯出）。</p>`, '刪除', () => {
                     state.shops = state.shops.filter(s => s.id !== shop.id);
                     state.activeShopId = state.shops[0] ? state.shops[0].id : null;
                     save(); render(); toast('已刪除賣場');
@@ -1261,7 +1341,7 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
                 case 'product-copyto': openMove(t.dataset.pid, true); break;
                 case 'product-delete': {
                     const p = shop.products.find(x => x.id === t.dataset.pid);
-                    confirmBox('刪除商品', `<p class="mb-0">確定要刪除「${esc(p.name)}」嗎？${p.shopeeItemId ? '<br><small class="text-muted">只刪這裡的資料，下次匯入時會再出現，填過的進價不會保留。</small>' : ''}</p>`, '刪除', () => {
+                    confirmBox('刪除商品', `<p>確定要刪除「${esc(p.name)}」嗎？${p.shopeeItemId ? '<br><small class="text-muted">只刪這裡的資料，下次匯入時會再出現，填過的進價不會保留。</small>' : ''}</p>`, '刪除', () => {
                         shop.products = shop.products.filter(x => x.id !== p.id);
                         save(); render(); toast('已刪除');
                     });
@@ -1269,7 +1349,7 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
                 }
                 case 'own-bulk-delete': {
                     const ids = [...ui.own.selected];
-                    confirmBox('刪除商品', `<p class="mb-0">確定要刪除勾選的 ${ids.length} 個商品嗎？</p>`, '刪除', () => {
+                    confirmBox('刪除商品', `<p>確定要刪除勾選的 ${ids.length} 個商品嗎？</p>`, '刪除', () => {
                         shop.products = shop.products.filter(x => !ui.own.selected.has(x.id));
                         ui.own.selected.clear();
                         save(); render(); toast(`已刪除 ${ids.length} 個商品`);
@@ -1307,7 +1387,7 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
                     const hint = `蝦皮分類：${u.path ? u.path.join(' > ') : u.label}`;
                     modal('importModal').hide();
                     openCatPicker(hint, u.path ? u.path[u.path.length - 1].slice(0, 4) : '', path => { im.catPicks[catId] = path; });
-                    $('catModal').addEventListener('hidden.bs.modal', () => { modal('importModal').show(); renderImportPlan(); }, { once: true });
+                    onceHidden('catModal', () => { modal('importModal').show(); renderImportPlan(); });
                     break;
                 }
                 case 'sp-panel': if (!t.disabled) { ui.sp.panel = t.dataset.panel; renderSpPanel(); } break;
@@ -1397,11 +1477,11 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
             st.page = 1;
             e.target.dataset.scope === 'own' ? renderOwn() : renderShopee();
         }));
-        document.querySelector('.shop-tabs').addEventListener('shown.bs.tab', e => {
+        document.querySelector('.shop-tabs').addEventListener('ui:tab', e => {
             ui.tab = e.target.dataset.tab;
             try { storage.setItem(TAB_KEY, ui.tab); } catch (err) { /* 記不住就算了 */ }
             // 設定摘要：在「賣場設定」分頁與表單重複，隱藏
-            $('settingsLine').classList.toggle('d-none', ui.tab === 'settings');
+            $('settingsLine').hidden = ui.tab === 'settings';
         });
 
         // 商品編輯
@@ -1412,7 +1492,7 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
             openCatPicker('選擇後依賣場類型自動帶入一般或商城費率，費率表更新時會跟著更新。', q, path => {
                 editing.fee = { ...editing.fee, mode: 'category', path, needsReview: false };
             });
-            $('catModal').addEventListener('hidden.bs.modal', () => { renderPmFee(); modal('productModal').show(); }, { once: true });
+            onceHidden('catModal', () => { renderPmFee(); modal('productModal').show(); });
         });
         $('pmProdInv').addEventListener('change', e => { editing.prodInv = e.target.checked; renderPmProdInv(); });
         $('pmProdInvHint').addEventListener('click', e => {

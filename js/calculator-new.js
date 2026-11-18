@@ -27,7 +27,7 @@ function renderFeeCategory() {
     if (!el) return;
     el.textContent = feeCategory ? '類別：' + feeCategory.join(FEE_CAT_SEP) : '';
     el.title = el.textContent;
-    el.classList.toggle('d-none', !feeCategory);
+    el.hidden = !feeCategory;
 }
 function setFeeCategory(path) {
     feeCategory = Array.isArray(path) && path.length ? path.map(String) : null;
@@ -360,13 +360,10 @@ function percentOf(part, whole) {
 }
 
 function scenarioTitle(key, s) {
-    if (s.seller === 'shop') return '<i class="bi bi-bag-heart"></i> 蝦皮小舖';
-    const isEvent = key.startsWith('event');
+    // 卡片上方的 eyebrow 已標示一般日／促銷檔期，標題只寫方案
+    if (s.seller === 'shop') return '蝦皮小舖';
     const isShip2 = key.endsWith('ship2');
-    const icon = isEvent ? 'bi-star-fill' : 'bi-calendar-check';
-    const day = isEvent ? '促銷檔期' : '一般日';
-    const plan = s.frozen ? (isShip2 ? '免運方案二（冷凍）' : '免運方案一（冷凍）') : (isShip2 ? '免運方案二' : '免運方案一 (6.5%)');
-    return `<i class="bi ${icon}"></i> ${day} + ${plan}`;
+    return s.frozen ? (isShip2 ? '免運方案二（冷凍）' : '免運方案一（冷凍）') : (isShip2 ? '免運方案二 (+65元)' : '免運方案一 (6.5%)');
 }
 
 function calculateFees() {
@@ -400,12 +397,12 @@ function calculateFees() {
 
     const floatPre = document.getElementById('floatPreOrder');
     floatPre.textContent = s.preOrderRate === 2 ? '2天' : (s.preOrderRate === 3 ? '3天以上' : '否');
-    floatPre.className = s.preOrderRate > 0 ? 'badge bg-warning text-dark' : 'badge bg-secondary';
+    floatPre.className = s.preOrderRate > 0 ? 'chip chip-accent' : 'chip';
 
     const floatCash = document.getElementById('floatCashback');
     const cashName = s.cashbackRate === 1.5 ? '5%' : (s.cashbackRate === 2.5 ? '10%' : '');
     floatCash.textContent = cashName ? `${cashName}${s.cashbackShort ? '（短期）' : '（長期）'}` : '不參加';
-    floatCash.className = s.cashbackRate > 0 ? 'badge bg-warning text-dark' : 'badge bg-secondary';
+    floatCash.className = s.cashbackRate > 0 ? 'chip chip-accent' : 'chip';
 }
 
 function renderScenario(prefix, price, s, isEvent, isShip2) {
@@ -483,16 +480,16 @@ function renderScenario(prefix, price, s, isEvent, isShip2) {
     setSummaryCell(`summary-${prefix}-total`, formatCurrency(r.totalDeduction), old && formatCurrency(old.totalDeduction));
     const profitEl = document.getElementById(`summary-${prefix}-profit`);
     setSummaryCell(profitEl.id, formatCurrency(r.profit), old && formatCurrency(old.profit));
-    profitEl.className = r.profit < 0 ? 'fw-bold text-danger text-nowrap' : 'fw-bold text-success text-nowrap';
+    profitEl.className = r.profit < 0 ? 'text-right font-semibold whitespace-nowrap text-loss' : 'text-right font-semibold whitespace-nowrap';
 
     const marginEl = document.getElementById(`summary-${prefix}-margin`);
     if (price > 0) {
         const m = (r.profit / price) * 100;
         setSummaryCell(marginEl.id, m.toFixed(1) + '%', old && ((old.profit / price) * 100).toFixed(1) + '%');
-        marginEl.className = m < 0 ? 'text-danger text-nowrap' : 'text-success text-nowrap';
+        marginEl.className = m < 0 ? 'text-right whitespace-nowrap text-loss' : 'text-right whitespace-nowrap';
     } else {
         setSummaryCell(marginEl.id, '0%', null);
-        marginEl.className = 'text-muted text-nowrap';
+        marginEl.className = 'text-right whitespace-nowrap text-muted';
     }
 }
 
@@ -503,7 +500,7 @@ function setSummaryCell(id, mainText, oldText) {
     el.textContent = mainText;
     if (oldText) {
         const span = document.createElement('span');
-        span.className = 'old-compare d-block d-md-inline ms-md-1 small fw-normal text-body-secondary';
+        span.className = 'old-compare md:inline md:ml-1';
         span.textContent = `(12/10前 ${oldText})`;
         el.appendChild(span);
     }
@@ -544,30 +541,7 @@ floatingHeader.addEventListener('click', () => {
 
 // 深色模式切換在 site.js（header 共用）
 
-// Init Bootstrap Tooltips
-document.addEventListener('DOMContentLoaded', function () {
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    const tooltipTrigger = isTouchDevice ? 'click' : 'hover focus';
-
-    [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(el => {
-        el.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        });
-        return new bootstrap.Tooltip(el, { trigger: tooltipTrigger, html: true });
-    });
-
-    if (isTouchDevice) {
-        document.addEventListener('click', function (e) {
-            if (!e.target.closest('[data-bs-toggle="tooltip"]')) {
-                [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).forEach(el => {
-                    const tooltip = bootstrap.Tooltip.getInstance(el);
-                    if (tooltip) tooltip.hide();
-                });
-            }
-        });
-    }
-});
+// tooltip 由 ui.js 處理（data-tip）
 
 // Start
 loadFromQueryString();

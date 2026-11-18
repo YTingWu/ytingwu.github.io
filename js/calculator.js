@@ -389,11 +389,11 @@ function calculateFees() {
     }
     const floatPre = document.getElementById('floatPreOrder');
     floatPre.textContent = preOrderLabel;
-    floatPre.className = preOrderRate > 0 ? 'badge bg-warning text-dark' : 'badge bg-secondary';
+    floatPre.className = preOrderRate > 0 ? 'chip chip-accent' : 'chip';
     
     const floatCash = document.getElementById('floatCashback');
     floatCash.textContent = cashbackLabel;
-    floatCash.className = cashbackRate > 0 ? 'badge bg-warning text-dark' : 'badge bg-secondary';
+    floatCash.className = cashbackRate > 0 ? 'chip chip-accent' : 'chip';
     
     const eventFeeIncrease = isMall ? 3 : 2;
     
@@ -570,16 +570,16 @@ function calculateScenario(prefix, sellPrice, costPrice, transactionFeeRate, cas
     document.getElementById(`summary-${prefix}-profit`).textContent = formatCurrency(profit);
     
     const profitEl = document.getElementById(`summary-${prefix}-profit`);
-    profitEl.className = profit < 0 ? 'fw-bold text-danger text-nowrap' : 'fw-bold text-success text-nowrap';
+    profitEl.className = profit < 0 ? 'text-right font-semibold whitespace-nowrap text-loss' : 'text-right font-semibold whitespace-nowrap';
     
     const marginEl = document.getElementById(`summary-${prefix}-margin`);
     if (sellPrice > 0) {
         const m = (profit / sellPrice) * 100;
         marginEl.textContent = m.toFixed(1) + '%';
-        marginEl.className = m < 0 ? 'text-danger text-nowrap' : 'text-success text-nowrap';
+        marginEl.className = m < 0 ? 'text-right whitespace-nowrap text-loss' : 'text-right whitespace-nowrap';
     } else {
         marginEl.textContent = '0%';
-        marginEl.className = 'text-muted text-nowrap';
+        marginEl.className = 'text-right whitespace-nowrap text-muted';
     }
 }
 
@@ -610,39 +610,7 @@ floatingHeader.addEventListener('click', () => {
 
 // 深色模式切換在 site.js（header 共用）
 
-// Init Bootstrap Tooltips
-document.addEventListener('DOMContentLoaded', function() {
-    // Detect if device is touch-enabled
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    
-    // Configure tooltips based on device type
-    const tooltipTrigger = isTouchDevice ? 'click' : 'hover focus';
-    
-    [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(el => {
-        // Prevent tooltip icon clicks from triggering parent elements (like radio buttons)
-        el.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        });
-        
-        return new bootstrap.Tooltip(el, {
-            trigger: tooltipTrigger,
-            html: true
-        });
-    });
-    
-    // Auto-hide tooltips on click outside (for touch devices)
-    if (isTouchDevice) {
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('[data-bs-toggle="tooltip"]')) {
-                [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).forEach(el => {
-                    const tooltip = bootstrap.Tooltip.getInstance(el);
-                    if (tooltip) tooltip.hide();
-                });
-            }
-        });
-    }
-});
+// tooltip 由 ui.js 處理（data-tip）
 
 // Start
 loadFromQueryString();

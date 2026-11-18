@@ -1,0 +1,234 @@
+/* 賣場總覽（shop.html／js/shop.js）專用樣式。由 app.css 匯入。 */
+@layer components {
+    /* ---------- 首次使用 ---------- */
+    .shop-step { @apply flex items-center gap-2 font-serif text-lg font-bold; }
+    .shop-step-num {
+        @apply inline-flex h-6 w-6 items-center justify-center rounded-full bg-ink text-paper text-xs font-semibold font-sans num;
+    }
+    .shop-step-num-off { @apply bg-line-strong text-ink; }
+
+    /* ---------- 賣場列 ---------- */
+    .shop-bar { @apply flex flex-wrap items-center gap-x-4 gap-y-2 flex-auto min-w-0; }
+    .shop-select-group { flex: 0 1 360px; }
+    /* flex-basis auto＝整段文字寬：放不下就整段換行，而不是擠在選單旁邊折成多行 */
+    #settingsLine { @apply flex items-baseline gap-1.5 min-w-0; flex: 0 1 auto; }
+    #settingsLine .settings-text { min-width: 0; }
+    #settingsLine a { @apply shrink-0 whitespace-nowrap; }
+
+    /* ---------- 分頁（role=tablist） ---------- */
+    .shop-tabs { @apply flex gap-1 overflow-x-auto border-b border-line; scrollbar-width: none; }
+    .shop-tabs [role="tab"] {
+        @apply inline-flex items-center gap-1.5 whitespace-nowrap px-3 py-2.5 -mb-px text-sm text-muted bg-transparent
+               border-0 border-b-2 border-transparent cursor-pointer transition-colors hover:text-ink;
+    }
+    .shop-tabs [role="tab"][aria-selected="true"] { @apply text-ink font-semibold border-accent; }
+
+    /* ---------- 工具列 ---------- */
+    .shop-toolbar { @apply flex flex-wrap items-center gap-2; }
+    .shop-search { flex: 1 1 180px; max-width: 280px; }
+    .shop-search > .addon { @apply px-2.5; }
+    /* .field 預設 w-full（app.css 在後面），這裡提高權重 */
+    .shop-toolbar > .shop-tool-select { @apply w-auto; flex: 0 0 auto; }
+    .shop-toolbar-actions { @apply ml-auto flex gap-2; }
+    .shop-count { @apply ml-0.5 rounded-[3px] bg-paper px-1.5 text-xs font-semibold leading-5 text-ink; }
+    @media (max-width: 767.98px) {
+        .shop-select-group { flex: 1 1 100%; }
+        .shop-search { flex: 1 1 100%; max-width: none; }
+        .shop-toolbar > .shop-tool-select { flex: 1 1 0; min-width: 0; }
+    }
+
+    /* ---------- 摘要格 ---------- */
+    .shop-stats { @apply grid grid-cols-2 gap-2; }
+    @media (min-width: 768px) {
+        .shop-stats { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); grid-template-columns: none; }
+    }
+    .shop-stat { @apply panel block h-full w-full px-3.5 py-2.5 text-left text-ink; }
+    .shop-stat-label { @apply text-[13px] text-muted; }
+    .shop-stat-value { @apply mt-0.5 text-xl font-bold; }
+    .shop-stat-value .value-sub { @apply text-base font-semibold text-muted; }
+    .shop-stat-btn { @apply cursor-pointer transition-colors hover:border-ink; }
+    .shop-stat-btn.active { @apply border-ink; box-shadow: inset 0 0 0 1px var(--ink); }
+    .shop-stat-btn.active .shop-stat-label { @apply text-ink font-semibold; }
+
+    /* ---------- 下拉選單（shop.js bindMenus） ---------- */
+    .shop-menu {
+        position: fixed;
+        inset: auto;
+        margin: 0;
+        @apply z-[1070] hidden min-w-[13rem] max-w-[calc(100vw-16px)] flex-col overflow-y-auto px-0 py-1 rounded-md
+               border border-line-strong bg-surface text-ink text-sm;
+        box-shadow: 0 12px 28px -12px rgba(0, 0, 0, 0.3);
+    }
+    .shop-menu.is-open { @apply flex; }
+    .shop-menu [role="menuitem"] {
+        @apply flex w-full items-center gap-2 px-3.5 py-2 text-left text-ink no-underline bg-transparent border-0
+               cursor-pointer whitespace-nowrap hover:bg-sunken hover:no-underline focus-visible:bg-sunken;
+    }
+    .shop-menu [role="menuitem"]:focus-visible { outline: none; }
+    .shop-menu [role="menuitem"]:disabled { @apply opacity-45 cursor-not-allowed hover:bg-transparent; }
+    .shop-menu [role="menuitem"] .bi { @apply text-muted; }
+    .shop-menu hr { @apply my-1 border-line; }
+    .shop-menu-head { @apply px-3.5 pt-2 pb-1 text-xs font-semibold text-muted; }
+    .sp-batch-menu { @apply min-w-[15rem]; }
+
+    /* ---------- 商品表格（自建商品、蝦皮商品共用） ----------
+       手機不換行，整張表在框內左右滑，商品名稱欄固定在左邊 */
+    .sx-scroll {
+        @apply panel relative overflow-x-auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        container-type: inline-size; /* 群組標題用 cqw 取得可視寬度 */
+    }
+    .sx-table { @apply w-full text-sm num; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
+    .sx-table th, .sx-table td { @apply px-2.5 py-2 border-b border-line align-middle bg-surface; }
+    .sx-table tbody tr:last-child td { @apply border-b-0; }
+    .sx-table thead th.sx-c-num { @apply text-right; }
+    .sx-table thead th { @apply text-[13px] font-semibold text-muted whitespace-nowrap text-left border-b-line-strong; }
+    .sx-table tbody tr:hover > td { @apply bg-sunken/50; }
+    .sx-sticky { position: sticky; left: 0; z-index: 2; }
+    /* 固定欄右側分隔線：內容滑到底下時看得出邊界 */
+    .sx-sticky::after { content: ""; @apply absolute top-0 -right-px bottom-0 w-px bg-line; }
+    .sx-c-name { width: auto; }
+    .sx-c-in { width: 112px; }
+    .sx-c-stock { width: 96px; }
+    .sx-c-num { width: 124px; @apply text-right whitespace-nowrap; }
+    .sx-c-act { width: 48px; padding-left: 0 !important; @apply text-right; }
+    .sx-namecell { @apply flex items-start gap-2.5 min-w-0; }
+    .sx-namecell > input[type="checkbox"] { @apply shrink-0 mt-1; }
+    .sx-name-main { @apply flex-auto min-w-0; }
+    .sx-namecell > .sx-menu { @apply shrink-0 -my-1 -mr-1; }
+    .sx-table .sx-input { @apply px-2; }
+    .sx-input-missing { @apply border-dashed border-accent; }
+    .sx-input-missing::placeholder { color: var(--accent); opacity: 1; }
+    .sx-input.changed { @apply border-accent bg-accent-soft font-semibold; }
+    .sx-table .orig { @apply mt-0.5 text-xs text-muted; }
+    .sx-missing { @apply text-[13px] text-muted; }
+
+    /* 蝦皮：商品標題列＋規格列 */
+    .sx-table-sp .sx-group > td, .sx-table-sp .sx-group:hover > td { @apply bg-sunken pt-2.5 pb-2; }
+    .sx-table-sp .sx-var > td { @apply py-1.5; }
+    .sx-table-sp .sx-var .sx-namecell { @apply items-center pl-6; }
+    .sx-table-sp .sx-var .sx-namecell > input[type="checkbox"] { @apply mt-0; }
+    .sx-table-sp .sx-var .sx-name-main { @apply flex flex-wrap items-center gap-1.5; }
+    .sx-var-name { line-height: 1.35; }
+    .sx-pill { @apply px-1.5 py-0; }
+    .sx-group-inner { position: sticky; left: 0.625rem; width: min(100%, calc(100cqw - 1.25rem)); }
+
+    @media (max-width: 767.98px) {
+        /* 表格不改卡片：固定欄縮窄，其他欄靠橫向捲動 */
+        .sx-table { min-width: 620px; font-size: 13px; }
+        .sx-c-name { width: 160px; }
+        .sx-table th, .sx-table td { @apply px-2 py-1.5; }
+        .sx-c-in { width: 92px; }
+        .sx-c-stock { width: 76px; }
+        .sx-c-num { width: 104px; }
+        .sx-table-sp .sx-var .sx-namecell { @apply pl-3.5; }
+    }
+
+    .sx-selbar { @apply flex items-center gap-2 min-h-8 mb-1.5 text-sm; }
+
+    /* 表頭排序鈕 */
+    .ov-sort {
+        @apply inline-flex items-center gap-1 min-w-0 p-0 border-0 bg-transparent text-left whitespace-nowrap cursor-pointer;
+        color: inherit;
+        font: inherit;
+    }
+    .ov-sort:hover, .ov-sort:focus-visible { @apply text-ink; }
+    .ov-sort.active { @apply text-ink font-semibold; }
+    .ov-sort i { @apply text-[11px] opacity-50; }
+    .ov-sort.active i { @apply opacity-100 text-accent; }
+    .sx-c-num .ov-sort { @apply w-full; }
+
+    /* 分頁器 */
+    .ov-pager { @apply flex flex-wrap items-center justify-between gap-x-4 gap-y-2 mt-3 text-sm text-muted; }
+    .ov-pager:empty { display: none; }
+    .ov-pager-size { @apply flex items-center gap-1.5; }
+    .ov-pager-size > select.field { @apply w-auto; }
+    .ov-pager-size label { @apply whitespace-nowrap; }
+    .ov-pages { @apply flex flex-wrap items-center gap-1; }
+    .ov-page {
+        @apply inline-flex h-8 min-w-8 items-center justify-center px-2 rounded-[var(--radius-ui)] border border-line-strong
+               bg-surface text-[13px] text-ink cursor-pointer transition-colors hover:bg-sunken;
+    }
+    .ov-page.active { @apply bg-ink text-paper border-ink cursor-default; }
+    .ov-page:disabled:not(.active) { @apply opacity-40 cursor-not-allowed hover:bg-surface; }
+    .ov-page-gap { @apply px-1 text-muted; }
+    @media (max-width: 767.98px) { .ov-pager { @apply justify-center; } }
+
+    /* 名稱與標籤 */
+    .ov-name {
+        @apply font-semibold leading-snug overflow-hidden break-words;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+    .ov-sub { @apply flex flex-wrap gap-1.5 mt-1.5 text-[13px] text-muted; }
+    .ov-sub:empty { display: none; }
+    .ov-note { align-self: center; }
+    .ov-chip { @apply max-w-full overflow-hidden text-ellipsis; }
+    .ov-chip i { font-size: .85em; }
+    .ov-chip-muted { @apply bg-sunken; }
+
+    /* 淨利格 */
+    .sx-c-num .pct { @apply block text-[13px] text-muted; }
+    .ov-money { @apply block font-semibold whitespace-nowrap; }
+    .ov-loss { color: var(--loss); @apply font-bold; }
+    .ov-low { @apply rounded-[3px] bg-accent-soft px-1 text-accent font-semibold; }
+    .ov-bd-trigger {
+        @apply inline-block px-0.5 rounded-[3px] bg-transparent border-0 border-b border-dashed border-current cursor-help;
+        color: inherit;
+        font: inherit;
+        text-align: inherit;
+    }
+    .ov-bd-trigger:hover, .ov-bd-trigger[aria-expanded="true"] { @apply bg-sunken; }
+    @media (hover: none), (pointer: coarse) { .ov-bd-trigger { cursor: pointer; } }
+    .ov-bd-pop {
+        position: fixed;
+        @apply z-[1080] w-max min-w-[260px] overflow-auto px-2 py-1 rounded-md border border-line-strong bg-surface text-ink text-[13px];
+        overscroll-behavior: contain;
+        box-shadow: 0 12px 28px -12px rgba(0, 0, 0, 0.3);
+    }
+    .ov-bd-pop .table th, .ov-bd-pop .table td { @apply px-2 py-1.5; }
+    .ov-bd-pop th:first-child, .ov-bd-pop td:first-child { padding-right: 1.25rem; }
+
+    /* ---------- 蝦皮商品：空狀態、資料時間、批次面板、匯出列 ---------- */
+    .sp-empty { @apply mx-auto max-w-[560px] px-4 py-10 text-center border border-dashed border-line-strong rounded-md; }
+    .sp-empty-icon { @apply block mb-2 text-3xl text-muted; }
+    .sp-fresh { @apply flex items-baseline gap-2 text-muted; }
+    .sp-fresh strong { @apply text-ink; }
+    .sp-panel { @apply panel mb-3 px-4 py-3 border-ink; }
+    .sp-panel-head { @apply flex flex-wrap items-center gap-1.5 mb-2 text-sm; }
+    .sp-panel-head > i { @apply text-muted; }
+    .sp-panel-body { @apply flex flex-wrap items-center gap-2; }
+    .sp-panel-group { @apply w-auto; flex: 0 1 auto; }
+    .sp-panel-group > .field { max-width: 120px; }
+    .sp-panel-group > .addon { @apply h-8 text-[13px]; }
+    @media (max-width: 767.98px) {
+        .sp-panel-group { flex: 1 1 100%; }
+        .sp-panel-group > .field { max-width: none; }
+    }
+    .rp-footer {
+        @apply sticky bottom-0 z-[5] flex flex-wrap items-center justify-between gap-2 mt-3 px-4 py-2.5 text-sm
+               border border-line rounded-md bg-paper/95 backdrop-blur-sm;
+        margin-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* ---------- 對話框內容 ---------- */
+    dialog.modal.shop-modal-lg { width: min(50rem, calc(100% - 2rem)); }
+    .shop-prose > * + * { @apply mt-3; }
+    .cat-list { @apply -mx-5 border-t border-line; }
+    .cat-item {
+        @apply flex w-full flex-col gap-0.5 px-5 py-2.5 text-left text-sm text-ink bg-transparent border-0 border-b border-line
+               cursor-pointer hover:bg-sunken;
+    }
+    .cat-path { @apply text-[13px] text-muted; }
+    .im-file { @apply flex items-baseline gap-2 text-sm; }
+    .im-table td:last-child { @apply num font-semibold; }
+    .shop-file {
+        @apply block w-full text-sm text-muted;
+    }
+    .shop-file::file-selector-button {
+        @apply mr-3 h-9 px-3 rounded-[var(--radius-ui)] border border-line-strong bg-surface text-ink text-sm cursor-pointer;
+    }
+    .shop-file::file-selector-button:hover { @apply bg-sunken; }
+}

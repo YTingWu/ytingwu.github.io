@@ -227,14 +227,9 @@ function openSaveModal() {
         input.value = defaultTitle;
     }
 
-    const saveModal = new bootstrap.Modal(document.getElementById('saveConfigModal'));
-    saveModal.show();
-
-    // Auto focus after modal shown
-    document.getElementById('saveConfigModal').addEventListener('shown.bs.modal', () => {
-        input.focus();
-        input.select();
-    }, { once: true });
+    UI.modal.show('#saveConfigModal');
+    input.focus();
+    input.select();
 }
 
 function saveConfig() {
@@ -277,9 +272,7 @@ function saveConfig() {
     renderSidebar();
     
     // Close modal
-    const modalEl = document.getElementById('saveConfigModal');
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    if (modal) modal.hide();
+    UI.modal.hide('#saveConfigModal');
     
     showToast('已儲存設定');
 }
@@ -447,27 +440,27 @@ function renderSidebar() {
     listEl.innerHTML = '';
     
     if (savedConfigs.length === 0) {
-        listEl.innerHTML = '<div class="text-center p-4 text-muted"><small>尚未儲存任何設定</small></div>';
+        listEl.innerHTML = '<div class="text-center p-6 text-muted text-sm">尚未儲存任何設定</div>';
         return;
     }
     
     savedConfigs.forEach(config => {
         const item = document.createElement('a');
-        item.className = 'sidebar-list-item list-group-item list-group-item-action';
+        item.className = 'sidebar-list-item';
         item.innerHTML = `
-            <div class="d-flex justify-content-between align-items-start">
-                <div class="w-100">
+            <div class="flex w-full items-start justify-between gap-2">
+                <div class="min-w-0 flex-1">
                     <span class="config-title">${escapeHtml(config.title)}</span>
                     ${config.rates === 'new'
-                        ? '<span class="badge text-bg-danger ms-1 align-middle">12/11 新制</span>'
-                        : '<span class="badge text-bg-secondary ms-1 align-middle">舊制</span>'}
+                        ? '<span class="chip chip-accent ml-1 align-middle">12/11 新制</span>'
+                        : '<span class="chip ml-1 align-middle">舊制</span>'}
                     <div class="config-details">
                         <span>${escapeHtml(config.summary)}</span>
-                        <span class="mx-1">•</span>
+                        <span class="mx-1">·</span>
                         <span>${config.date}</span>
                     </div>
                 </div>
-                <button class="btn btn-link btn-sm delete-config-btn" title="刪除">
+                <button type="button" class="btn btn-ghost btn-icon btn-sm delete-config-btn" title="刪除" aria-label="刪除">
                     <i class="bi bi-trash"></i>
                 </button>
             </div>
@@ -489,34 +482,7 @@ function renderSidebar() {
 }
 
 function showToast(message) {
-    const container = document.getElementById('toastContainer');
-    if (!container) return;
-    
-    const toastHtml = `
-        <div class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    ${message}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    `;
-    
-    const template = document.createElement('div');
-    template.innerHTML = toastHtml.trim();
-    const toastEl = template.firstChild;
-    
-    container.appendChild(toastEl);
-    
-    // Assumes bootstrap is globally available
-    if (window.bootstrap && window.bootstrap.Toast) {
-        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
-        toast.show();
-        toastEl.addEventListener('hidden.bs.toast', () => {
-            toastEl.remove();
-        });
-    }
+    if (window.UI) UI.toast(message);
 }
 
 // Initialization on DOMReady

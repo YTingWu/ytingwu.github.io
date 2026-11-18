@@ -230,7 +230,7 @@ function openSaveModal() {
 
     // 更新／另存：只有從列表載入的商品才有
     const modeWrap = document.getElementById('saveModeWrap');
-    modeWrap.classList.toggle('d-none', !loaded);
+    modeWrap.hidden = !loaded;
     if (loaded) {
         document.getElementById('saveModeUpdateLabel').textContent = `更新「${loaded.p.name}」（${loaded.shop.name}）`;
         document.getElementById('saveModeUpdate').checked = true;
@@ -242,19 +242,20 @@ function openSaveModal() {
     renderSaveTarget();
 
     const modalEl = document.getElementById('saveConfigModal');
-    bootstrap.Modal.getOrCreateInstance(modalEl).show();
-    modalEl.addEventListener('shown.bs.modal', () => { nameInput.focus(); nameInput.select(); }, { once: true });
+    UI.modal.show(modalEl);
+    nameInput.focus();
+    nameInput.select();
 }
 
 // 存到哪裡、和賣場設定的差異
 function renderSaveTarget() {
-    const updating = !document.getElementById('saveModeWrap').classList.contains('d-none') && document.getElementById('saveModeUpdate').checked;
-    document.getElementById('saveTargetWrap').classList.toggle('d-none', updating);
+    const updating = !document.getElementById('saveModeWrap').hidden && document.getElementById('saveModeUpdate').checked;
+    document.getElementById('saveTargetWrap').hidden = updating;
     const loaded = findLoaded();
     const shop = updating && loaded ? loaded.shop : shopState.shops.find(s => s.id === document.getElementById('saveTargetShop').value);
     const diffEl = document.getElementById('saveDiff');
     if (!shop) {
-        diffEl.innerHTML = '<div class="small text-muted">新賣場會沿用目前的賣家類型、免運方案、蝦幣回饋與稅務設定。</div>';
+        diffEl.innerHTML = '<p class="hint">新賣場會沿用目前的賣家類型、免運方案、蝦幣回饋與稅務設定。</p>';
         return;
     }
     const diff = SD.settingsDiff(SD.settingsFromQuery(currentQuery()), shop.settings);
@@ -268,8 +269,8 @@ function renderSaveTarget() {
         return (L[k] && L[k][v]) || String(v);
     };
     diffEl.innerHTML = diff.length
-        ? `<div class="alert alert-warning small mb-0 py-2"><div class="mb-1"><i class="bi bi-exclamation-triangle"></i> 目前的設定和「${escapeHtml(shop.name)}」不同，存進去後獲利會依賣場設定計算：</div><ul class="mb-0 ps-3">${diff.map(d => `<li>${d.label}：目前「${escapeHtml(label(d.key, d.from))}」→ 賣場「${escapeHtml(label(d.key, d.to))}」</li>`).join('')}</ul></div>`
-        : '<div class="small text-success"><i class="bi bi-check-circle"></i> 設定和賣場相同。</div>';
+        ? `<div class="note"><div class="mb-1"><i class="bi bi-exclamation-triangle text-accent"></i> 目前的設定和「${escapeHtml(shop.name)}」不同，存進去後獲利會依賣場設定計算：</div><ul class="list-disc pl-5">${diff.map(d => `<li>${d.label}：目前「${escapeHtml(label(d.key, d.from))}」→ 賣場「${escapeHtml(label(d.key, d.to))}」</li>`).join('')}</ul></div>`
+        : '<p class="text-sm text-muted"><i class="bi bi-check-circle"></i> 設定和賣場相同。</p>';
 }
 
 function saveConfig() {
@@ -279,7 +280,7 @@ function saveConfig() {
     const q = currentQuery();
     const fresh = SD.productFromQuery(q, name);
     const loaded = findLoaded();
-    const updating = loaded && !document.getElementById('saveModeWrap').classList.contains('d-none') && document.getElementById('saveModeUpdate').checked;
+    const updating = loaded && !document.getElementById('saveModeWrap').hidden && document.getElementById('saveModeUpdate').checked;
     let shop, p;
     if (updating) {
         ({ shop, p } = loaded);
@@ -311,8 +312,8 @@ function saveConfig() {
     }
     loadedRef = { shopId: shop.id, pid: p.id };
     renderSidebar();
-    bootstrap.Modal.getInstance(document.getElementById('saveConfigModal'))?.hide();
-    showToast(`${updating ? '已更新' : '已儲存到'}「${escapeHtml(shop.name)}」 <a href="shop.html" class="text-white fw-bold ms-1">到賣場查看</a>`);
+    UI.modal.hide('#saveConfigModal');
+    showToast(`${updating ? '已更新' : '已儲存到'}「${escapeHtml(shop.name)}」 <a href="shop.html" class="ml-1">到賣場查看</a>`);
 }
 
 async function loadConfig(shopId, pid) {
@@ -484,56 +485,29 @@ function renderSidebar() {
     if (!listEl) return;
     const groups = shopState.shops.map(shop => ({ shop, items: shop.products.filter(p => !p.shopeeItemId) })).filter(g => g.items.length);
     if (!groups.length) {
-        listEl.innerHTML = '<div class="text-center p-4 text-muted"><small>還沒有自建商品<br>試算後按「儲存到賣場」就會出現在這裡</small></div>';
+        listEl.innerHTML = '<div class="text-center p-6 text-muted text-sm">還沒有自建商品<br>試算後按「儲存到賣場」就會出現在這裡</div>';
         return;
     }
     const showShop = shopState.shops.length > 1;
     listEl.innerHTML = groups.map(({ shop, items }) =>
-        (showShop ? `<div class="sidebar-shop-heading"><i class="bi bi-shop-window"></i> ${escapeHtml(shop.name)}</div>` : '') +
+        (showShop ? `<div class="sidebar-shop-heading">${escapeHtml(shop.name)}</div>` : '') +
         items.map(p => {
             const rate = shopCtx.feeIndex ? SD.resolveRate(p, shop.settings.seller, shopCtx) : (p.fee.mode === 'manual' ? p.fee.manualRate : null);
             const active = loadedRef && loadedRef.pid === p.id;
-            return `<a href="#" class="sidebar-list-item list-group-item list-group-item-action${active ? ' active-item' : ''}" data-shop="${escapeHtml(shop.id)}" data-pid="${escapeHtml(p.id)}"${active ? ' aria-current="true"' : ''}>
-  <div class="d-flex justify-content-between align-items-start">
-    <div class="w-100">
+            return `<a href="#" class="sidebar-list-item${active ? ' active-item' : ''}" data-shop="${escapeHtml(shop.id)}" data-pid="${escapeHtml(p.id)}"${active ? ' aria-current="true"' : ''}>
+  <div class="flex w-full items-start justify-between gap-2">
+    <div class="min-w-0 flex-1">
       <span class="config-title">${escapeHtml(p.name || '（未命名）')}</span>
-      <div class="config-details"><span>進價 ${p.cost != null ? money(p.cost) : '未填'}</span><span class="mx-1">•</span><span>售價 ${money(p.variations[0].price)}</span>${rate != null ? `<span class="mx-1">•</span><span>${rate}%</span>` : ''}</div>
+      <div class="config-details"><span>進價 ${p.cost != null ? money(p.cost) : '未填'}</span><span class="mx-1">·</span><span>售價 ${money(p.variations[0].price)}</span>${rate != null ? `<span class="mx-1">·</span><span>${rate}%</span>` : ''}</div>
     </div>
-    <button class="btn btn-link btn-sm delete-config-btn" title="刪除" aria-label="刪除 ${escapeHtml(p.name)}"><i class="bi bi-trash"></i></button>
+    <button type="button" class="btn btn-ghost btn-icon btn-sm delete-config-btn" title="刪除" aria-label="刪除 ${escapeHtml(p.name)}"><i class="bi bi-trash"></i></button>
   </div></a>`;
         }).join('')).join('') +
         '<a class="sidebar-manage-link" href="shop.html"><i class="bi bi-shop"></i> 到賣場總覽管理</a>';
 }
 
 function showToast(message) {
-    const container = document.getElementById('toastContainer');
-    if (!container) return;
-    
-    const toastHtml = `
-        <div class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    ${message}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    `;
-    
-    const template = document.createElement('div');
-    template.innerHTML = toastHtml.trim();
-    const toastEl = template.firstChild;
-    
-    container.appendChild(toastEl);
-    
-    // Assumes bootstrap is globally available
-    if (window.bootstrap && window.bootstrap.Toast) {
-        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
-        toast.show();
-        toastEl.addEventListener('hidden.bs.toast', () => {
-            toastEl.remove();
-        });
-    }
+    if (window.UI) UI.toast(message);
 }
 
 // Initialization on DOMReady
