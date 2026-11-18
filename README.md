@@ -21,9 +21,11 @@
 
 ## 技術
 
-純靜態網站，沒有打包工具，也不需要 `npm install`：
+純靜態網站，只有樣式需要編譯：
 
-- HTML + Bootstrap 5（CDN）+ 原生 JavaScript
+- HTML + 原生 JavaScript；互動元件（對話框、收合、分頁、tooltip、toast）在 `js/ui.js`
+- 樣式用 Tailwind CSS v4：原始檔在 `css/src/`，編譯成 `css/site.css` 並 commit 進 repo
+- 圖示用 bootstrap-icons 字型（CDN），標題字型 Noto Serif TC（Google Fonts）
 - 部署在 GitHub Pages，push 到 `main` 後由 [GitHub Actions](.github/workflows/static.yml) 自動發佈
 
 ## 目錄結構
@@ -31,7 +33,8 @@
 ```
 ├── index.html / old.html / shop.html ...  各頁面
 ├── partials/            共用 header、footer、公告視窗
-├── css/                 樣式
+├── css/src/             Tailwind 原始檔（app.css 為設計 token 與共用元件）
+├── css/site.css         編譯後的樣式（npm run build:css 產生）
 ├── js/                  計算邏輯與頁面腳本
 │   ├── fee-engine.js    新制費用計算核心
 │   ├── shop-*.js        賣場總覽（資料層、xlsx 匯入匯出、畫面）
@@ -46,9 +49,15 @@
 
 ## 本機開發
 
-需要 Node.js 18 以上（只用來跑 partials 建置與測試）。
+需要 Node.js 20 以上（用來編譯樣式、跑 partials 建置與測試）。
 
 ```bash
+# 安裝 Tailwind CLI（第一次）
+npm install
+
+# 修改 HTML、JS 的 class 或 css/src/ 後重新編譯樣式（開發時可用 npm run watch:css）
+npm run build:css
+
 # 啟動本機伺服器（任選一種靜態伺服器）
 python3 -m http.server 8000
 # 開啟 http://localhost:8000/

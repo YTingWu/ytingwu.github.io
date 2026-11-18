@@ -31,8 +31,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install build tools
+        run: npm ci
       - name: Build shared header/footer
         run: node scripts/build-partials.mjs
+      - name: Build CSS (Tailwind)
+        run: |
+          npm run build:css
+          # css/site.css 有 commit 進 repo；若和原始碼編出來的不同代表忘了重新 build
+          # 先只發警告（Linux 與 macOS 編出的檔案是否逐位元組相同尚未驗證），部署用的是這裡剛編好的版本
+          git diff --quiet -- css/site.css || echo "::warning::css/site.css 和原始碼編譯結果不同，請在本機執行 npm run build:css 後 commit"
+          rm -rf node_modules
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
