@@ -83,7 +83,7 @@
 
 ### 檔案
 
-賣家中心 → 我的商品 → 批次工具 → 下載商品模板：「價格及庫存」（`mass_update_sales_info_*.xlsx`）和「備貨天數」（`mass_update_dts_info_*.xlsx`）。
+賣家中心 → 我的商品 → 商品批次編輯工具 → 更新商品資料 → 下載商品模板：「價格及庫存」（`mass_update_sales_info_*.xlsx`）和「備貨天數」（`mass_update_dts_info_*.xlsx`）。
 
 實測格式（2026-11-17，Bruce 的賣場 96 商品／725 規格）：
 

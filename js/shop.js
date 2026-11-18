@@ -1070,7 +1070,7 @@ ${plan.unmatched.map(u => `<div class="d-flex flex-wrap align-items-center gap-2
 <td class="text-end text-nowrap">${d.stock != null ? `${v.stock ?? '—'} → <strong>${d.stock}</strong>` : `${v.stock ?? '—'}<br><small class="text-muted">匯入時的庫存</small>`}</td></tr>`;
                 }).join('') + '</tbody></table></div>');
         }
-        out.push(`<div class="small text-muted"><i class="bi bi-info-circle"></i> 下載後到蝦皮賣家中心 →「我的商品」→「批次工具」→「批次更新」→ 上傳檔案。上傳後蝦皮會回傳結果，失敗的列會寫在「失敗原因」欄。下次從蝦皮匯入時，已生效的修改會自動清除標記。</div>`);
+        out.push(`<div class="small text-muted"><i class="bi bi-info-circle"></i> 下載後到蝦皮賣家中心 →「我的商品」→「商品批次編輯工具」→「更新商品資料」→ 上傳檔案。上傳後蝦皮會回傳結果，失敗的列會寫在「失敗原因」欄。下次從蝦皮匯入時，已生效的修改會自動清除標記。</div>`);
         $('exportBody').innerHTML = out.join('');
         $('exportOk').disabled = !inFile || problems.length > 0 || !changes.length;
         modal('exportModal').show();

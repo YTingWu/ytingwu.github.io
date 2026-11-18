@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-7220444464281913">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="蝦皮賣家怎麼一次算出所有商品的淨利？用免費的「賣場總覽」設定一次賣場，匯入蝦皮賣家中心的批次模板，就能看到每個規格在一般日與促銷檔期的淨利，找出賠錢商品、依目標利潤率批次調價，再產生批次更新檔上傳回蝦皮。附截圖與操作步驟。">
+    <meta name="keywords" content="蝦皮商品淨利,蝦皮淨利計算,蝦皮獲利計算,蝦皮批次調價,蝦皮批次更新,蝦皮商品批次編輯工具,蝦皮價格及庫存,蝦皮賣家 賠錢,蝦皮手續費 試算,蝦皮 利潤率,蝦皮賣場總覽">
+    <link rel="canonical" href="https://ytingwu.github.io/article-shop-overview.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="蝦皮賣家如何一次算出所有商品淨利？賣場總覽使用教學">
+    <meta property="og:site_name" content="蝦皮手續費計算機">
+    <meta property="og:url" content="https://ytingwu.github.io/article-shop-overview.html">
+    <meta property="og:description" content="匯入蝦皮批次模板，一頁看完每個規格在一般日、促銷檔期的淨利；找出賠錢商品、批次調價，再產生批次更新檔上傳回蝦皮。">
+    <meta property="og:image" content="https://ytingwu.github.io/images/shop-guide/og-shop-overview.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="賣場總覽的蝦皮商品頁：摘要卡片與各規格淨利表格">
+    <meta property="article:published_time" content="2026-11-18T18:00:00+08:00">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="蝦皮賣家如何一次算出所有商品淨利？賣場總覽使用教學">
+    <meta name="twitter:description" content="匯入蝦皮批次模板，一頁看完每個規格的淨利，找出賠錢商品、批次調價後上傳回蝦皮。">
+    <meta name="twitter:image" content="https://ytingwu.github.io/images/shop-guide/og-shop-overview.jpg">
+
+    <title>蝦皮賣家如何一次算出所有商品淨利？賣場總覽使用教學｜蝦皮手續費計算機</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.png?v=2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="蝦皮手續費計算機">
+
+    <script>
+        // 先套用已存的主題，避免閃白
+        try { document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light'); } catch (e) { }
+    </script>
+
+    <script type="application/ld+json">
+    [
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "蝦皮賣家如何一次算出所有商品淨利？賣場總覽使用教學",
+        "description": "用賣場總覽設定一次賣場、匯入蝦皮批次模板，一頁看完每個規格在一般日與促銷檔期的淨利，找出賠錢商品、依目標利潤率批次調價，再產生批次更新檔上傳回蝦皮。",
+        "url": "https://ytingwu.github.io/article-shop-overview.html",
+        "mainEntityOfPage": "https://ytingwu.github.io/article-shop-overview.html",
+        "datePublished": "2026-11-18T18:00:00+08:00",
+        "dateModified": "2026-11-18T18:00:00+08:00",
+        "inLanguage": "zh-TW",
+        "image": "https://ytingwu.github.io/images/shop-guide/og-shop-overview.jpg",
+        "author": { "@type": "Person", "name": "Bruce Wu", "url": "https://brucewu.dev/" },
+        "publisher": { "@type": "Person", "name": "Bruce Wu", "url": "https://brucewu.dev/" }
+    },
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "蝦皮手續費計算機", "item": "https://ytingwu.github.io/" },
+            { "@type": "ListItem", "position": 2, "name": "文章", "item": "https://ytingwu.github.io/articles.html" },
+            { "@type": "ListItem", "position": 3, "name": "賣場總覽使用教學", "item": "https://ytingwu.github.io/article-shop-overview.html" }
+        ]
+    },
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "要登入蝦皮嗎？資料會上傳嗎？",
+                "acceptedAnswer": { "@type": "Answer", "text": "不用登入，也不會上傳。商品資料來自你自己下載的檔案，所有計算都在瀏覽器完成，資料只存在這台裝置的瀏覽器。換手機、換電腦或清除瀏覽器資料前，記得用右上「⋯」選單匯出全部資料（JSON）備份，到新裝置再「從 JSON 還原」。" }
+            },
+            {
+                "@type": "Question",
+                "name": "成交手續費率怎麼來的？",
+                "acceptedAnswer": { "@type": "Answer", "text": "匯入時依「備貨天數」檔裡的商品分類，自動對應 12/11 新制的品類費率，並依賣場類型取一般賣家或商城費率。對不到的分類請你選一次，之後自動套用；也可以直接輸入手動費率。" }
+            },
+            {
+                "@type": "Question",
+                "name": "只改售價，為什麼庫存也會寫回？",
+                "acceptedAnswer": { "@type": "Answer", "text": "蝦皮的批次模板規定售價和庫存都必填，所以會用匯入當時的庫存寫回。中間有賣出的話，先重新匯入再調價。" }
+            },
+            {
+                "@type": "Question",
+                "name": "進價會寫進蝦皮嗎？",
+                "acceptedAnswer": { "@type": "Answer", "text": "不會。進價只用來算淨利，批次更新檔只改售價和庫存。重新匯入時，進價、備註、手動選的類別都會保留。" }
+            },
+            {
+                "@type": "Question",
+                "name": "促銷檔期的淨利是怎麼算的？",
+                "acceptedAnswer": { "@type": "Answer", "text": "促銷檔期當天，成交手續費會再加收一般賣家 4%、商城 5%（有參加長期蝦幣回饋的免收）。檔期是哪幾天，可以看活動日行事曆。" }
+            },
+            {
+                "@type": "Question",
+                "name": "蝦皮小舖也能用嗎？",
+                "acceptedAnswer": { "@type": "Answer", "text": "可以。賣場設定選「蝦皮小舖」，會改用小舖的收費（不收免運服務費、促銷檔期不加收），淨利只有一欄。小舖的規則請看蝦皮小舖懶人包。" }
+            }
+        ]
+    }
+    ]
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TLR5X0J725"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-TLR5X0J725');
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css?v=20261118d">
+</head>
+
+<body>
+    <!-- include:header -->
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg site-nav" aria-label="網站導覽">
+            <div class="container-fluid site-nav-inner">
+                <a class="navbar-brand site-brand" href="./">
+                    <img src="favicon.svg" alt="" width="28" height="28"> 蝦皮手續費計算機
+                </a>
+                <div class="d-flex align-items-center gap-1 order-lg-last">
+                    <button type="button" class="btn btn-link site-nav-icon" id="announcementBtn"
+                        title="12/11 新制公告" aria-label="12/11 新制公告">
+                        <i class="bi bi-megaphone-fill fs-5 text-danger"></i>
+                    </button>
+                    <button type="button" class="btn btn-link site-nav-icon" id="themeToggle"
+                        title="切換深色模式" aria-label="切換深色模式">
+                        <i class="bi bi-moon-fill fs-5" id="themeIcon"></i>
+                    </button>
+                    <button class="navbar-toggler site-nav-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#siteNavLinks" aria-controls="siteNavLinks" aria-expanded="false"
+                        aria-label="開啟選單">
+                        <i class="bi bi-list fs-3"></i>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="siteNavLinks">
+                    <ul class="navbar-nav ms-lg-auto">
+                        <li class="nav-item"><a class="nav-link " href="./"><i class="bi bi-calculator"></i> 快速計算(12/11新制)</a></li>
+                        <li class="nav-item"><a class="nav-link " href="shop.html"><i class="bi bi-shop"></i> 賣場總覽</a></li>
+                        <li class="nav-item"><a class="nav-link " href="old.html" data-carry-query><i class="bi bi-clock-history"></i> 舊制</a></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="articles.html"><i class="bi bi-journal-text"></i> 文章</a></li>
+                        <li class="nav-item"><a class="nav-link " href="events.html"><i class="bi bi-calendar-event"></i> 活動日行事曆</a></li>
+                        <li class="nav-item"><a class="nav-link" href="faq.html#install"><i class="bi bi-phone"></i> 加入主畫面</a></li>
+                        <li class="nav-item"><a class="nav-link " href="faq.html"><i class="bi bi-question-circle"></i> 常見問題</a></li>
+                        <li class="nav-item"><a class="nav-link " href="sponsor.html"><i class="bi bi-heart"></i> 贊助</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!-- /include:header -->
+
+    <div id="wrapper">
+        <div id="page-content-wrapper">
+            <div class="container">
+                <main class="main-container article-page">
+                    <nav aria-label="breadcrumb" class="article-breadcrumb">
+                        <ol class="breadcrumb small mb-3">
+                            <li class="breadcrumb-item"><a href="./">首頁</a></li>
+                            <li class="breadcrumb-item"><a href="articles.html">文章</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">賣場總覽使用教學</li>
+                        </ol>
+                    </nav>
+
+                    <article>
+                        <header class="mb-4">
+                            <h1 class="article-title">蝦皮賣家如何一次算出所有商品淨利？賣場總覽使用教學</h1>
+                            <p class="text-secondary mb-2">不用再一個一個算：匯入蝦皮檔案，找出賠錢的規格，批次調價後上傳回蝦皮。</p>
+                            <div class="article-meta mb-3">
+                                <time datetime="2026-11-18">2026/11/18</time> · Bruce Wu
+                            </div>
+                            <div class="article-share" data-share>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-share-native aria-label="分享這篇文章"><i class="bi bi-share"></i> 分享</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-share-copy aria-label="複製文章連結"><i class="bi bi-link-45deg"></i> 複製連結</button>
+                                <span class="article-share-status" data-share-status role="status" aria-live="polite"></span>
+                            </div>
+                        </header>
+
+                        <p class="faq-answer-lead mb-4">
+                            <i class="bi bi-lightbulb-fill" aria-hidden="true"></i>
+                            <strong>一句話：賣場設定填一次、蝦皮商品匯入一次，所有規格的淨利就列在同一張表。</strong>一般日和<strong>促銷檔期</strong>分開算，賠錢的標紅色；想調價可以<strong>依目標利潤率一次回推售價</strong>，再產生<strong>蝦皮批次更新檔</strong>上傳回去。免費、不用登入蝦皮，資料只存在你的瀏覽器。
+                        </p>
+
+                        <figure class="guide-shot">
+                            <a href="images/shop-guide/hero-light.webp" class="guide-shot-light" target="_blank" rel="noopener" aria-label="開啟大圖：蝦皮商品分頁（淺色）">
+                                <img src="images/shop-guide/hero-light.webp" width="1400" height="630" fetchpriority="high" decoding="async"
+                                    alt="賣場總覽的蝦皮商品分頁：摘要卡片顯示 8 個商品 18 個規格、虧本規格 2、一般日平均利潤率 34.4%、促銷檔期 30.4%；表格中法式珍珠鯊魚夾（小）售價 149 元，一般日淨利 1 元、促銷檔期淨利負 5 元">
+                            </a>
+                            <a href="images/shop-guide/hero-dark.webp" class="guide-shot-dark" target="_blank" rel="noopener" aria-label="開啟大圖：蝦皮商品分頁（深色）">
+                                <img src="images/shop-guide/hero-dark.webp" width="1400" height="630" loading="lazy" decoding="async"
+                                    alt="賣場總覽的蝦皮商品分頁（深色模式）：摘要卡片與鯊魚夾兩個規格的淨利">
+                            </a>
+                            <figcaption>每個規格的一般日、促銷檔期淨利排在同一張表：鯊魚夾（小）平常只賺 $1，促銷檔期倒賠 $5。圖中「小巷手作飾品」是虛構的示範賣場。</figcaption>
+                        </figure>
+
+                        <nav class="faq-toc mb-4" aria-label="文章目錄">
+                            <ol class="mb-0">
+                                <li><a href="#why">為什麼要一次看所有商品的淨利？</a></li>
+                                <li><a href="#setup">步驟 1：建立賣場，設定只填一次</a></li>
+                                <li><a href="#own">步驟 2：還沒上架的商品，先用自建商品試算</a></li>
+                                <li><a href="#import">步驟 3：匯入蝦皮商品</a></li>
+                                <li><a href="#loss">步驟 4：找出賠錢的規格</a></li>
+                                <li><a href="#reprice">步驟 5：依目標利潤率批次調價</a></li>
+                                <li><a href="#export">步驟 6：產生批次更新檔，上傳回蝦皮</a></li>
+                                <li><a href="#mobile">手機也能用</a></li>
+                                <li><a href="#qa">常見問題 Q&amp;A</a></li>
+                            </ol>
+                        </nav>
+
+                        <section class="faq-item" id="why">
+                            <h2>為什麼要一次看所有商品的淨利？</h2>
+                            <p>12/11 新制之後，成交手續費依品類細分、促銷檔期加收提高到 4%（商城 5%），每月檔期也變多。同一個商品，<strong>一般日有賺、促銷檔期卻可能賠錢</strong>；低單價商品被固定比例的費用一扣，常常只剩個位數。</p>
+                            <p>用計算機一筆一筆算當然可以，但商品一多就會遇到：</p>
+                            <ul>
+                                <li>不知道<strong>哪幾個規格</strong>已經在賠錢</li>
+                                <li>改了費率或賣場設定，每個商品都要<strong>重算一次</strong></li>
+                                <li>算出新售價後，還要回蝦皮賣家中心<strong>一個一個改</strong></li>
+                            </ul>
+                            <p class="mb-0"><a href="shop.html">賣場總覽</a>把這三件事接起來：設定一次、匯入一次，淨利一張表看完，調價後直接產生蝦皮能讀的批次更新檔。</p>
+                        </section>
+
+                        <section class="faq-item" id="setup">
+                            <h2>步驟 1：建立賣場，設定只填一次</h2>
+                            <p>第一次打開<a href="shop.html">賣場總覽</a>，輸入賣場名稱就會建立一個賣場。到「<span class="faq-ui"><i class="bi bi-sliders" aria-hidden="true"></i>賣場設定</span>」分頁填一次：</p>
+                            <ul>
+                                <li><strong>賣家類型</strong>：一般賣家、商城或蝦皮小舖（決定用哪一種成交手續費率）</li>
+                                <li><strong>免運方案</strong>：方案一（6.5%）或方案二（$65／單）</li>
+                                <li><strong>蝦幣回饋</strong>：有沒有參加、長期或短期（只有長期免收促銷檔期加收）</li>
+                                <li><strong>稅務</strong>與進項發票、<strong>低利潤門檻</strong>（預設 5%，低於門檻的利潤率會標黃底）</li>
+                            </ul>
+                            <figure class="guide-shot guide-shot-small">
+                                <a href="images/shop-guide/settings-light.webp" class="guide-shot-light" target="_blank" rel="noopener" aria-label="開啟大圖：賣場設定（淺色）">
+                                    <img src="images/shop-guide/settings-light.webp" width="1052" height="1084" loading="lazy" decoding="async"
+                                        alt="賣場設定：賣場類型選一般賣家、免運方案一、不參加蝦幣回饋、稅務無、低利潤門檻 5%">
+                                </a>
+                                <a href="images/shop-guide/settings-dark.webp" class="guide-shot-dark" target="_blank" rel="noopener" aria-label="開啟大圖：賣場設定（深色）">
+                                    <img src="images/shop-guide/settings-dark.webp" width="1052" height="1084" loading="lazy" decoding="async"
+                                        alt="賣場設定分頁（深色模式）">
+                                </a>
+                                <figcaption>賣場設定改了，底下所有商品的淨利會立刻跟著重算。</figcaption>
+                            </figure>
+                            <p class="mb-0">有好幾間賣場（例如一般賣場和商城）的話，用左上角的下拉選單新增、切換，每間各自一套設定。</p>
+                        </section>
+
+                        <section class="faq-item" id="own">
+                            <h2>步驟 2：還沒上架的商品，先用自建商品試算</h2>
+                            <p>「<span class="faq-ui"><i class="bi bi-box-seam" aria-hidden="true"></i>自建商品</span>」放你自己加的商品，適合<strong>還在評估要不要進貨</strong>、或想先定價的新品。按「新增商品」填名稱、進價、售價，選商品類別帶入成交手續費率，表格就會算出一般日和促銷檔期的淨利。</p>
+                            <figure class="guide-shot">
+                                <a href="images/shop-guide/own-light.webp" class="guide-shot-light" target="_blank" rel="noopener" aria-label="開啟大圖：自建商品（淺色）">
+                                    <img src="images/shop-guide/own-light.webp" width="1400" height="918" loading="lazy" decoding="async"
+                                        alt="自建商品分頁：5 個商品，壓克力飾品收納盒一般日與促銷檔期淨利都是負的、標成紅色，珍珠耳骨夾的進價待補">
+                                </a>
+                                <a href="images/shop-guide/own-dark.webp" class="guide-shot-dark" target="_blank" rel="noopener" aria-label="開啟大圖：自建商品（深色）">
+                                    <img src="images/shop-guide/own-dark.webp" width="1400" height="918" loading="lazy" decoding="async"
+                                        alt="自建商品分頁（深色模式）：各商品的進價、售價與兩種情境淨利">
+                                </a>
+                                <figcaption>進價、售價可以直接在表格裡改，打字的同時淨利就會更新；進價還沒確定的會標「待補」。</figcaption>
+                            </figure>
+                            <ul class="mb-0">
+                                <li>點表頭可以依進價、售價、淨利排序；篩選「虧本」「低於門檻」「待補進價／類別」。</li>
+                                <li>在<a href="./">快速計算</a>算好的商品，按「儲存到賣場」也會存進這裡，兩邊是同一份資料。</li>
+                            </ul>
+                        </section>
+
+                        <section class="faq-item" id="import">
+                            <h2>步驟 3：匯入蝦皮商品</h2>
+                            <p>已經在蝦皮上架的商品，不用手動一個一個建。到蝦皮賣家中心下載兩份批次模板：</p>
+                            <ol class="guide-steps">
+                                <li><span>電腦登入<a href="https://seller.shopee.tw/" target="_blank" rel="noopener">蝦皮賣家中心</a> →「我的商品」→ 右上「商品批次編輯工具」→「更新商品資料」。</span></li>
+                                <li><span>「下載商品模板」選<strong>價格及庫存</strong>，按「下載」（有售價、庫存）。</span></li>
+                                <li><span>模板改選<strong>備貨天數</strong>，再下載一次（有商品分類，用來對應成交手續費率）。</span></li>
+                                <li><span>等下方「紀錄」出現兩筆檔案後各自下載，回到賣場總覽「<span class="faq-ui"><i class="bi bi-bag" aria-hidden="true"></i>蝦皮商品</span>」→「上傳蝦皮檔案」，兩份一起選。</span></li>
+                            </ol>
+                            <div class="guide-shot-pair">
+                                <figure class="guide-shot guide-shot-plain">
+                                    <a href="images/shopee-download-sales.png" target="_blank" rel="noopener" aria-label="開啟大圖：下載價格及庫存模板">
+                                        <img src="images/shopee-download-sales.png" loading="lazy" decoding="async" alt="蝦皮賣家中心的下載商品模板畫面，模板選「價格及庫存」">
+                                    </a>
+                                    <figcaption>價格及庫存</figcaption>
+                                </figure>
+                                <figure class="guide-shot guide-shot-plain">
+                                    <a href="images/shopee-download-dts.png" target="_blank" rel="noopener" aria-label="開啟大圖：下載備貨天數模板">
+                                        <img src="images/shopee-download-dts.png" loading="lazy" decoding="async" alt="蝦皮賣家中心的下載商品模板畫面，模板選「備貨天數」">
+                                    </a>
+                                    <figcaption>備貨天數</figcaption>
+                                </figure>
+                            </div>
+                            <p>選好檔案後會先顯示確認畫面：每份檔案的規格數、下載時間，以及這次會<strong>新增</strong>、<strong>更新</strong>幾個商品，還有成交手續費類別自動對應的結果。</p>
+                            <figure class="guide-shot guide-shot-narrow">
+                                <a href="images/shop-guide/import-light.webp" class="guide-shot-light" target="_blank" rel="noopener" aria-label="開啟大圖：從蝦皮匯入（淺色）">
+                                    <img src="images/shop-guide/import-light.webp" width="1400" height="987" loading="lazy" decoding="async"
+                                        alt="從蝦皮匯入視窗：兩份檔案都辨識成功，各 18 個規格；新增商品 8、更新既有商品 0；手續費類別自動對應完全相同 6、套用上層類別費率 2">
+                                </a>
+                                <a href="images/shop-guide/import-dark.webp" class="guide-shot-dark" target="_blank" rel="noopener" aria-label="開啟大圖：從蝦皮匯入（深色）">
+                                    <img src="images/shop-guide/import-dark.webp" width="1400" height="987" loading="lazy" decoding="async"
+                                        alt="從蝦皮匯入視窗（深色模式）：檔案辨識結果與新增、更新數量">
+                                </a>
+                                <figcaption>按「匯入」前就知道會發生什麼事。對不到費率的分類會請你選一次，之後同一個分類自動套用。</figcaption>
+                            </figure>
+                            <p class="mb-0">匯入後在表格裡<strong>補上每個規格的進價</strong>（多個規格同一個進價，可以勾選後用「批次調整」→「設定進價」一次填）。之後重新匯入時，售價、庫存、分類以新檔為準，<strong>進價、備註、手動選的類別都會保留</strong>。</p>
+                        </section>
+
+                        <section class="faq-item" id="loss">
+                            <h2>步驟 4：找出賠錢的規格</h2>
+                            <p>上方的摘要卡片會告訴你有幾個<strong>虧本規格</strong>、一般日與促銷檔期的<strong>平均利潤率</strong>，以及還有幾個規格<strong>待補進價或類別</strong>。卡片可以點，點「虧本規格」就只列出賠錢的那幾個。</p>
+                            <p>淨利欄的金額下方是利潤率：<span class="guide-legend guide-legend-loss">負數標紅色</span>、<span class="guide-legend guide-legend-low">低於門檻標黃底</span>。滑鼠移到淨利上（手機用點的），會跳出這個規格的費用拆解：</p>
+                            <figure class="guide-shot guide-shot-narrow">
+                                <a href="images/shop-guide/breakdown-light.webp" class="guide-shot-light" target="_blank" rel="noopener" aria-label="開啟大圖：費用拆解（淺色）">
+                                    <img src="images/shop-guide/breakdown-light.webp" width="1198" height="618" loading="lazy" decoding="async"
+                                        alt="法式珍珠鯊魚夾（小）售價 149 元的費用拆解：成交手續費一般日 12 元、促銷檔期 18 元，金流與系統處理費 4 元，免運活動服務費 10 元，合計扣除 26 元與 32 元，進價 122 元，淨利一般日 1 元、促銷檔期負 5 元">
+                                </a>
+                                <a href="images/shop-guide/breakdown-dark.webp" class="guide-shot-dark" target="_blank" rel="noopener" aria-label="開啟大圖：費用拆解（深色）">
+                                    <img src="images/shop-guide/breakdown-dark.webp" width="1198" height="618" loading="lazy" decoding="async"
+                                        alt="費用拆解浮動視窗（深色模式）：鯊魚夾（小）一般日淨利 1 元、促銷檔期淨利負 5 元">
+                                </a>
+                                <figcaption>每一塊錢扣在哪裡都列出來，方便對照蝦皮的撥款明細。</figcaption>
+                            </figure>
+                            <p>以示範賣場的「法式珍珠鯊魚夾（小）」為例，一般賣家、免運方案一、髮飾類成交手續費 8%：</p>
+                            <div class="table-responsive">
+                                <table class="table table-bordered align-middle text-center mb-2">
+                                    <caption class="caption-top fw-bold guide-caption">售價 $149、進價 $122</caption>
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col">項目</th>
+                                            <th scope="col">一般日</th>
+                                            <th scope="col">促銷檔期</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><th scope="row">成交手續費</th><td>$12（8%）</td><td>$18（8% + 4%）</td></tr>
+                                        <tr><th scope="row">金流與系統處理費 2.5%</th><td>$4</td><td>$4</td></tr>
+                                        <tr><th scope="row">免運活動服務費 6.5%</th><td>$10</td><td>$10</td></tr>
+                                        <tr><th scope="row">淨利</th><td><strong>$1</strong>（0.7%）</td><td><strong class="text-danger">−$5</strong>（−3.4%）</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="mb-0">一般日幾乎沒賺、促銷檔期直接賠錢——這種規格平常很難注意到，表格一排就看出來了。</p>
+                        </section>
+
+                        <section class="faq-item" id="reprice">
+                            <h2>步驟 5：依目標利潤率批次調價</h2>
+                            <p>找到要調整的規格後，勾選它們（勾商品標題列＝選這個商品的所有規格），按「<span class="faq-ui"><i class="bi bi-magic" aria-hidden="true"></i>批次調整</span>」：</p>
+                            <ul>
+                                <li><strong>依目標利潤率回推售價</strong>：例如設 15%、以一般日或促銷檔期為準，自動算出最低售價</li>
+                                <li><strong>漲跌 % 或加減金額</strong>：可取到個位、十位或尾數 9；以蝦皮原價為基準，重複套用不會越加越多</li>
+                                <li><strong>設定庫存</strong>、<strong>設定進價</strong>、恢復修改</li>
+                            </ul>
+                            <figure class="guide-shot">
+                                <a href="images/shop-guide/batch-panel-light.webp" class="guide-shot-light" target="_blank" rel="noopener" aria-label="開啟大圖：依目標利潤率回推售價（淺色）">
+                                    <img src="images/shop-guide/batch-panel-light.webp" width="1400" height="578" loading="lazy" decoding="async"
+                                        alt="篩選虧本規格後全選 2 個規格，展開「依目標利潤率回推售價」面板，目標利潤率 15%、以一般日為準">
+                                </a>
+                                <a href="images/shop-guide/batch-panel-dark.webp" class="guide-shot-dark" target="_blank" rel="noopener" aria-label="開啟大圖：依目標利潤率回推售價（深色）">
+                                    <img src="images/shop-guide/batch-panel-dark.webp" width="1400" height="578" loading="lazy" decoding="async"
+                                        alt="依目標利潤率回推售價面板（深色模式），套用到勾選的 2 個規格">
+                                </a>
+                                <figcaption>先篩「虧本」，全選後回推售價，兩步就把賠錢的規格處理完。</figcaption>
+                            </figure>
+                            <p>套用後，改過的售價會<strong>標色並顯示原價</strong>，規格旁多一個「待匯出」標記；底部則顯示有幾個規格待匯出。這些修改只是草稿，<strong>還沒動到蝦皮</strong>，不滿意可以隨時恢復。</p>
+                            <figure class="guide-shot">
+                                <a href="images/shop-guide/batch-done-light.webp" class="guide-shot-light" target="_blank" rel="noopener" aria-label="開啟大圖：調價後待匯出（淺色）">
+                                    <img src="images/shop-guide/batch-done-light.webp" width="1400" height="702" loading="lazy" decoding="async"
+                                        alt="調價後篩選「已修改、待匯出」：鯊魚夾（小）售價從 149 改為 179，一般日淨利 27 元、利潤率 15.1%；玻璃珠戒指從 99 改為 126，淨利 19 元；底部顯示 2 個規格待匯出與「產生蝦皮批次更新檔」按鈕">
+                                </a>
+                                <a href="images/shop-guide/batch-done-dark.webp" class="guide-shot-dark" target="_blank" rel="noopener" aria-label="開啟大圖：調價後待匯出（深色）">
+                                    <img src="images/shop-guide/batch-done-dark.webp" width="1400" height="702" loading="lazy" decoding="async"
+                                        alt="調價後的待匯出規格（深色模式）：售價標色並顯示原價，底部顯示 2 個規格待匯出">
+                                </a>
+                                <figcaption>鯊魚夾（小）$149 → $179、玻璃珠戒指 $99 → $126，一般日利潤率都回到 15%。</figcaption>
+                            </figure>
+                            <p class="mb-0">也可以不用批次，直接點表格裡的售價、庫存改數字，一樣會變成待匯出的草稿。</p>
+                        </section>
+
+                        <section class="faq-item" id="export">
+                            <h2>步驟 6：產生批次更新檔，上傳回蝦皮</h2>
+                            <p>按底部的「<span class="faq-ui"><i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i>產生蝦皮批次更新檔</span>」，下載前會列出每個規格<strong>寫入的售價（舊 → 新）、淨利變化與寫入的庫存</strong>：</p>
+                            <figure class="guide-shot guide-shot-narrow">
+                                <a href="images/shop-guide/export-light.webp" class="guide-shot-light" target="_blank" rel="noopener" aria-label="開啟大圖：確認修改內容（淺色）">
+                                    <img src="images/shop-guide/export-light.webp" width="1400" height="760" loading="lazy" decoding="async"
+                                        alt="確認修改內容視窗：檔案只包含 2 個規格，列出寫入售價、一般日淨利變化與寫入庫存，並提醒蝦皮模板規定售價和庫存都必填">
+                                </a>
+                                <a href="images/shop-guide/export-dark.webp" class="guide-shot-dark" target="_blank" rel="noopener" aria-label="開啟大圖：確認修改內容（深色）">
+                                    <img src="images/shop-guide/export-dark.webp" width="1400" height="760" loading="lazy" decoding="async"
+                                        alt="確認修改內容視窗（深色模式）：每個規格的售價、淨利變化與庫存">
+                                </a>
+                                <figcaption>檔案裡只有這次改過的 2 個規格；庫存欄註明「匯入時的庫存」。</figcaption>
+                            </figure>
+                            <ol class="guide-steps">
+                                <li><span>按「下載批次更新檔」，檔案以你上傳的「價格及庫存」原檔為底，<strong>只保留有修改的規格</strong>，其他商品不會被動到。</span></li>
+                                <li><span>到賣家中心「我的商品」→「商品批次編輯工具」→「更新商品資料」上傳這個檔案。</span></li>
+                                <li><span>上傳後蝦皮會回傳處理結果，失敗的列會寫在「失敗原因」欄。</span></li>
+                                <li><span>下次重新匯入時，已經生效的修改會自動清掉「已匯出」標記；沒生效的會列出來提醒你。</span></li>
+                            </ol>
+                            <div class="guide-note">
+                                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                <div><strong>庫存會一起寫回。</strong>蝦皮的批次模板規定售價和庫存都必填，只改售價的規格，庫存會用<strong>匯入當時的數字</strong>寫回。如果匯入後到上傳前有賣出，建議先重新下載、重新匯入再調價，以免把舊庫存蓋回去。第一次使用建議先拿少量商品試一次。</div>
+                            </div>
+                        </section>
+
+                        <section class="faq-item" id="mobile">
+                            <h2>手機也能用</h2>
+                            <p>手機上表格不會擠成一團：<strong>商品名稱固定在左邊</strong>，數字欄左右滑動查看。檔案匯入、批次更新檔下載建議用電腦，平常查淨利、改售價用手機就夠了。</p>
+                            <div class="guide-shot-pair guide-shot-phones">
+                                <figure class="guide-shot">
+                                    <a href="images/shop-guide/mobile-own-light.webp" class="guide-shot-light" target="_blank" rel="noopener" aria-label="開啟大圖：手機版自建商品（淺色）">
+                                        <img src="images/shop-guide/mobile-own-light.webp" width="780" height="1688" loading="lazy" decoding="async"
+                                            alt="手機版自建商品分頁：摘要卡片排成兩欄，下方是商品表格">
+                                    </a>
+                                    <a href="images/shop-guide/mobile-own-dark.webp" class="guide-shot-dark" target="_blank" rel="noopener" aria-label="開啟大圖：手機版自建商品（深色）">
+                                        <img src="images/shop-guide/mobile-own-dark.webp" width="780" height="1688" loading="lazy" decoding="async"
+                                            alt="手機版自建商品分頁（深色模式）">
+                                    </a>
+                                    <figcaption>自建商品</figcaption>
+                                </figure>
+                                <figure class="guide-shot">
+                                    <a href="images/shop-guide/mobile-shopee-light.webp" class="guide-shot-light" target="_blank" rel="noopener" aria-label="開啟大圖：手機版蝦皮商品（淺色）">
+                                        <img src="images/shop-guide/mobile-shopee-light.webp" width="780" height="1688" loading="lazy" decoding="async"
+                                            alt="手機版蝦皮商品分頁：表格滑到最右邊，商品與規格名稱固定在左側，右側顯示一般日與促銷檔期淨利">
+                                    </a>
+                                    <a href="images/shop-guide/mobile-shopee-dark.webp" class="guide-shot-dark" target="_blank" rel="noopener" aria-label="開啟大圖：手機版蝦皮商品（深色）">
+                                        <img src="images/shop-guide/mobile-shopee-dark.webp" width="780" height="1688" loading="lazy" decoding="async"
+                                            alt="手機版蝦皮商品分頁（深色模式）：名稱固定在左、淨利在右">
+                                    </a>
+                                    <figcaption>蝦皮商品（滑到淨利欄）</figcaption>
+                                </figure>
+                            </div>
+                        </section>
+
+                        <section class="faq-item" id="qa">
+                            <h2>常見問題 Q&amp;A</h2>
+
+                            <h3>Q1. 要登入蝦皮嗎？資料會上傳嗎？</h3>
+                            <p><strong>不用登入，也不會上傳。</strong>商品資料來自你自己下載的檔案，所有計算都在瀏覽器完成，資料只存在這台裝置的瀏覽器。換手機、換電腦或清除瀏覽器資料前，記得用右上「⋯」選單<strong>匯出全部資料（JSON）</strong>備份，到新裝置再「從 JSON 還原」。</p>
+
+                            <h3>Q2. 成交手續費率怎麼來的？</h3>
+                            <p>匯入時依「備貨天數」檔裡的商品分類，自動對應 <a href="article-1211-new-fees.html">12/11 新制</a>的品類費率，並依賣場類型取一般賣家或商城費率。對不到的分類請你選一次，之後自動套用；也可以直接輸入手動費率。</p>
+
+                            <h3>Q3. 只改售價，為什麼庫存也會寫回？</h3>
+                            <p>蝦皮的批次模板規定售價和庫存都必填，所以會用匯入當時的庫存寫回。中間有賣出的話，先重新匯入再調價。</p>
+
+                            <h3>Q4. 進價會寫進蝦皮嗎？</h3>
+                            <p>不會。進價只用來算淨利，批次更新檔只改售價和庫存。重新匯入時，進價、備註、手動選的類別都會保留。</p>
+
+                            <h3>Q5. 促銷檔期的淨利是怎麼算的？</h3>
+                            <p>促銷檔期當天，成交手續費會再加收一般賣家 4%、商城 5%（有參加長期蝦幣回饋的免收）。檔期是哪幾天，可以看<a href="events.html">活動日行事曆</a>。</p>
+
+                            <h3>Q6. 蝦皮小舖也能用嗎？</h3>
+                            <p class="mb-0">可以。賣場設定選「蝦皮小舖」，會改用小舖的收費（不收免運服務費、促銷檔期不加收），淨利只有一欄。小舖的規則請看<a href="article-shopee-xiaopu.html">蝦皮小舖懶人包</a>。</p>
+                        </section>
+
+                        <aside class="guide-cta" aria-label="開始使用賣場總覽">
+                            <div>
+                                <div class="guide-cta-title">用自己的商品試試看</div>
+                                <p class="mb-0">免費、不用登入，資料只存在你的瀏覽器。</p>
+                            </div>
+                            <a href="shop.html" class="btn btn-primary guide-cta-btn"><i class="bi bi-shop" aria-hidden="true"></i> 打開賣場總覽</a>
+                        </aside>
+
+                        <div class="article-share-end">
+                            <div class="article-share-label">覺得有幫助？分享給其他賣家</div>
+                            <div class="article-share" data-share>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-share-native aria-label="分享這篇文章"><i class="bi bi-share"></i> 分享</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-share-copy aria-label="複製文章連結"><i class="bi bi-link-45deg"></i> 複製連結</button>
+                                <span class="article-share-status" data-share-status role="status" aria-live="polite"></span>
+                            </div>
+                        </div>
+
+                        <p class="small text-muted border-top pt-3 mb-0">
+                            文中截圖使用虛構的示範賣場與商品，數字只為說明功能。費率依 2026/12/11 起的蝦皮新制計算，實際收費以蝦皮公告與撥款明細為準。
+                            新制內容請看<a href="article-1211-new-fees.html">蝦皮 12/11 新制懶人包</a>。
+                        </p>
+                    </article>
+                </main>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- include:footer -->
+    <footer class="site-footer">
+        <div class="footer-wrapper">
+            <!-- Desktop View -->
+            <div class="d-none d-md-block">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <!-- Left: Social Links -->
+                    <div class="d-flex gap-3 fs-5">
+                        <a href="https://www.instagram.com/bruce_baseball_" target="_blank"
+                            class="text-decoration-none link-secondary" title="Instagram">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.threads.com/@bruce_baseball_" target="_blank"
+                            class="text-decoration-none link-secondary" title="Threads">
+                            <i class="bi bi-threads"></i>
+                        </a>
+                        <a href="https://github.com/YTingWu/ytingwu.github.io" target="_blank"
+                            class="text-decoration-none link-secondary" title="GitHub">
+                            <i class="bi bi-github"></i>
+                        </a>
+                        <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
+                            class="text-decoration-none link-secondary" title="Bruce Wu">
+                            <i class="bi bi-person-badge-fill"></i>
+                        </a>
+                    </div>
+                    <!-- Middle: Author -->
+                    <div class="text-secondary small">
+                        本工具由 <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
+                            class="text-secondary text-decoration-underline"><strong>Bruce Wu</strong></a>
+                        設計、開發與維護
+                    </div>
+                    <!-- Right: CC Icon -->
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
+                        target="_blank">
+                        <img alt="創用 CC 授權條款" style="border-width:0"
+                            src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" height="28" />
+                    </a>
+                </div>
+                <!-- Line 2: License Text -->
+                <div class="text-center text-secondary small mb-2">
+                    採用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
+                        class="text-secondary text-decoration-underline" target="_blank">創用 CC
+                        姓名標示-非商業性-禁止改作 4.0 國際 授權條款</a> 授權
+                </div>
+                <!-- Line 3: Version -->
+                <div class="text-center text-muted small opacity-50">
+                    v1.3.0
+                </div>
+            </div>
+
+            <!-- Mobile View -->
+            <div class="d-md-none text-center">
+                <!-- Social Links -->
+                <div class="d-flex justify-content-center gap-4 mb-3 fs-4">
+                    <a href="https://www.instagram.com/bruce_baseball_" target="_blank"
+                        class="text-decoration-none link-secondary" title="Instagram">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                    <a href="https://www.threads.com/@bruce_baseball_" target="_blank"
+                        class="text-decoration-none link-secondary" title="Threads">
+                        <i class="bi bi-threads"></i>
+                    </a>
+                    <a href="https://github.com/YTingWu/ytingwu.github.io" target="_blank"
+                        class="text-decoration-none link-secondary" title="GitHub">
+                        <i class="bi bi-github"></i>
+                    </a>
+                    <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
+                        class="text-decoration-none link-secondary" title="Bruce Wu">
+                        <i class="bi bi-person-badge-fill"></i>
+                    </a>
+                </div>
+                <!-- Author -->
+                <div class="text-secondary small mb-3">
+                    本工具由 <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer"
+                        class="text-secondary text-decoration-underline"><strong>Bruce Wu</strong></a>
+                    設計、開發與維護
+                </div>
+                <!-- CC Icon & License -->
+                <div class="mb-3">
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
+                        target="_blank" class="d-inline-block mb-2">
+                        <img alt="創用 CC 授權條款" style="border-width:0"
+                            src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" />
+                    </a>
+                    <div class="text-secondary small px-2">
+                        採用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"
+                            class="text-secondary text-decoration-underline" target="_blank">創用 CC
+                            姓名標示-非商業性-禁止改作 4.0 國際 授權條款</a> 授權
+                    </div>
+                </div>
+                <!-- Version -->
+                <div class="text-muted small opacity-50">
+                    v1.3.0
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- /include:footer -->
+
+    <!-- include:announcement-modal -->
+    <div class="modal fade" id="feeUpdateModal" data-autoshow="false" tabindex="-1" aria-labelledby="feeUpdateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="feeUpdateModalLabel"><i class="bi bi-megaphone-fill text-danger"></i> 計算機已改為 12/11 新制</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small mb-2">首頁計算機已改為 <strong>2026/12/11 00:00</strong> 起成立訂單適用的新制費率。<strong>12/10（含）以前成立的訂單</strong>請改用舊制計算機。</p>
+                    <p class="small text-muted mb-2">新制主要調整：</p>
+                    <ul class="small ps-3">
+                        <li class="mb-2"><strong>成交手續費依品類調整</strong>：分類細分到第三、四層，各品類調幅不同，部分調降。</li>
+                        <li class="mb-2"><strong>促銷檔期加收</strong>：一般賣家 +2% → <strong>+4%</strong>、商城 +3% → <strong>+5%</strong>；參加長期蝦幣回饋免收，只參加短期仍要加收。</li>
+                        <li class="mb-2"><strong>免運及進階賣家專案</strong>：方案一 6% → <strong>6.5%</strong>；方案二 $60 → <strong>$65</strong>（$99 以下 6% → 6.5%）；冷凍訂單 $100 以上維持每單 $80。</li>
+                        <li class="mb-2"><strong>預購訂單服務費</strong>：備貨 2 天降為 <strong>2%</strong>，3 天以上維持 3%。</li>
+                        <li class="mb-2"><strong>促銷檔期增加</strong>：每月 5–6 天（例：12/11、12/12、12/17、12/18、12/25）。</li>
+                        <li class="mb-2"><strong>新賣場類型「蝦皮小舖」</strong>（2027/1/7 開通）：每月前 5 筆免成交手續費。</li>
+                    </ul>
+                    <p class="small mb-0">
+                        <a href="https://seller.shopee.tw/edu/article/28668" target="_blank" class="text-decoration-none">
+                            <i class="bi bi-box-arrow-up-right"></i> 蝦皮官方公告
+                        </a>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="old.html" class="btn btn-outline-secondary" data-carry-query><i class="bi bi-clock-history"></i> 前往舊制計算機</a>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /include:announcement-modal -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/announcement.js?20261116b"></script>
+    <script src="js/site.js?20261117a"></script>
+    <script src="js/share.js?20261116a"></script>
+</body>
+
+</html>
