@@ -73,7 +73,7 @@
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=20261117d">
+    <link rel="stylesheet" href="css/style.css?v=20261118a">
     <link rel="stylesheet" href="css/fee-lookup.css">
 </head>
 
@@ -152,7 +152,7 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <div class="sidebar-heading">
-                <span><i class="bi bi-save"></i> 列表</span>
+                <span><i class="bi bi-box-seam"></i> 自建商品</span>
                 <div class="d-flex align-items-center gap-2">
                     <i class="bi bi-layout-sidebar-inset text-primary d-none d-md-block" id="desktopSidebarCollapseBtn"
                         style="cursor: pointer;" title="收合側邊欄"></i>
@@ -324,6 +324,7 @@
                                         <i class="bi bi-search"></i> 查詢
                                     </button>
                                 </div>
+                                <small class="d-block text-truncate fee-category-text d-none" id="feeCategoryText"></small>
                                 <small class="text-muted">
                                     依照分類不同而手續費不同（12/11 新版費率）
                                     <a href="https://seller.shopee.tw/edu/article/28804" target="_blank"
@@ -575,11 +576,8 @@
 
                         <!-- Save Button -->
                         <div class="d-flex flex-wrap justify-content-end gap-2 mt-3">
-                            <button class="btn btn-outline-primary" id="addToShopBtn" title="把這個商品加到「我的賣場」，和其他商品一起看獲利">
-                                <i class="bi bi-shop"></i> 加入我的賣場
-                            </button>
-                            <button class="btn btn-success" id="saveConfigBtn">
-                                <i class="bi bi-floppy"></i> 儲存目前設定
+                            <button class="btn btn-success" id="saveConfigBtn" title="存成賣場的自建商品，左側列表和賣場總覽都看得到">
+                                <i class="bi bi-shop"></i> 儲存到賣場
                             </button>
                         </div>
                     </div>
@@ -1235,7 +1233,7 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                 </div>
                 <!-- Line 3: Version -->
                 <div class="text-center text-muted small opacity-50">
-                    v1.2.0
+                    v1.3.0
                 </div>
             </div>
 
@@ -1281,7 +1279,7 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
                 </div>
                 <!-- Version -->
                 <div class="text-muted small opacity-50">
-                    v1.2.0
+                    v1.3.0
                 </div>
             </div>
         </div>
@@ -1298,21 +1296,32 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
     <div class="modal fade" id="saveConfigModal" tabindex="-1" aria-labelledby="saveConfigModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title" id="saveConfigModalLabel">儲存設定名稱</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="saveConfigModalLabel"><i class="bi bi-shop"></i> 儲存到賣場</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="configNameInput" placeholder="輸入設定名稱">
-                        <button class="btn btn-outline-secondary" type="button" id="clearConfigNameBtn">
+                    <label class="form-label small" for="configNameInput">商品名稱</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="configNameInput" placeholder="輸入商品名稱" maxlength="200">
+                        <button class="btn btn-outline-secondary" type="button" id="clearConfigNameBtn" aria-label="清除名稱">
                             <i class="bi bi-x-lg"></i>
                         </button>
                     </div>
+                    <div class="mb-3 d-none" id="saveModeWrap">
+                        <div class="form-check"><input class="form-check-input" type="radio" name="saveMode" id="saveModeUpdate" value="update" checked><label class="form-check-label" for="saveModeUpdate" id="saveModeUpdateLabel">更新這個商品</label></div>
+                        <div class="form-check"><input class="form-check-input" type="radio" name="saveMode" id="saveModeNew" value="new"><label class="form-check-label" for="saveModeNew">另存成新商品</label></div>
+                    </div>
+                    <div class="mb-2" id="saveTargetWrap">
+                        <label class="form-label small" for="saveTargetShop">存到</label>
+                        <select class="form-select" id="saveTargetShop"></select>
+                    </div>
+                    <div id="saveDiff"></div>
+                    <p class="small text-muted mt-2 mb-0">存成賣場的自建商品，左側列表和「賣場總覽」都看得到。賣家類型、稅務等設定以賣場為準；信用卡分期不會存。</p>
                 </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" id="confirmSaveConfigBtn">確定儲存</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirmSaveConfigBtn">儲存</button>
                 </div>
             </div>
         </div>
@@ -1386,9 +1395,10 @@ data-styled.g160[id="sc-1ykasxb-0"]{content:"eDynhg,"}/*!sc*/
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/fee-engine.js?20261117"></script>
-    <script src="js/calculator-new.js?20261117"></script>
-    <script src="js/fee-lookup-new.js?20261113c"></script>
-    <script src="js/storage-new.js?20261117"></script>
+    <script src="js/calculator-new.js?20261118"></script>
+    <script src="js/fee-lookup-new.js?20261118"></script>
+    <script src="js/shop-data.js?20261118"></script>
+    <script src="js/storage-new.js?20261118"></script>
     <script src="js/announcement.js?20261116b"></script>
     <script src="js/site.js?20261117a"></script>
 </body>

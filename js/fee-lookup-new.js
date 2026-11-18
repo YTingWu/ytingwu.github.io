@@ -220,6 +220,8 @@
         
         // 先記下對應的 12/10 前費率，再帶入新費率觸發重算
         if (typeof window.setOldTransRate === 'function') window.setOldTransRate(findOldRate(path));
+        // 記住選的類別（費率欄被手動改才清掉）
+        if (typeof window.setFeeCategory === 'function') window.setFeeCategory(path);
 
         // Update the transaction fee input
         elements.transactionFeeInput.value = feeValue;

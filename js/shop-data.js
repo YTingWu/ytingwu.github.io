@@ -8,6 +8,8 @@
         : { computeScenario, calculateRequiredPrice };
 
     const STORAGE_KEY = 'shopee_myshop_v1';
+    const QUICK_KEY = 'shopee_calculator_configs_v1'; // 快速計算的已存設定（舊制頁 old.html 仍在用）
+    const QUICK_BACKUP_KEY = 'shopee_calculator_configs_v1_migrated'; // 搬進賣場的原始設定備份
     const STALE_MS = 24 * 60 * 60 * 1000;
     const PAYMENT_PCT = 2.5; // 金流與系統處理費（不分期）
     const MAX_STOCK = 9999999; // 防呆用上限（避免 1e21 之類寫成科學記號）
@@ -54,7 +56,10 @@
     // 舊資料：商品進項發票原本只有商品層開關。賣場預設補 false；商品沒勾的改成跟隨賣場，有勾的保留為單獨設定
     function migrateShops(shops) {
         shops.forEach(shop => {
-            if (!shop.settings || shop.settings.hasProdInv != null) return;
+            // 欄位缺漏的資料（手改或舊版）補齊，避免後面的程式丟例外
+            if (!Array.isArray(shop.products)) shop.products = [];
+            if (!shop.settings || typeof shop.settings !== 'object') shop.settings = { ...DEFAULT_SETTINGS };
+            if (shop.settings.hasProdInv != null) return;
             shop.settings.hasProdInv = false;
             (shop.products || []).forEach(p => { p.hasProdInv = p.hasProdInv ? true : null; });
         });
@@ -151,10 +156,10 @@
 
     // ---------- 獲利 ----------
 
+    // 進價：蝦皮商品只看規格進價（比照蝦皮，每個規格各自填）；自建商品只有一個規格，看商品進價
     function variationCost(product, v) {
-        if (v.cost != null && v.cost !== '') return Number(v.cost);
-        if (product.cost != null && product.cost !== '') return Number(product.cost);
-        return null;
+        const c = product.shopeeItemId ? v.cost : product.cost;
+        return c != null && c !== '' ? Number(c) : null;
     }
 
     function effectivePrice(v) {
@@ -203,41 +208,46 @@
         };
     }
 
-    function productMetrics(shop, product, ctx) {
-        const rows = product.variations.map(v => ({ v, m: variationMetrics(shop, product, v, ctx) }));
-        const range = (sel) => {
-            const vals = rows.map(r => sel(r)).filter(x => x != null && Number.isFinite(x));
-            return vals.length ? { min: Math.min(...vals), max: Math.max(...vals) } : null;
-        };
-        const complete = rows.filter(r => r.m.hasCost && r.m.hasRate);
-        const rangeOf = (sel) => {
-            const vals = complete.map(sel);
-            return vals.length ? { min: Math.min(...vals), max: Math.max(...vals) } : null;
-        };
-        return {
-            rows,
-            price: range(r => r.m.price),
-            regularProfit: rangeOf(r => r.m.regular.profit),
-            eventProfit: rangeOf(r => r.m.event.profit),
-            regularMargin: rangeOf(r => r.m.regular.margin),
-            eventMargin: rangeOf(r => r.m.event.margin),
-            missingCost: rows.some(r => !r.m.hasCost),
-            missingRate: rows.some(r => !r.m.hasRate),
-            hasDraft: product.variations.some(v => v.draft),
-        };
+    // 以規格為單位的摘要（自建商品一個商品一個規格，數字等於商品數）
+    function variationSummary(shop, products, ctx) {
+        let variations = 0, loss = 0, incomplete = 0, sumR = 0, sumE = 0, n = 0;
+        for (const p of products) {
+            for (const v of p.variations) {
+                variations++;
+                const m = variationMetrics(shop, p, v, ctx);
+                if (!m.hasCost || !m.hasRate || m.regular.margin == null) { incomplete++; continue; }
+                if (m.regular.profit < 0 || m.event.profit < 0) loss++;
+                sumR += m.regular.margin;
+                sumE += m.event.margin;
+                n++;
+            }
+        }
+        return { products: products.length, variations, loss, incomplete, avgRegular: n ? sumR / n : null, avgEvent: n ? sumE / n : null };
     }
 
-    function shopSummary(shop, ctx) {
-        let loss = 0, missingCost = 0, sumR = 0, sumE = 0, n = 0;
-        for (const p of shop.products) {
-            const pm = productMetrics(shop, p, ctx);
-            if (pm.missingCost || pm.missingRate || !pm.regularMargin) { missingCost++; continue; }
-            if (pm.regularProfit.min < 0 || pm.eventProfit.min < 0) loss++;
-            sumR += (pm.regularMargin.min + pm.regularMargin.max) / 2;
-            sumE += (pm.eventMargin.min + pm.eventMargin.max) / 2;
-            n++;
-        }
-        return { count: shop.products.length, loss, incomplete: missingCost, avgRegular: n ? sumR / n : null, avgEvent: n ? sumE / n : null };
+    // 刪除規格；商品的規格全刪光就整個商品刪掉。回傳 { variations, products } 刪掉的數量
+    function deleteVariations(shop, vids) {
+        const del = new Set(vids);
+        let nv = 0, np = 0;
+        shop.products = shop.products.filter(p => {
+            const before = p.variations.length;
+            p.variations = p.variations.filter(v => !del.has(v.id));
+            nv += before - p.variations.length;
+            if (p.variations.length) return true;
+            np++;
+            return false;
+        });
+        return { variations: nv, products: np };
+    }
+
+    // 一鍵清除：拿掉這個賣場所有蝦皮商品、原檔、綁定的蝦皮賣場 ID；自建商品與設定保留
+    function clearShopee(shop) {
+        const n = shop.products.filter(p => p.shopeeItemId).length;
+        shop.products = shop.products.filter(p => !p.shopeeItemId);
+        shop.salesFile = null;
+        shop.shopeeShopId = null;
+        shop.lastImportAt = null;
+        return n;
     }
 
     // 依目標利潤率回推售價（一般日或促銷檔期）
@@ -251,6 +261,7 @@
 
     // ---------- 快速計算 query string ----------
 
+    const FEE_CAT_SEP = ' > '; // 快速計算網址的類別路徑分隔（calculator-new.js 同一個）
     const SHOP_KEYS = ['seller', 'shipPlan', 'cashback', 'cashbackTerm', 'tax', 'hasProdInv', 'hasFeeInv', 'first5'];
 
     function settingsFromQuery(q) {
@@ -279,6 +290,9 @@
             preorder: ['2', '3'].includes(q.get('preorder')) ? q.get('preorder') : '0',
         });
         p.fee = { mode: 'manual', catId: null, catLabel: '', path: null, manualRate: num('fee') ?? 6, needsReview: false };
+        // 快速計算用「查詢」選了類別（cat）→ 存成依類別的費率（費率表更新時跟著走）
+        const cat = q.get('cat');
+        if (cat) p.fee = { ...p.fee, mode: 'category', path: cat.split(FEE_CAT_SEP) };
         p.variations[0].price = Math.round(num('sell') || 0);
         return p;
     }
@@ -302,6 +316,11 @@
         q.set('sell', String(effectivePrice(v) || 0));
         const rate = resolveRate(product, st.seller, ctx);
         if (rate != null) q.set('fee', String(rate));
+        // 依類別的費率：把類別帶過去，快速計算顯示並在存回賣場時保留
+        if (product.fee && product.fee.mode !== 'manual' && rate != null) {
+            const path = resolveFeePath(product, ctx);
+            if (path) q.set('cat', path.join(FEE_CAT_SEP));
+        }
         q.set('preorder', product.preorder || '0');
         q.set('cashback', st.cashback);
         if (st.cashback !== '0') q.set('cashbackTerm', st.cashbackTerm);
@@ -316,16 +335,68 @@
     }
 
     // 快速計算「已存設定」（storage-new.js 的 data＝query 物件）→ 商品
-    function productFromSavedConfig(cfg) {
+    function productFromSavedConfig(cfg, isNewRates) {
         const q = new URLSearchParams(cfg.data || {});
-        const p = productFromQuery(q, cfg.title || '');
+        const p = productFromQuery(q, cfg.title != null ? String(cfg.title) : '');
         // 算售價模式存的是目標利潤率，沒有售價：用 summary 的售價（storage-new.js 存成「進價: $ x 售價: $ y」）
         if (!p.variations[0].price && cfg.summary) {
             const m = String(cfg.summary).match(/售價:\s*\$\s*([\d,]+)/);
             if (m) p.variations[0].price = parseInt(m[1].replace(/,/g, ''), 10) || 0;
         }
-        p.fee.needsReview = true; // 舊設定只有費率數字（也可能是舊制費率）
+        p.fee.needsReview = !isNewRates; // 舊制費率存的設定要重選類別
         return p;
+    }
+
+    // 快速計算（新制）的已存設定一次搬進賣場的自建商品：放第一個賣場，沒有賣場就用第一筆的設定建「我的賣場」。
+    // 舊制（rates 不是 'new'）的留在原清單給 old.html 用。回傳 { moved, shop, rest }，不寫入 storage
+    function migrateQuickConfigs(state, configs) {
+        const list = Array.isArray(configs) ? configs : [];
+        const moving = list.filter(c => c && c.rates === 'new');
+        const rest = list.filter(c => !(c && c.rates === 'new'));
+        if (!moving.length) return { moved: 0, shop: null, rest };
+        let shop = state.shops[0];
+        if (!shop) {
+            shop = newShop('我的賣場', settingsFromQuery(new URLSearchParams(moving[0].data || {})));
+            state.shops.push(shop);
+            state.activeShopId = shop.id;
+        }
+        shop.products.unshift(...moving.map(c => productFromSavedConfig(c, true))); // 清單本來就是新的在前
+        return { moved: moving.length, shop, rest };
+    }
+
+    // 在 storage 上執行搬遷：先存賣場，成功才改寫快速計算清單。
+    // 搬走的原始設定另存在 QUICK_BACKUP_KEY（只增不刪），萬一要人工救回時還找得到。
+    // 賣場資料存在但讀不懂（壞掉的 JSON）時不搬，免得蓋掉還能人工救回的原始內容。
+    function migrateQuickConfigsInStorage(storage) {
+        const rawConfigs = storage.getItem(QUICK_KEY);
+        let configs;
+        try { configs = JSON.parse(rawConfigs || '[]'); } catch (e) { return { moved: 0 }; }
+        if (!Array.isArray(configs) || !configs.some(c => c && c.rates === 'new')) return { moved: 0 };
+        const raw = storage.getItem(STORAGE_KEY);
+        if (raw) {
+            try { const s = JSON.parse(raw); if (!s || !Array.isArray(s.shops)) return { moved: 0 }; } catch (e) { return { moved: 0 }; }
+        }
+        const state = loadState(storage);
+        const r = migrateQuickConfigs(state, configs);
+        // 另一個分頁剛搬完（清單已被改寫）就不要再搬一次
+        if (storage.getItem(QUICK_KEY) !== rawConfigs) return { moved: 0 };
+        try {
+            let backup = [];
+            try { backup = JSON.parse(storage.getItem(QUICK_BACKUP_KEY) || '[]'); } catch (e) { backup = []; }
+            if (!Array.isArray(backup)) backup = [];
+            const moved = configs.filter(c => c && c.rates === 'new');
+            storage.setItem(QUICK_BACKUP_KEY, JSON.stringify(backup.concat(moved.map(c => ({ ...c, migratedAt: new Date().toISOString() })))));
+            saveState(storage, state);
+        } catch (e) {
+            return { moved: 0, error: e };
+        }
+        try {
+            storage.setItem(QUICK_KEY, JSON.stringify(r.rest));
+        } catch (e) {
+            // 賣場已存好，舊清單改不掉：至少把已搬的標記起來，下次不要重複搬
+            try { storage.setItem(QUICK_KEY, JSON.stringify(configs.map(c => (c && c.rates === 'new' ? { ...c, rates: 'migrated' } : c)))); } catch (e2) { /* 無能為力 */ }
+        }
+        return { moved: r.moved, shopName: r.shop.name, state };
     }
 
     // ---------- 蝦皮匯入 ----------
@@ -537,8 +608,8 @@
         STORAGE_KEY, STALE_MS, CATEGORY_ALIASES, DEFAULT_SETTINGS,
         uid, cleanName, emptyState, newShop, newProduct, loadState, saveState, migrateShops, prodInvOf,
         buildFeeIndex, shopeeCategoryPath, matchFeePath, resolveFeePath, resolveRate,
-        variationCost, effectivePrice, engineSettings, variationMetrics, productMetrics, shopSummary, requiredPrice,
-        settingsFromQuery, productFromQuery, settingsDiff, quickCalcQuery, productFromSavedConfig,
+        variationCost, effectivePrice, engineSettings, variationMetrics, variationSummary, deleteVariations, clearShopee, requiredPrice,
+        settingsFromQuery, productFromQuery, settingsDiff, quickCalcQuery, productFromSavedConfig, migrateQuickConfigs, migrateQuickConfigsInStorage, QUICK_KEY, QUICK_BACKUP_KEY,
         planImport, applyImportPlan, setDraft, pendingChanges, validateChanges, markExported, isStale, salesDataTime, shopCsv, MAX_STOCK,
     };
     if (typeof module !== 'undefined' && module.exports) module.exports = api;

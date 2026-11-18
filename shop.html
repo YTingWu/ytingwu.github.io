@@ -45,8 +45,8 @@
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=20261117d">
-    <link rel="stylesheet" href="css/shop.css?v=20261117e">
+    <link rel="stylesheet" href="css/style.css?v=20261118a">
+    <link rel="stylesheet" href="css/shop.css?v=20261118a">
 </head>
 
 <body>
@@ -113,12 +113,6 @@
                                         <label class="form-label small" for="obName">賣場名稱</label>
                                         <input type="text" class="form-control" id="obName" value="我的賣場" maxlength="40">
                                     </div>
-                                    <div class="col-md-5" id="obFromSavedWrap">
-                                        <label class="form-label small" for="obFromSaved">賣場設定</label>
-                                        <select class="form-select" id="obFromSaved">
-                                            <option value="">預設值（建立後可到「賣場設定」修改）</option>
-                                        </select>
-                                    </div>
                                     <div class="col-md-2 d-grid">
                                         <button class="btn btn-primary" id="obCreate"><i class="bi bi-plus-lg"></i> 建立</button>
                                     </div>
@@ -128,7 +122,7 @@
                         <div class="card shop-card mb-3 opacity-50">
                             <div class="card-body">
                                 <h2 class="h5"><span class="badge bg-secondary me-1">2</span> 加入商品</h2>
-                                <p class="small text-muted mb-0">建立賣場後可以手動新增商品、從快速計算的已存設定匯入，或從蝦皮賣家中心下載商品檔匯入。</p>
+                                <p class="small text-muted mb-0">建立賣場後可以手動新增商品、在快速計算按「儲存到賣場」，或從蝦皮賣家中心下載商品檔匯入。</p>
                             </div>
                         </div>
                     </section>
@@ -151,7 +145,6 @@
                                 <ul class="dropdown-menu dropdown-menu-end shop-more-menu">
                                     <li><h6 class="dropdown-header">賣場</h6></li>
                                     <li><button class="dropdown-item" data-action="shop-new"><i class="bi bi-plus-lg"></i> 新增賣場</button></li>
-                                    <li><button class="dropdown-item" data-action="shop-rename"><i class="bi bi-pencil"></i> 重新命名</button></li>
                                     <li><button class="dropdown-item text-danger" data-action="shop-delete"><i class="bi bi-trash"></i> 刪除這個賣場</button></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><h6 class="dropdown-header">備份</h6></li>
@@ -165,10 +158,10 @@
 
                         <ul class="nav nav-tabs shop-tabs mb-3" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabOverview" type="button" role="tab" data-tab="overview"><i class="bi bi-list-ul"></i> 商品總覽</button>
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabOwn" type="button" role="tab" data-tab="own"><i class="bi bi-box-seam"></i> 自建商品</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabReprice" type="button" role="tab" data-tab="reprice"><i class="bi bi-pencil-square"></i> 調價與庫存 <span class="badge bg-warning text-dark d-none" id="pendingBadge"></span></button>
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabShopee" type="button" role="tab" data-tab="shopee"><i class="bi bi-bag"></i> 蝦皮商品 <span class="badge bg-warning text-dark d-none" id="pendingBadge" title="待匯出的規格"></span></button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabSettings" type="button" role="tab" data-tab="settings"><i class="bi bi-sliders"></i> 賣場設定</button>
@@ -176,127 +169,86 @@
                         </ul>
 
                         <div class="tab-content">
-                            <!-- 商品總覽 -->
-                            <div class="tab-pane fade show active" id="tabOverview" role="tabpanel">
-                                <div class="row g-2 mb-3" id="summaryCards"></div>
+                            <!-- 自建商品：一個商品一列，進價與售價直接改 -->
+                            <div class="tab-pane fade" id="tabOwn" role="tabpanel">
+                                <div class="row g-2 mb-3" id="ownCards"></div>
                                 <div class="shop-toolbar mb-2">
                                     <div class="input-group input-group-sm shop-search">
                                         <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                        <input type="search" class="form-control" id="ovSearch" placeholder="搜尋名稱或備註">
+                                        <input type="search" class="form-control" id="ownSearch" placeholder="搜尋名稱或備註" aria-label="搜尋自建商品">
                                     </div>
-                                    <select class="form-select form-select-sm shop-tool-select" id="ovFilter" aria-label="篩選">
+                                    <select class="form-select form-select-sm shop-tool-select" id="ownFilter" aria-label="篩選">
                                         <option value="all">全部商品</option>
                                         <option value="loss">虧本</option>
                                         <option value="low">低於門檻</option>
                                         <option value="incomplete">待補進價／類別</option>
-                                        <option value="missing">本次未匯入</option>
                                     </select>
                                     <div class="shop-toolbar-actions">
-                                        <div class="dropdown">
-                                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" aria-label="匯入商品">
-                                                <i class="bi bi-box-arrow-in-down"></i><span class="d-none d-md-inline"> 匯入</span>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end">
-                                                <li><button class="dropdown-item" data-action="import-shopee"><i class="bi bi-file-earmark-spreadsheet"></i> 從蝦皮商品檔匯入</button></li>
-                                                <li><button class="dropdown-item" data-action="import-saved"><i class="bi bi-save"></i> 從快速計算已存設定匯入</button></li>
-                                            </ul>
-                                        </div>
                                         <button class="btn btn-primary btn-sm" data-action="product-new" aria-label="新增商品"><i class="bi bi-plus-lg"></i><span class="d-none d-md-inline"> 新增商品</span></button>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-center gap-2 mb-2 small">
-                                    <div class="form-check mb-0 d-md-none">
-                                        <input class="form-check-input ov-select-all" type="checkbox" id="ovSelectAll">
-                                        <label class="form-check-label" for="ovSelectAll">全選本頁</label>
-                                    </div>
-                                    <button class="btn btn-outline-danger btn-sm d-none" data-action="bulk-delete" id="bulkDeleteBtn"><i class="bi bi-trash"></i> 刪除勾選的 <span></span> 個商品</button>
-                                    <span class="ms-auto text-muted" id="ovCount"></span>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm d-none text-nowrap" data-action="ov-expand-all" id="ovExpandAll"></button>
+                                <div class="sx-selbar small" id="ownSelBar">
+                                    <span class="text-muted" id="ownCount"></span>
+                                    <button class="btn btn-outline-danger btn-sm d-none ms-auto" data-action="own-bulk-delete" id="ownBulkDelete"><i class="bi bi-trash"></i> 刪除勾選的 <span></span> 個商品</button>
                                 </div>
-
-                                <div class="ov-head" id="ovHead">
-                                    <span class="c-chk"><input class="form-check-input ov-select-all" type="checkbox" aria-label="全選本頁商品" title="全選本頁商品"></span>
-                                    <button type="button" class="ov-sort" data-action="ov-sort" data-key="name">商品<i class="bi"></i></button>
-                                    <button type="button" class="ov-sort" data-action="ov-sort" data-key="cost">進價<i class="bi"></i></button>
-                                    <button type="button" class="ov-sort justify-content-end" data-action="ov-sort" data-key="price">售價<i class="bi"></i></button>
-                                    <button type="button" class="ov-sort justify-content-end" data-action="ov-sort" data-key="profit">一般日淨利<i class="bi"></i></button>
-                                    <button type="button" class="ov-sort justify-content-end" data-action="ov-sort" data-key="eventProfit">促銷檔期淨利<i class="bi"></i></button>
-                                    <span class="c-act"></span>
-                                </div>
-                                <div id="ovList"></div>
-                                <div class="ov-pager" id="ovPager"></div>
-                                <p class="small text-muted mt-2 mb-0" id="ovLegend">
-                                    <span class="legend legend-loss"></span> 淨利為負
-                                    <span class="legend legend-low ms-2"></span> 利潤率低於門檻
-                                </p>
+                                <div id="ownBody"></div>
+                                <div class="ov-pager" id="ownPager"></div>
                             </div>
 
-                            <!-- 調價與庫存 -->
-                            <div class="tab-pane fade" id="tabReprice" role="tabpanel">
-                                <div id="rpEmpty" class="text-center text-muted py-4 d-none">
-                                    <p class="mb-2">這裡用來修改從蝦皮匯入的商品售價與庫存，改完產生批次更新檔上傳回蝦皮。</p>
-                                    <button class="btn btn-outline-secondary btn-sm" data-action="import-shopee"><i class="bi bi-file-earmark-spreadsheet"></i> 從蝦皮匯入</button>
+                            <!-- 蝦皮商品：規格攤開，改售價／庫存產生批次更新檔 -->
+                            <div class="tab-pane fade" id="tabShopee" role="tabpanel">
+                                <div id="spEmpty" class="sp-empty d-none">
+                                    <i class="bi bi-file-earmark-spreadsheet sp-empty-icon" aria-hidden="true"></i>
+                                    <h2 class="h6 fw-bold mb-1">匯入蝦皮商品</h2>
+                                    <p class="small text-muted mb-3">從蝦皮賣家中心下載「價格及庫存」與「備貨天數」兩個檔案上傳，就能一次看每個規格的獲利、批次調價，再產生批次更新檔上傳回蝦皮。</p>
+                                    <button class="btn btn-primary" data-action="import-shopee"><i class="bi bi-upload"></i> 上傳蝦皮檔案</button>
                                 </div>
-                                <div id="rpBody">
-                                    <div id="rpFreshness" class="small mb-2"></div>
-                                    <div class="card shop-card mb-2">
-                                        <div class="card-body py-2">
-                                            <div class="small fw-bold mb-2"><i class="bi bi-magic"></i> 批次調整勾選的規格（<span id="rpSelCount">0</span>）</div>
-                                            <div class="d-flex flex-wrap gap-2 align-items-center">
-                                                <div class="input-group input-group-sm rp-tool">
-                                                    <select class="form-select" id="rpAdjType" aria-label="調整方式">
-                                                        <option value="pct">漲跌 %</option>
-                                                        <option value="amt">加減 $</option>
-                                                    </select>
-                                                    <input type="number" class="form-control" id="rpAdjValue" placeholder="例 5 或 -10" step="any">
-                                                    <select class="form-select" id="rpRound" aria-label="取整">
-                                                        <option value="1">個位</option>
-                                                        <option value="10">十位</option>
-                                                        <option value="9">尾數 9</option>
-                                                    </select>
-                                                    <button class="btn btn-outline-primary" data-action="rp-adjust">套用</button>
-                                                </div>
-                                                <div class="input-group input-group-sm rp-tool">
-                                                    <span class="input-group-text">目標利潤率</span>
-                                                    <input type="number" class="form-control" id="rpMargin" value="10" step="any" aria-label="目標利潤率">
-                                                    <span class="input-group-text">%</span>
-                                                    <select class="form-select" id="rpMarginScenario" aria-label="情境">
-                                                        <option value="regular">一般日</option>
-                                                        <option value="event">促銷檔期</option>
-                                                    </select>
-                                                    <button class="btn btn-outline-primary" data-action="rp-margin">回推售價</button>
-                                                </div>
-                                                <div class="input-group input-group-sm rp-tool rp-tool-sm">
-                                                    <span class="input-group-text">庫存</span>
-                                                    <input type="number" class="form-control" id="rpStock" min="0" step="1" aria-label="庫存">
-                                                    <button class="btn btn-outline-primary" data-action="rp-stock">設定</button>
-                                                </div>
-                                                <button class="btn btn-outline-secondary btn-sm" data-action="rp-restore-selected"><i class="bi bi-arrow-counterclockwise"></i> 恢復勾選的</button>
-                                                <button class="btn btn-outline-secondary btn-sm" data-action="rp-restore-all"><i class="bi bi-arrow-counterclockwise"></i> 全部恢復</button>
+                                <div id="spBody">
+                                    <div class="row g-2 mb-3" id="spCards"></div>
+                                    <div id="spFreshness" class="small mb-2"></div>
+                                    <div class="shop-toolbar mb-2">
+                                        <div class="input-group input-group-sm shop-search">
+                                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                            <input type="search" class="form-control" id="spSearch" placeholder="搜尋商品或規格" aria-label="搜尋蝦皮商品">
+                                        </div>
+                                        <select class="form-select form-select-sm shop-tool-select" id="spFilter" aria-label="篩選">
+                                            <option value="all">全部規格</option>
+                                            <option value="loss">虧本</option>
+                                            <option value="low">低於門檻</option>
+                                            <option value="incomplete">待補進價／類別</option>
+                                            <option value="changed">已修改、待匯出</option>
+                                            <option value="exported">已匯出、待蝦皮更新</option>
+                                            <option value="missing">本次未匯入</option>
+                                        </select>
+                                        <div class="shop-toolbar-actions">
+                                            <button class="btn btn-outline-secondary btn-sm" data-action="import-shopee" aria-label="重新匯入蝦皮檔案" title="重新匯入蝦皮檔案"><i class="bi bi-arrow-repeat"></i><span class="d-none d-md-inline"> 重新匯入</span></button>
+                                            <div class="dropdown">
+                                                <button class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="spBatchBtn">
+                                                    <i class="bi bi-magic"></i> 批次調整<span class="badge text-bg-light ms-1 d-none" id="spSelCount"></span>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end sp-batch-menu" id="spBatchMenu">
+                                                    <li><h6 class="dropdown-header" id="spBatchHeader"></h6></li>
+                                                    <li><button class="dropdown-item" data-action="sp-panel" data-panel="adjust" data-need-sel><i class="bi bi-percent"></i> 漲跌％／加減金額…</button></li>
+                                                    <li><button class="dropdown-item" data-action="sp-panel" data-panel="margin" data-need-sel><i class="bi bi-bullseye"></i> 依目標利潤率回推售價…</button></li>
+                                                    <li><button class="dropdown-item" data-action="sp-panel" data-panel="stock" data-need-sel><i class="bi bi-box"></i> 設定庫存…</button></li>
+                                                    <li><button class="dropdown-item" data-action="sp-panel" data-panel="cost" data-need-sel><i class="bi bi-cash-coin"></i> 設定進價…</button></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><button class="dropdown-item" data-action="sp-restore-selected" data-need-sel><i class="bi bi-arrow-counterclockwise"></i> 恢復勾選的修改</button></li>
+                                                    <li><button class="dropdown-item" data-action="sp-restore-all"><i class="bi bi-arrow-counterclockwise"></i> 全部恢復</button></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><button class="dropdown-item text-danger" data-action="sp-delete-selected" data-need-sel><i class="bi bi-trash"></i> 刪除勾選的規格</button></li>
+                                                    <li><button class="dropdown-item text-danger" data-action="sp-clear"><i class="bi bi-x-octagon"></i> 一鍵清除蝦皮資料</button></li>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
-                                        <div class="input-group input-group-sm shop-search">
-                                            <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                            <input type="search" class="form-control" id="rpSearch" placeholder="搜尋商品或規格">
-                                        </div>
-                                        <select class="form-select form-select-sm w-auto" id="rpFilter" aria-label="篩選">
-                                            <option value="all">全部規格</option>
-                                            <option value="changed">已修改</option>
-                                            <option value="exported">已匯出、待蝦皮更新</option>
-                                            <option value="loss">虧本</option>
-                                        </select>
-                                        <div class="form-check mb-0 small">
-                                            <input class="form-check-input" type="checkbox" id="rpSelectAll">
-                                            <label class="form-check-label" for="rpSelectAll">全選（目前列出的）</label>
-                                        </div>
+                                    <div id="spPanel" class="sp-panel d-none" role="region" aria-label="批次調整"></div>
+                                    <div class="sx-selbar small">
+                                        <span class="text-muted" id="spCount"></span>
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-auto d-none" data-action="sp-clear-selection" id="spClearSel">取消勾選</button>
                                     </div>
-                                    <div class="rp-head d-none d-md-grid">
-                                        <span></span><span>商品／規格</span><span>進價</span><span>售價</span><span>庫存</span>
-                                        <span class="text-end">一般日淨利</span><span class="text-end">促銷檔期淨利</span>
-                                    </div>
-                                    <div id="rpList"></div>
+                                    <div id="spList"></div>
+                                    <div class="ov-pager" id="spPager"></div>
                                 </div>
                                 <div class="rp-footer" id="rpFooter">
                                     <span id="rpFooterText"></span>
@@ -307,6 +259,10 @@
                             <!-- 賣場設定 -->
                             <div class="tab-pane fade" id="tabSettings" role="tabpanel">
                                 <form id="settingsForm" class="settings-form" onsubmit="return false">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold" for="stName">賣場名稱</label>
+                                        <input type="text" class="form-control" id="stName" maxlength="40" style="max-width: 360px;" autocomplete="off">
+                                    </div>
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">賣場類型</label>
                                         <div class="btn-group w-100" role="group">
@@ -369,7 +325,7 @@
                                             <input type="number" class="form-control" name="lowMargin" id="stLowMargin" min="0" step="any">
                                             <span class="input-group-text">%</span>
                                         </div>
-                                        <small class="text-muted">利潤率低於這個數字的商品在總覽標黃色。</small>
+                                        <small class="text-muted">利潤率低於這個數字的商品或規格標黃色。</small>
                                     </div>
                                     <p class="small text-muted mb-0" id="stShopeeId"></p>
                                     <p class="small text-success mb-0"><i class="bi bi-check-circle"></i> 修改後自動儲存，所有商品立即重算。</p>
@@ -430,7 +386,7 @@
                 </div>
                 <!-- Line 3: Version -->
                 <div class="text-center text-muted small opacity-50">
-                    v1.2.0
+                    v1.3.0
                 </div>
             </div>
 
@@ -476,7 +432,7 @@
                 </div>
                 <!-- Version -->
                 <div class="text-muted small opacity-50">
-                    v1.2.0
+                    v1.3.0
                 </div>
             </div>
         </div>
@@ -546,30 +502,27 @@
                 <div class="modal-header"><h5 class="modal-title" id="productModalTitle">商品</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button></div>
                 <div class="modal-body">
                     <div class="mb-2"><label class="form-label small" for="pmName">商品名稱</label><input type="text" class="form-control" id="pmName" maxlength="200"></div>
-                    <div class="mb-2"><label class="form-label small" for="pmNote">備註（選填）</label><input type="text" class="form-control" id="pmNote" maxlength="200" placeholder="規格、供應商…"></div>
                     <div class="row g-2 mb-2">
-                        <div class="col-6">
+                        <div class="col-6 pm-own-only">
                             <label class="form-label small" for="pmCost">進價</label>
                             <input type="number" class="form-control" id="pmCost" min="0" step="any" placeholder="未填">
-                            <div class="form-check form-switch small mt-1"><input class="form-check-input" type="checkbox" role="switch" id="pmCostInc" checked><label class="form-check-label" for="pmCostInc">進價含稅</label></div>
                         </div>
-                        <div class="col-6" id="pmPriceWrap">
+                        <div class="col-6 pm-own-only">
                             <label class="form-label small" for="pmPrice">售價</label>
                             <input type="number" class="form-control" id="pmPrice" min="0" step="1">
                         </div>
-                        <div class="col-6 small text-muted d-none" id="pmPriceShopee">售價與庫存以蝦皮匯入為準，請到「調價與庫存」修改。</div>
+                        <div class="col-12 small text-muted d-none" id="pmShopeeHint">進價、售價與庫存在「蝦皮商品」表格的每個規格各自修改；售價與庫存以蝦皮匯入為準。</div>
+                        <div class="col-12"><div class="form-check form-switch small"><input class="form-check-input" type="checkbox" role="switch" id="pmCostInc" checked><label class="form-check-label" for="pmCostInc">進價含稅</label> <span class="text-muted d-none" id="pmCostIncHint">（所有規格共用）</span></div></div>
                     </div>
                     <div class="mb-2">
-                        <label class="form-label small">成交手續費率</label>
+                        <label class="form-label small" for="pmRate">成交手續費</label>
+                        <!-- 與快速計算相同：直接輸入 %，或「查詢」選類別帶入（費率依賣場類型、隨費率表更新） -->
                         <div class="input-group">
-                            <span class="form-control text-truncate" id="pmFeeText"></span>
-                            <button class="btn btn-outline-secondary" type="button" id="pmPickCat"><i class="bi bi-search"></i> 選類別</button>
+                            <input type="number" class="form-control" id="pmRate" min="0" max="100" step="0.1" placeholder="例 6">
+                            <span class="input-group-text">%</span>
+                            <button class="btn btn-outline-secondary" type="button" id="pmPickCat"><i class="bi bi-search"></i> 查詢</button>
                         </div>
-                        <div class="d-flex align-items-center gap-2 mt-1 small">
-                            <span>或手動輸入</span>
-                            <input type="number" class="form-control form-control-sm" id="pmManualRate" style="max-width: 90px;" min="0" step="any">
-                            <span>%</span>
-                        </div>
+                        <small class="text-muted d-block mt-1 text-truncate" id="pmFeeText"></small>
                     </div>
                     <div class="mb-2">
                         <label class="form-label small">預購（較長備貨）</label>
@@ -583,6 +536,7 @@
                         <div class="form-check"><input class="form-check-input" type="checkbox" id="pmProdInv"><label class="form-check-label" for="pmProdInv">有商品進項發票</label> <span class="text-muted" id="pmProdInvHint"></span></div>
                         <div class="form-check"><input class="form-check-input" type="checkbox" id="pmFrozen"><label class="form-check-label" for="pmFrozen">冷凍訂單</label></div>
                     </div>
+                    <div class="mt-3"><label class="form-label small" for="pmNote">備註（選填）</label><input type="text" class="form-control" id="pmNote" maxlength="200" placeholder="規格、供應商…"></div>
                 </div>
                 <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button><button type="button" class="btn btn-primary" id="pmSave">儲存</button></div>
             </div>
@@ -613,7 +567,7 @@
                         <summary class="fw-bold">怎麼從蝦皮下載這兩份檔案？</summary>
                         <ol class="small mt-2">
                             <li>電腦登入<a href="https://seller.shopee.tw/" target="_blank" rel="noopener">蝦皮賣家中心</a> →「我的商品」→ 右上「批次工具」→「批次更新」。</li>
-                            <li>「下載商品模板」的模板選<strong>價格及庫存</strong>，按「下載」。分類、商品狀態等篩選不用選（全部商品）。</li>
+                            <li>篩選要匯入商品的條件，「下載商品模板」的模板選<strong>價格及庫存</strong>，按「下載」。</li>
                             <li>模板改選<strong>備貨天數</strong>，再按一次「下載」。</li>
                             <li>等下方「紀錄」出現兩筆檔案後，各按「下載」存到電腦，再一起選到下面。</li>
                         </ol>
@@ -632,36 +586,6 @@
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-danger" id="imApply" disabled>匯入</button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 從快速計算已存設定匯入 -->
-    <div class="modal fade" id="savedModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header"><h5 class="modal-title"><i class="bi bi-save"></i> 從快速計算已存設定匯入</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button></div>
-                <div class="modal-body">
-                    <p class="small text-muted">只帶入商品的進價、售價、手續費率、預購、冷凍；賣場設定以這個賣場為準。舊設定只存了費率數字，匯入後請重選類別。快速計算的已存設定不會被改動。</p>
-                    <div class="list-group" id="savedList"></div>
-                </div>
-                <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button><button type="button" class="btn btn-primary" id="savedApply">匯入勾選的</button></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 從快速計算加入 -->
-    <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header"><h5 class="modal-title"><i class="bi bi-bag-plus"></i> 加入我的賣場</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button></div>
-                <div class="modal-body">
-                    <div class="mb-2"><label class="form-label small" for="adName">商品名稱</label><input type="text" class="form-control" id="adName" maxlength="200"></div>
-                    <div class="mb-2"><label class="form-label small" for="adTarget">加到</label><select class="form-select" id="adTarget"></select></div>
-                    <div id="adSummary" class="small mb-2"></div>
-                    <div id="adDiff"></div>
-                </div>
-                <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button><button type="button" class="btn btn-primary" id="adOk">加入</button></div>
             </div>
         </div>
     </div>
@@ -700,9 +624,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="js/fee-engine.js?20261117"></script>
-    <script src="js/shop-data.js?20261117d"></script>
+    <script src="js/shop-data.js?20261118"></script>
     <script src="js/shop-xlsx.js?20261117c"></script>
-    <script src="js/shop.js?20261117e"></script>
+    <script src="js/shop.js?20261118a"></script>
     <script src="js/announcement.js?20261116b"></script>
     <script src="js/site.js?20261117a"></script>
 </body>

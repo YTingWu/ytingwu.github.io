@@ -1,31 +1,50 @@
 // storage.js - Handles saving/loading configurations and sidebar management
 
-const STORAGE_KEY = 'shopee_calculator_configs_v1';
+// 快速計算的「列表」＝賣場總覽的自建商品（shop-data.js，localStorage shopee_myshop_v1），兩邊是同一份資料。
+// 舊制頁（old.html／storage.js）仍用 shopee_calculator_configs_v1；新制的舊設定第一次開啟時搬進賣場。
+const SD = window.ShopData;
 const FLOATING_TOGGLE_ID = 'floatingSidebarToggle';
 const CLOSE_BTN_ID = 'sidebarCloseBtn';
 const OVERLAY_ID = 'sidebar-overlay'; // Must match HTML
 const LIST_ID = 'savedConfigsList';
 const SAVE_BTN_ID = 'saveConfigBtn';
 
-let savedConfigs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+let shopState = SD.emptyState();
+const shopCtx = { state: shopState, cats: {}, feeIndex: null };
+let loadedRef = null; // 目前從列表載入的商品 { shopId, pid }
+let migrated = { moved: 0 };
 
-// 新制首頁（index.html）與舊制頁（old.html）共用同一份儲存列表。
-// 寫入前重新讀取，避免兩個分頁各自持有舊陣列而互相覆蓋。
-const RATES_TAG = 'new';
-function reloadSavedConfigs() {
-    try {
-        savedConfigs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    } catch (e) {
-        savedConfigs = [];
-    }
+function reloadShopState() {
+    shopState = SD.loadState(localStorage);
+    shopCtx.state = shopState;
 }
-// 其他分頁（含另一個版本的頁面）改了列表時同步更新
+// 賣場頁（或另一個分頁）改了資料時同步
 window.addEventListener('storage', (e) => {
-    if (e.key === STORAGE_KEY) {
-        reloadSavedConfigs();
+    if (e.key === SD.STORAGE_KEY) {
+        reloadShopState();
         renderSidebar();
     }
 });
+
+// 費率表與蝦皮分類（依類別設定費率的商品才算得出費率）；只載一次
+let shopCtxReady = null;
+let shopCtxOk = false; // 費率表載入成功才算得出依類別的費率
+function ensureShopCtx() {
+    if (!shopCtxReady) {
+        shopCtxReady = Promise.all([
+            fetch('fee-new.json').then(r => r.json()),
+            fetch('shopee-categories.json').then(r => r.json()),
+        ]).then(([fee, cats]) => {
+            shopCtx.feeIndex = SD.buildFeeIndex(fee);
+            shopCtx.cats = cats.categories || {};
+            shopCtxOk = true;
+        }).catch(() => {
+            shopCtx.feeIndex = SD.buildFeeIndex([]);
+            shopCtxReady = null; // 下次再試
+        });
+    }
+    return shopCtxReady;
+}
 
 // DOM Elements
 const floatingToggle = document.getElementById(FLOATING_TOGGLE_ID);
@@ -183,121 +202,132 @@ function triggerEvent(element, type) {
     element.dispatchEvent(event);
 }
 
-function getCurrentStateFromDOM() {
-    // We infer state by reading the same inputs calculator.js uses
-    // We rely on getQueryParams() from calculator.js logic style, or just direct DOM read
-    // Since we want to display a helpful title, we specifically grab costs/prices
-    
-    const costInput = document.getElementById('costPrice');
-    const sellInput = document.getElementById('sellPrice');
-    
-    // We can just use the current URL search params if updated, 
-    // OR we can rebuild the data object manually if the URL isn't guaranteed perfectly in sync yet
-    // calculator.js updates URL on every change, so reading query string is safest
-    const params = new URLSearchParams(window.location.search);
-    const state = {};
-    for (const [key, value] of params.entries()) {
-        state[key] = value;
+// 目前畫面的設定（calculator-new.js 每次變動都會同步到網址）；算售價模式改帶「一般日、方案一」的建議售價
+function currentQuery() {
+    const q = new URLSearchParams(window.location.search);
+    if (document.querySelector('input[name="calcMode"]:checked')?.value === 'price') {
+        const el = document.getElementById('regular-ship1-suggested-price');
+        q.set('sell', String(el ? parseFloat(el.innerText.replace(/[^\d.-]/g, '')) || 0 : 0));
     }
-    return state;
+    return q;
+}
+
+const money = (n) => '$ ' + Math.round(n || 0).toLocaleString('zh-TW');
+
+function findLoaded() {
+    if (!loadedRef) return null;
+    const shop = shopState.shops.find(s => s.id === loadedRef.shopId);
+    const p = shop && shop.products.find(x => x.id === loadedRef.pid && !x.shopeeItemId);
+    return p ? { shop, p } : null;
 }
 
 function openSaveModal() {
-    const costInput = document.getElementById('costPrice');
-    const sellInput = document.getElementById('sellPrice');
-    const cost = parseFloat(costInput?.value) || 0;
-    
-    // Attempt to find calculated sell price if in 'price' mode (margin mode)
-    let sell = parseFloat(sellInput?.value) || 0;
-    const mode = document.querySelector('input[name="calcMode"]:checked')?.value;
-    
-    if (mode === 'price') {
-        const resultEl = document.getElementById('regular-ship1-suggested-price');
-        if (resultEl) {
-             const txt = resultEl.innerText.replace(/[^\d.-]/g, ''); 
-             sell = parseFloat(txt) || 0;
-        }
+    reloadShopState();
+    const q = currentQuery();
+    const loaded = findLoaded();
+    const nameInput = document.getElementById('configNameInput');
+    nameInput.value = loaded ? loaded.p.name : `進價 ${money(parseFloat(q.get('cost')))} 售價 ${money(parseFloat(q.get('sell')))}`;
+
+    // 更新／另存：只有從列表載入的商品才有
+    const modeWrap = document.getElementById('saveModeWrap');
+    modeWrap.classList.toggle('d-none', !loaded);
+    if (loaded) {
+        document.getElementById('saveModeUpdateLabel').textContent = `更新「${loaded.p.name}」（${loaded.shop.name}）`;
+        document.getElementById('saveModeUpdate').checked = true;
     }
+    const target = document.getElementById('saveTargetShop');
+    target.innerHTML = shopState.shops.map(s => `<option value="${escapeHtml(s.id)}">${escapeHtml(s.name)}</option>`).join('') +
+        '<option value="__new__">＋ 用目前的設定建立新賣場</option>';
+    target.value = loaded ? loaded.shop.id : (shopState.activeShopId && shopState.shops.some(s => s.id === shopState.activeShopId) ? shopState.activeShopId : (shopState.shops[0]?.id || '__new__'));
+    renderSaveTarget();
 
-    const currencyStr = (val) => '$ ' + Math.round(val).toLocaleString('zh-TW');
-    const defaultTitle = `進價: ${currencyStr(cost)} 售價: ${currencyStr(sell)}`;
-    
-    const input = document.getElementById('configNameInput');
-    if (input) {
-        input.value = defaultTitle;
+    const modalEl = document.getElementById('saveConfigModal');
+    bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    modalEl.addEventListener('shown.bs.modal', () => { nameInput.focus(); nameInput.select(); }, { once: true });
+}
+
+// 存到哪裡、和賣場設定的差異
+function renderSaveTarget() {
+    const updating = !document.getElementById('saveModeWrap').classList.contains('d-none') && document.getElementById('saveModeUpdate').checked;
+    document.getElementById('saveTargetWrap').classList.toggle('d-none', updating);
+    const loaded = findLoaded();
+    const shop = updating && loaded ? loaded.shop : shopState.shops.find(s => s.id === document.getElementById('saveTargetShop').value);
+    const diffEl = document.getElementById('saveDiff');
+    if (!shop) {
+        diffEl.innerHTML = '<div class="small text-muted">新賣場會沿用目前的賣家類型、免運方案、蝦幣回饋與稅務設定。</div>';
+        return;
     }
-
-    const saveModal = new bootstrap.Modal(document.getElementById('saveConfigModal'));
-    saveModal.show();
-
-    // Auto focus after modal shown
-    document.getElementById('saveConfigModal').addEventListener('shown.bs.modal', () => {
-        input.focus();
-        input.select();
-    }, { once: true });
+    const diff = SD.settingsDiff(SD.settingsFromQuery(currentQuery()), shop.settings);
+    const label = (k, v) => {
+        if (k === 'hasProdInv' || k === 'hasFeeInv' || k === 'first5') return v ? '是' : '否';
+        const L = {
+            seller: { general: '一般賣家', mall: '商城賣家', shop: '蝦皮小舖' }, shipPlan: { ship1: '方案一', ship2: '方案二' },
+            cashback: { '0': '不參加', '1.5': '5% 回饋', '2.5': '10% 回饋' }, cashbackTerm: { long: '長期', short: '短期' },
+            tax: { '0': '無', '1': '稅籍登記 1%', '5': '發票 5%', '5_plus': '蝦皮代開發票' },
+        };
+        return (L[k] && L[k][v]) || String(v);
+    };
+    diffEl.innerHTML = diff.length
+        ? `<div class="alert alert-warning small mb-0 py-2"><div class="mb-1"><i class="bi bi-exclamation-triangle"></i> 目前的設定和「${escapeHtml(shop.name)}」不同，存進去後獲利會依賣場設定計算：</div><ul class="mb-0 ps-3">${diff.map(d => `<li>${d.label}：目前「${escapeHtml(label(d.key, d.from))}」→ 賣場「${escapeHtml(label(d.key, d.to))}」</li>`).join('')}</ul></div>`
+        : '<div class="small text-success"><i class="bi bi-check-circle"></i> 設定和賣場相同。</div>';
 }
 
 function saveConfig() {
-    const input = document.getElementById('configNameInput');
-    const title = input ? input.value : '';
-    
-    const costInput = document.getElementById('costPrice');
-    const sellInput = document.getElementById('sellPrice');
-    const cost = parseFloat(costInput?.value) || 0;
-    
-    let sell = parseFloat(sellInput?.value) || 0;
-    const mode = document.querySelector('input[name="calcMode"]:checked')?.value;
-    
-    if (mode === 'price') {
-        const resultEl = document.getElementById('regular-ship1-suggested-price');
-        if (resultEl) {
-             const txt = resultEl.innerText.replace(/[^\d.-]/g, ''); 
-             sell = parseFloat(txt) || 0;
+    const name = document.getElementById('configNameInput').value.trim();
+    if (!name) { document.getElementById('configNameInput').focus(); return; }
+    reloadShopState();
+    const q = currentQuery();
+    const fresh = SD.productFromQuery(q, name);
+    const loaded = findLoaded();
+    const updating = loaded && !document.getElementById('saveModeWrap').classList.contains('d-none') && document.getElementById('saveModeUpdate').checked;
+    let shop, p;
+    if (updating) {
+        ({ shop, p } = loaded);
+        // 費率沒改就保留原本的類別設定（費率表更新時會跟著走）；費率表沒載入時無法比對，類別設定一律保留
+        const sameRate = (!shopCtxOk && p.fee.mode !== 'manual') || SD.resolveRate(p, shop.settings.seller, shopCtx) === fresh.fee.manualRate;
+        Object.assign(p, {
+            name, cost: fresh.cost, costTax: fresh.costTax, frozen: fresh.frozen, preorder: fresh.preorder,
+            // 快速計算有選類別就用新的類別；沒選類別但費率沒變就保留原本的設定
+            fee: fresh.fee.mode === 'category' ? fresh.fee : (sameRate ? p.fee : fresh.fee),
+        });
+        p.variations[0].price = fresh.variations[0].price;
+    } else {
+        const tid = document.getElementById('saveTargetShop').value;
+        shop = shopState.shops.find(s => s.id === tid);
+        if (!shop) {
+            shop = SD.newShop('我的賣場' + (shopState.shops.length ? ' ' + (shopState.shops.length + 1) : ''), SD.settingsFromQuery(q));
+            shopState.shops.push(shop);
         }
+        p = fresh;
+        shop.products.unshift(p);
     }
-
-    const currencyStr = (val) => '$ ' + Math.round(val).toLocaleString('zh-TW');
-    const defaultTitle = `進價: ${currencyStr(cost)} 售價: ${currencyStr(sell)}`;
-    
-    const currentState = getCurrentStateFromDOM();
-    
-    const config = {
-        id: Date.now(),
-        title: title || defaultTitle,
-        date: new Date().toLocaleDateString(),
-        data: currentState,
-        summary: defaultTitle,
-        rates: RATES_TAG
-    };
-    
-    reloadSavedConfigs();
-    savedConfigs.unshift(config); // Add to top
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(savedConfigs));
-    
+    shopState.activeShopId = shop.id;
+    try {
+        SD.saveState(localStorage, shopState);
+    } catch (e) {
+        showToast('儲存失敗：瀏覽器的儲存空間不足');
+        reloadShopState();
+        return;
+    }
+    loadedRef = { shopId: shop.id, pid: p.id };
     renderSidebar();
-    
-    // Close modal
-    const modalEl = document.getElementById('saveConfigModal');
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    if (modal) modal.hide();
-    
-    showToast('已儲存設定');
+    bootstrap.Modal.getInstance(document.getElementById('saveConfigModal'))?.hide();
+    showToast(`${updating ? '已更新' : '已儲存到'}「${escapeHtml(shop.name)}」 <a href="shop.html" class="text-white fw-bold ms-1">到賣場查看</a>`);
 }
 
-function loadConfig(id) {
-    reloadSavedConfigs();
-    const config = savedConfigs.find(c => c.id === id);
-    if (!config) { renderSidebar(); return; }
-    
-    applyStateToDOM(config.data);
-    
-    // Close mobile sidebar if open
-    document.body.classList.remove('toggled');
-    showToast('已載入設定: ' + escapeHtml(config.title));
-    const savedRates = config.rates === 'new' ? 'new' : 'current';
-    if (savedRates !== RATES_TAG) {
-        showToast('此設定是用舊制費率存的，成交手續費率請按「查詢」重新帶入 12/11 新制費率');
-    }
+async function loadConfig(shopId, pid) {
+    reloadShopState();
+    const shop = shopState.shops.find(s => s.id === shopId);
+    const p = shop && shop.products.find(x => x.id === pid);
+    if (!p) { renderSidebar(); return; }
+    await ensureShopCtx();
+    const data = Object.fromEntries(new URLSearchParams(SD.quickCalcQuery(shop, p, p.variations[0], shopCtx)));
+    data.oldFee = '';
+    applyStateToDOM(data);
+    loadedRef = { shopId, pid };
+    renderSidebar();
+    document.body.classList.remove('toggled'); // 手機收起側邊欄
+    showToast('已載入：' + escapeHtml(p.name) + (SD.resolveRate(p, shop.settings.seller, shopCtx) == null ? '（還沒有成交手續費率，請按「查詢」選類別）' : ''));
 }
 
 function applyStateToDOM(data) {
@@ -353,6 +383,7 @@ function applyStateToDOM(data) {
     setInput('profitMargin', data.margin);
     // 12/10 前對應費率（總覽表格比較用）；沒有就與目前費率相同
     if (typeof window.setOldTransRate === 'function') window.setOldTransRate(data.oldFee);
+    if (typeof window.setFeeCategory === 'function') window.setFeeCategory(data.cat ? String(data.cat).split(' > ') : null);
     setInput('transactionFee', data.fee);
 
     // 信用卡分期
@@ -427,71 +458,51 @@ function applyStateToDOM(data) {
     setCheck('shopFirstFive', data.first5 === '1');
 }
 
-function deleteConfig(id, event) {
+function deleteConfig(shopId, pid, event) {
     if (event) event.stopPropagation();
-    if (!confirm('確定要刪除此設定嗎？')) return;
-    
-    reloadSavedConfigs();
-    savedConfigs = savedConfigs.filter(c => c.id !== id);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(savedConfigs));
+    reloadShopState();
+    const shop = shopState.shops.find(s => s.id === shopId);
+    const p = shop && shop.products.find(x => x.id === pid);
+    if (!p) { renderSidebar(); return; }
+    if (!confirm(`確定要刪除「${p.name}」嗎？賣場總覽的自建商品也會一起刪除。`)) return;
+    shop.products = shop.products.filter(x => x.id !== pid);
+    try { SD.saveState(localStorage, shopState); } catch (e) { reloadShopState(); return; }
+    if (loadedRef && loadedRef.pid === pid) loadedRef = null;
     renderSidebar();
-    showToast('已刪除設定');
+    showToast('已刪除');
 }
 
 // HTML Escaping
 function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.innerText = text;
-    return div.innerHTML;
+    // 也用在屬性值裡，引號要一起跳脫（商品名稱常有 5" 這種字）
+    return String(text == null ? '' : text).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+// 列表：所有賣場的自建商品，依賣場分組（只有一個賣場時不顯示賣場名稱）
 function renderSidebar() {
     const listEl = document.getElementById(LIST_ID);
     if (!listEl) return;
-    
-    listEl.innerHTML = '';
-    
-    if (savedConfigs.length === 0) {
-        listEl.innerHTML = '<div class="text-center p-4 text-muted"><small>尚未儲存任何設定</small></div>';
+    const groups = shopState.shops.map(shop => ({ shop, items: shop.products.filter(p => !p.shopeeItemId) })).filter(g => g.items.length);
+    if (!groups.length) {
+        listEl.innerHTML = '<div class="text-center p-4 text-muted"><small>還沒有自建商品<br>試算後按「儲存到賣場」就會出現在這裡</small></div>';
         return;
     }
-    
-    savedConfigs.forEach(config => {
-        const item = document.createElement('a');
-        item.className = 'sidebar-list-item list-group-item list-group-item-action';
-        item.innerHTML = `
-            <div class="d-flex justify-content-between align-items-start">
-                <div class="w-100">
-                    <span class="config-title">${escapeHtml(config.title)}</span>
-                    ${config.rates === 'new'
-                        ? '<span class="badge text-bg-danger ms-1 align-middle">12/11 新制</span>'
-                        : '<span class="badge text-bg-secondary ms-1 align-middle">舊制</span>'}
-                    <div class="config-details">
-                        <span>${escapeHtml(config.summary)}</span>
-                        <span class="mx-1">•</span>
-                        <span>${config.date}</span>
-                    </div>
-                </div>
-                <button class="btn btn-link btn-sm delete-config-btn" title="刪除">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </div>
-        `;
-        
-        // Click main area -> Load
-        item.addEventListener('click', (e) => {
-            loadConfig(config.id);
-        });
-
-        // Click delete btn -> Delete
-        const delBtn = item.querySelector('.delete-config-btn');
-        delBtn.addEventListener('click', (e) => {
-            deleteConfig(config.id, e);
-        });
-
-        listEl.appendChild(item);
-    });
+    const showShop = shopState.shops.length > 1;
+    listEl.innerHTML = groups.map(({ shop, items }) =>
+        (showShop ? `<div class="sidebar-shop-heading"><i class="bi bi-shop-window"></i> ${escapeHtml(shop.name)}</div>` : '') +
+        items.map(p => {
+            const rate = shopCtx.feeIndex ? SD.resolveRate(p, shop.settings.seller, shopCtx) : (p.fee.mode === 'manual' ? p.fee.manualRate : null);
+            const active = loadedRef && loadedRef.pid === p.id;
+            return `<a href="#" class="sidebar-list-item list-group-item list-group-item-action${active ? ' active-item' : ''}" data-shop="${escapeHtml(shop.id)}" data-pid="${escapeHtml(p.id)}"${active ? ' aria-current="true"' : ''}>
+  <div class="d-flex justify-content-between align-items-start">
+    <div class="w-100">
+      <span class="config-title">${escapeHtml(p.name || '（未命名）')}</span>
+      <div class="config-details"><span>進價 ${p.cost != null ? money(p.cost) : '未填'}</span><span class="mx-1">•</span><span>售價 ${money(p.variations[0].price)}</span>${rate != null ? `<span class="mx-1">•</span><span>${rate}%</span>` : ''}</div>
+    </div>
+    <button class="btn btn-link btn-sm delete-config-btn" title="刪除" aria-label="刪除 ${escapeHtml(p.name)}"><i class="bi bi-trash"></i></button>
+  </div></a>`;
+        }).join('')).join('') +
+        '<a class="sidebar-manage-link" href="shop.html"><i class="bi bi-shop"></i> 到賣場總覽管理</a>';
 }
 
 function showToast(message) {
@@ -527,22 +538,25 @@ function showToast(message) {
 
 // Initialization on DOMReady
 document.addEventListener('DOMContentLoaded', () => {
+    try {
+        migrated = SD.migrateQuickConfigsInStorage(localStorage);
+    } catch (e) {
+        migrated = { moved: 0 }; // 搬不了也要讓列表與儲存按鈕能用
+    }
+    reloadShopState();
     renderSidebar();
     initSidebarEvents();
-});
+    if (migrated.moved) showToast(`以前存的 ${migrated.moved} 筆設定已搬到「${escapeHtml(migrated.shopName)}」的自建商品`);
+    ensureShopCtx().then(renderSidebar); // 費率表載入後補上依類別計算的費率
 
-// 「加入我的賣場」：帶目前的設定到 shop.html；算售價模式改帶「一般日、方案一」的建議售價
-document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('addToShopBtn');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-        const params = new URLSearchParams(window.location.search);
-        if (document.querySelector('input[name="calcMode"]:checked')?.value === 'price') {
-            const el = document.getElementById('regular-ship1-suggested-price');
-            const sell = el ? parseFloat(el.innerText.replace(/[^\d.-]/g, '')) || 0 : 0;
-            params.set('sell', String(sell));
-        }
-        params.set('add', '1');
-        window.location.href = 'shop.html?' + params.toString();
+    // 列表點擊（事件委派）：點項目載入、點垃圾桶刪除
+    document.getElementById(LIST_ID)?.addEventListener('click', (e) => {
+        const item = e.target.closest('.sidebar-list-item[data-pid]');
+        if (!item) return;
+        e.preventDefault();
+        if (e.target.closest('.delete-config-btn')) deleteConfig(item.dataset.shop, item.dataset.pid, e);
+        else loadConfig(item.dataset.shop, item.dataset.pid);
     });
+    document.getElementById('saveTargetShop')?.addEventListener('change', renderSaveTarget);
+    document.querySelectorAll('input[name="saveMode"]').forEach(r => r.addEventListener('change', renderSaveTarget));
 });

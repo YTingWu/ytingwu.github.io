@@ -848,6 +848,30 @@ body.toggled #sidebar-overlay {
     color: var(--danger);
 }
 
+/* 快速計算：「查詢」選到的類別（手動改費率就消失） */
+.fee-category-text { margin: .25rem 0 .1rem; color: var(--primary); font-weight: 500; }
+
+/* 快速計算列表＝賣場自建商品：依賣場分組、目前載入的項目、管理連結 */
+.sidebar-shop-heading {
+    padding: .5rem 1rem .35rem;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-input-group);
+    border-bottom: 1px solid var(--border-color);
+}
+.sidebar-list-item.active-item {
+    border-left-color: var(--primary);
+    background-color: rgba(78, 115, 223, .08);
+}
+.sidebar-manage-link {
+    display: block;
+    padding: .75rem 1rem;
+    font-size: .85rem;
+    text-align: center;
+    text-decoration: none;
+}
+
 /* Toast Container positioning */
 .toast-container {
     z-index: 1060;

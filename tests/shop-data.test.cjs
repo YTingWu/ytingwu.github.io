@@ -153,3 +153,134 @@ test('商品進項發票：賣場預設＋商品單獨設定，舊資料轉移',
     p.hasProdInv = null; shop.settings.hasProdInv = false;
     assert.equal(SD.engineSettings(shop, p, 300, 8.5).hasProdInv, false);
 });
+
+test('進價：蝦皮商品只看規格進價，自建商品只看商品進價', () => {
+    const own = SD.newProduct({ cost: 100 });
+    own.variations[0].cost = 999; // 自建商品沒有規格進價的介面，殘留值不採用
+    assert.equal(SD.variationCost(own, own.variations[0]), 100);
+    const sp = SD.newProduct({ shopeeItemId: '1', cost: 100 });
+    assert.equal(SD.variationCost(sp, sp.variations[0]), null); // 不沿用商品進價
+    sp.variations[0].cost = 80;
+    assert.equal(SD.variationCost(sp, sp.variations[0]), 80);
+});
+
+test('規格摘要、刪除規格、一鍵清除', () => {
+    const ctx = mkCtx();
+    const shop = SD.newShop('t');
+    const own = SD.newProduct({ name: 'own', cost: 100, fee: { mode: 'manual', manualRate: 6 } });
+    own.variations[0].price = 300;
+    const sp = SD.newProduct({ name: 'sp', shopeeItemId: '9', fee: { mode: 'manual', manualRate: 6 } });
+    sp.variations = [
+        { id: 'a', shopeeVarId: 'A', name: 'A', price: 100, stock: 1, cost: 200, draft: null }, // 虧本
+        { id: 'b', shopeeVarId: 'B', name: 'B', price: 500, stock: 1, cost: 100, draft: null },
+        { id: 'c', shopeeVarId: 'C', name: 'C', price: 500, stock: 1, cost: null, draft: null }, // 待補進價
+    ];
+    shop.products = [own, sp];
+    shop.shopeeShopId = '123';
+    shop.salesFile = { b64: 'AA==' };
+    const sum = SD.variationSummary(shop, [sp], ctx);
+    assert.deepEqual([sum.products, sum.variations, sum.loss, sum.incomplete], [1, 3, 1, 1]);
+    assert.equal(SD.variationSummary(shop, [own], ctx).variations, 1);
+
+    assert.deepEqual(SD.deleteVariations(shop, ['a']), { variations: 1, products: 0 });
+    assert.deepEqual(sp.variations.map(v => v.id), ['b', 'c']);
+    assert.deepEqual(SD.deleteVariations(shop, ['b', 'c']), { variations: 2, products: 1 });
+    assert.deepEqual(shop.products.map(p => p.name), ['own']);
+
+    shop.products.push(sp);
+    assert.equal(SD.clearShopee(shop), 1);
+    assert.deepEqual(shop.products.map(p => p.name), ['own']);
+    assert.deepEqual([shop.salesFile, shop.shopeeShopId], [null, null]);
+});
+
+test('快速計算已存設定搬進賣場：只搬新制、沒有賣場就建、存檔失敗不動', () => {
+    const mem = () => { const m = new Map(); return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), _m: m }; };
+    const cfgs = [
+        { id: 2, title: 'B', rates: 'new', data: { seller: 'mall', tax: '5', cost: '200', sell: '500', fee: '7.5' }, summary: '' },
+        { id: 1, title: '舊', rates: 'current', data: { cost: '100', sell: '300', fee: '6' }, summary: '' },
+        { id: 0, title: 'A', rates: 'new', data: { cost: '50', sell: '199', fee: '6' }, summary: '' },
+    ];
+    const st = mem();
+    st.setItem(SD.QUICK_KEY, JSON.stringify(cfgs));
+    const r = SD.migrateQuickConfigsInStorage(st);
+    assert.equal(r.moved, 2);
+    const state = SD.loadState(st);
+    assert.equal(state.shops.length, 1);
+    assert.equal(state.shops[0].settings.seller, 'mall'); // 用第一筆的設定建賣場
+    assert.deepEqual(state.shops[0].products.map(p => [p.name, p.cost, p.variations[0].price, p.fee.manualRate, p.fee.needsReview]), [['B', 200, 500, 7.5, false], ['A', 50, 199, 6, false]]);
+    assert.deepEqual(JSON.parse(st.getItem(SD.QUICK_KEY)).map(c => c.title), ['舊']);
+    assert.equal(SD.migrateQuickConfigsInStorage(st).moved, 0); // 再跑一次不重複
+
+    // 已有賣場：放第一個，加在原有商品前面
+    const st2 = mem();
+    const s0 = SD.newShop('原本'); s0.products.push(SD.newProduct({ name: '舊商品' }));
+    const e = SD.emptyState(); e.shops.push(SD.newShop('第一')); e.shops[0].products.push(SD.newProduct({ name: 'x' })); e.shops.push(s0);
+    SD.saveState(st2, e);
+    st2.setItem(SD.QUICK_KEY, JSON.stringify(cfgs));
+    SD.migrateQuickConfigsInStorage(st2);
+    assert.deepEqual(SD.loadState(st2).shops[0].products.map(p => p.name), ['B', 'A', 'x']);
+
+    // 存檔失敗：清單不變
+    const st3 = mem();
+    st3.setItem(SD.QUICK_KEY, JSON.stringify(cfgs));
+    const orig = st3.setItem;
+    st3.setItem = (k, v) => { if (k === SD.STORAGE_KEY) throw new Error('quota'); orig(k, v); };
+    assert.equal(SD.migrateQuickConfigsInStorage(st3).moved, 0);
+    assert.equal(JSON.parse(st3.getItem(SD.QUICK_KEY)).length, 3);
+});
+
+test('搬遷防呆：備份、壞資料、欄位缺漏、另一分頁已搬', () => {
+    const mem = () => { const m = new Map(); return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)) }; };
+    const cfgs = [{ id: 1, title: 5, rates: 'new', data: { cost: '50', sell: '199', fee: '6' } }];
+
+    // 備份：搬走的原始設定留一份
+    const a = mem();
+    a.setItem(SD.QUICK_KEY, JSON.stringify(cfgs));
+    SD.migrateQuickConfigsInStorage(a);
+    const bk = JSON.parse(a.getItem(SD.QUICK_BACKUP_KEY));
+    assert.equal(bk.length, 1);
+    assert.equal(bk[0].id, 1);
+    assert.equal(SD.loadState(a).shops[0].products[0].name, '5'); // 數字標題轉成字串
+
+    // 賣場資料壞掉：不搬、不覆蓋
+    const b = mem();
+    b.setItem(SD.STORAGE_KEY, '{bad');
+    b.setItem(SD.QUICK_KEY, JSON.stringify(cfgs));
+    assert.equal(SD.migrateQuickConfigsInStorage(b).moved, 0);
+    assert.equal(b.getItem(SD.STORAGE_KEY), '{bad');
+    assert.equal(JSON.parse(b.getItem(SD.QUICK_KEY)).length, 1);
+
+    // 賣場缺 products／settings：補齊後照常搬
+    const c = mem();
+    c.setItem(SD.STORAGE_KEY, JSON.stringify({ shops: [{ id: 'x', name: 'x' }] }));
+    c.setItem(SD.QUICK_KEY, JSON.stringify(cfgs));
+    assert.equal(SD.migrateQuickConfigsInStorage(c).moved, 1);
+    assert.equal(SD.loadState(c).shops[0].products.length, 1);
+
+    // 讀完後清單被另一個分頁改掉：不搬
+    const d = mem();
+    d.setItem(SD.QUICK_KEY, JSON.stringify(cfgs));
+    const realGet = d.getItem;
+    let n = 0;
+    d.getItem = k => { if (k === SD.QUICK_KEY && ++n > 1) return '[]'; return realGet(k); };
+    assert.equal(SD.migrateQuickConfigsInStorage(d).moved, 0);
+    assert.equal(realGet(SD.STORAGE_KEY), null);
+});
+
+test('快速計算選的類別：存成依類別費率，帶回快速計算時保留類別', () => {
+    const ctx = mkCtx();
+    const leaf = ctx.feeIndex.list.find(l => l.path.length >= 3);
+    const q = new URLSearchParams({ cost: '100', sell: '300', fee: String(leaf.general), cat: leaf.path.join(' > ') });
+    const p = SD.productFromQuery(q, '有類別');
+    assert.equal(p.fee.mode, 'category');
+    assert.deepEqual(p.fee.path, leaf.path);
+    const shop = SD.newShop('t', { seller: 'mall' });
+    assert.equal(SD.resolveRate(p, 'mall', ctx), leaf.mall); // 依賣場類型取費率
+    const back = new URLSearchParams(SD.quickCalcQuery(shop, p, p.variations[0], ctx));
+    assert.equal(back.get('cat'), leaf.path.join(' > '));
+    assert.equal(back.get('fee'), String(leaf.mall));
+    // 沒有 cat：手動費率，帶回去也沒有 cat
+    const m = SD.productFromQuery(new URLSearchParams({ fee: '6' }), '手動');
+    assert.equal(m.fee.mode, 'manual');
+    assert.equal(new URLSearchParams(SD.quickCalcQuery(shop, m, m.variations[0], ctx)).get('cat'), null);
+});

@@ -19,6 +19,23 @@ function setOldTransRate(v) {
 }
 window.setOldTransRate = setOldTransRate;
 
+// 由「查詢」選的類別路徑（陣列）；手動改費率欄就清掉。存到賣場時商品會記成「依類別」的費率
+const FEE_CAT_SEP = ' > ';
+let feeCategory = null;
+function renderFeeCategory() {
+    const el = document.getElementById('feeCategoryText');
+    if (!el) return;
+    el.textContent = feeCategory ? '類別：' + feeCategory.join(FEE_CAT_SEP) : '';
+    el.title = el.textContent;
+    el.classList.toggle('d-none', !feeCategory);
+}
+function setFeeCategory(path) {
+    feeCategory = Array.isArray(path) && path.length ? path.map(String) : null;
+    renderFeeCategory();
+    updateQueryString();
+}
+window.setFeeCategory = setFeeCategory;
+
 // Get all input elements
 const costPriceInput = document.getElementById('costPrice');
 const costTaxTypeInput = document.getElementById('costTaxType');
@@ -113,7 +130,8 @@ function getQueryParams() {
         hasFeeInv: params.get('hasFeeInv') === '1',
         frozen: params.get('frozen') === '1',
         first5: params.get('first5') === '1',
-        oldFee: params.get('oldFee')
+        oldFee: params.get('oldFee'),
+        cat: params.get('cat')
     };
 }
 
@@ -133,6 +151,7 @@ function updateQueryString() {
 
     if (transactionFeeInput.value) params.set('fee', transactionFeeInput.value);
     if (oldTransRate !== null) params.set('oldFee', String(oldTransRate));
+    if (feeCategory) params.set('cat', feeCategory.join(FEE_CAT_SEP));
     params.set('preorder', checkedValue(preOrderRadios, '0'));
     if (getInstallment() !== '0') params.set('installment', getInstallment());
 
@@ -179,6 +198,8 @@ function loadFromQueryString() {
     if (params.fee) transactionFeeInput.value = params.fee;
     const oldFee = parseFloat(params.oldFee);
     oldTransRate = Number.isFinite(oldFee) ? oldFee : null;
+    feeCategory = params.cat ? params.cat.split(FEE_CAT_SEP) : null;
+    renderFeeCategory();
 
     setInstallmentFromParam(params.installment);
     if (params.preorder === '3') document.getElementById('isPreOrder').checked = true;
@@ -247,7 +268,7 @@ cashbackRadios.forEach(r => r.addEventListener('change', () => {
 [hasProductInvoiceInput, hasFeeInvoiceInput, frozenOrderInput, shopFirstFiveInput].forEach(el => el.addEventListener('change', onChange));
 // 使用者自己改成交手續費率 → 不再沿用「查詢」對應的舊費率（「查詢」帶入時送出的事件 isTrusted 為 false）
 // 必須在 onChange 之前註冊，計算時才會用到清除後的值
-transactionFeeInput.addEventListener('input', (e) => { if (e.isTrusted) oldTransRate = null; });
+transactionFeeInput.addEventListener('input', (e) => { if (e.isTrusted) { oldTransRate = null; feeCategory = null; renderFeeCategory(); } });
 [costPriceInput, sellPriceInput, profitMarginInput, transactionFeeInput].forEach(el => el.addEventListener('input', onChange));
 costTaxTypeInput.addEventListener('change', (e) => {
     const isChecked = e.target.checked;
