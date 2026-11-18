@@ -54,6 +54,11 @@ const PAGES = {
         modal_autoshow: 'false',
         modal_buttons: `${MODAL_BTN_GO_OLD}\n                    ${MODAL_BTN_CLOSE}`,
     },
+    'article-shopee-cashback.html': {
+        ...NAV, active_articles: ACTIVE,
+        modal_autoshow: 'false',
+        modal_buttons: `${MODAL_BTN_GO_OLD}\n                    ${MODAL_BTN_CLOSE}`,
+    },
     'article-shop-overview.html': {
         ...NAV, active_articles: ACTIVE,
         modal_autoshow: 'false',

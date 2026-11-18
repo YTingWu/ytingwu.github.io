@@ -7,6 +7,7 @@
 > 賣場總覽（統一賣場設定、商品獲利總覽、蝦皮商品檔匯入與批次調價）: https://ytingwu.github.io/shop.html
 > 蝦皮促銷檔期行事曆（活動日一覽、手續費加收、訂閱行事曆）: https://ytingwu.github.io/events.html
 > 文章列表: https://ytingwu.github.io/articles.html
+> 蝦幣回饋方案介紹（服務費、12/11 起只有長期免加收促銷檔期、划算門檻、報名與退出）: https://ytingwu.github.io/article-shopee-cashback.html
 > 賣場總覽使用教學（一次算出所有商品淨利、匯入蝦皮批次模板、批次調價與產生批次更新檔）: https://ytingwu.github.io/article-shop-overview.html
 > 蝦皮 12/11 新制懶人包（新舊制對照、試算、賣家該做的事）: https://ytingwu.github.io/article-1211-new-fees.html
 > 蝦皮小舖是什麼（收費、與一般賣場差異、試算、適合誰、報名時程）: https://ytingwu.github.io/article-shopee-xiaopu.html
@@ -108,6 +109,7 @@
   - 2026 年 12 月成交手續費＆金流與系統處理費：https://seller.shopee.tw/edu/article/28804
   - 免運及進階賣家專案（冷凍方案）：https://seller.shopee.tw/edu/article/28149
   - 蝦皮小舖：https://seller.shopee.tw/edu/article/28779
+  - 蝦幣回饋專案：https://seller.shopee.tw/edu/article/14704
   - 免運及進階賣家專案（報名、轉換、常見問題）：https://seller.shopee.tw/edu/article/18733
 - **一般賣家：** 成交手續費計算上限為 NT$35,000。促銷檔期加收：現行 2%（未參加蝦幣回饋時）；新制 4%（未參加或只參加短期蝦幣回饋時）。
 - **商城賣家：** 成交手續費無上限計算。促銷檔期加收：現行 3%；新制 5%（條件同上）。
