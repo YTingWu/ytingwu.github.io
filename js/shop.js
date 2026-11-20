@@ -1267,6 +1267,40 @@ ${plan.unmatched.map(u => `<div class="flex flex-wrap items-center gap-2 py-2 bo
         });
     }
 
+    // ---------- CSV 匯入（取代目前賣場的商品） ----------
+    let csvTargetId = null;
+    function openCsvImport() {
+        const shop = currentShop();
+        const n = shop.products.length;
+        const pending = SD.pendingChanges(shop).length;
+        confirmBox('從 CSV 匯入商品', `<p>匯入會<strong>先清除「${esc(shop.name)}」目前的 ${n} 個商品</strong>${pending ? `（含 ${pending} 個待匯出的修改）` : ''}，再用 CSV 檔裡的商品全部重新新增。其他賣場和賣場設定不受影響。清除後無法復原，建議先用「匯出全部資料（JSON）」備份。</p>
+<p class="hint">檔案有任何一列格式錯誤就不會匯入，目前的商品也不會被清除。</p>`, '選擇 CSV 檔', () => {
+            csvTargetId = shop.id;
+            $('csvFile').click();
+        });
+    }
+
+    async function importCsv(file) {
+        const shop = state.shops.find(s => s.id === csvTargetId);
+        csvTargetId = null;
+        if (!shop) return;
+        let text;
+        try { text = await file.text(); } catch (e) { toast('讀不到檔案'); return; }
+        const { products, errors } = SD.productsFromCsv(text);
+        if (errors.length) {
+            confirmBox('CSV 匯入失敗', `<p>「${esc(file.name)}」有 ${errors.length} 個問題，沒有匯入，目前的商品都還在：</p><ul>${errors.slice(0, 10).map(x => `<li>${esc(x)}</li>`).join('')}${errors.length > 10 ? '<li>…</li>' : ''}</ul>`, '知道了', null);
+            return;
+        }
+        const prev = shop.products;
+        shop.products = products;
+        if (!save()) { shop.products = prev; return; }
+        render();
+        const vars = products.reduce((a, p) => a + p.variations.length, 0);
+        // 商品分類欄寫的類別在費率表裡找不到（打錯或費率表改版）→ 提醒去補
+        const badCat = products.filter(p => p.fee.mode === 'category' && SD.resolveRate(p, shop.settings.seller, ctx) == null).length;
+        toast(`已清除原本 ${prev.length} 個商品，從 CSV 新增 ${products.length} 個商品（${vars} 個規格）` + (badCat ? `；${badCat} 個商品的分類在費率表找不到，請重新選類別` : ''));
+    }
+
     // ---------- 商品操作 ----------
     function cloneProduct(p, keepShopee) {
         const c = JSON.parse(JSON.stringify(p));
@@ -1327,6 +1361,7 @@ ${plan.unmatched.map(u => `<div class="flex flex-wrap items-center gap-2 py-2 bo
                 case 'backup-export': exportBackup(); break;
                 case 'backup-import': $('backupFile').click(); break;
                 case 'csv-export': download(`${shop.name}-商品.csv`, SD.shopCsv(shop, ctx), 'text/csv;charset=utf-8'); break;
+                case 'csv-import': openCsvImport(); break;
                 case 'product-new': openProductModal(null); break;
                 case 'product-edit': openProductModal(t.dataset.pid); break;
                 case 'product-copy': {
@@ -1418,6 +1453,7 @@ ${plan.unmatched.map(u => `<div class="flex flex-wrap items-center gap-2 py-2 bo
         $('nameModalInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('nameModalOk').click(); });
         $('confirmModalOk').addEventListener('click', () => { modal('confirmModal').hide(); confirmCb && confirmCb(); });
         $('backupFile').addEventListener('change', e => { if (e.target.files[0]) importBackup(e.target.files[0]); e.target.value = ''; });
+        $('csvFile').addEventListener('change', e => { if (e.target.files[0]) importCsv(e.target.files[0]); e.target.value = ''; });
 
         // 自建商品
         ['ownSearch', 'ownFilter'].forEach(id => $(id).addEventListener(id === 'ownSearch' ? 'input' : 'change', () => { ui.own.page = 1; renderOwn(); }));

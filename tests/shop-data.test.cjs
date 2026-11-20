@@ -284,3 +284,90 @@ test('快速計算選的類別：存成依類別費率，帶回快速計算時�
     assert.equal(m.fee.mode, 'manual');
     assert.equal(new URLSearchParams(SD.quickCalcQuery(shop, m, m.variations[0], ctx)).get('cat'), null);
 });
+
+test('CSV 匯入：匯出再匯入，蝦皮商品依商品 ID 合併規格、自建商品一列一個', () => {
+    const ctx = mkCtx();
+    const shop = SD.newShop('A');
+    const own = SD.newProduct({ name: '手作, "杯子"', cost: 120, note: '多行\n備註' });
+    own.fee.manualRate = 8.5;
+    own.variations[0].price = 399;
+    const sp = SD.newProduct({ shopeeItemId: '111', name: '蝦皮T恤' });
+    sp.fee = { mode: 'manual', catId: null, catLabel: '', path: null, manualRate: 6, needsReview: false };
+    sp.variations = [
+        { id: 'a', shopeeVarId: '9001', name: '白,M', price: 290, stock: 5, cost: 100, draft: null },
+        { id: 'b', shopeeVarId: '9002', name: '黑,L', price: 310, stock: 0, cost: null, draft: null },
+    ];
+    shop.products = [own, sp];
+    const { products, errors } = SD.productsFromCsv(SD.shopCsv(shop, ctx));
+    assert.deepEqual(errors, []);
+    assert.equal(products.length, 2);
+    const [o, s] = products;
+    assert.equal(o.name, '手作, "杯子"');
+    assert.equal(o.note, '多行\n備註');
+    assert.equal(o.cost, 120);
+    assert.equal(o.shopeeItemId, null);
+    assert.equal(o.fee.manualRate, 8.5);
+    assert.equal(o.variations[0].price, 399);
+    assert.equal(s.shopeeItemId, '111');
+    assert.deepEqual(s.variations.map(v => [v.shopeeVarId, v.name, v.price, v.stock, v.cost]), [['9001', '白,M', 290, 5, 100], ['9002', '黑,L', 310, 0, null]]);
+    // 匯入後算出來的淨利和匯出前一樣
+    const before = SD.variationMetrics(shop, sp, sp.variations[0], ctx).regular.profit;
+    const after = SD.variationMetrics({ ...shop, products }, s, s.variations[0], ctx).regular.profit;
+    assert.equal(after, before);
+});
+
+test('CSV 匯入：缺欄位、壞數字、重複選項 ID 都回錯誤', () => {
+    assert.match(SD.productsFromCsv('名稱,價格\na,1').errors[0], /缺少欄位/);
+    assert.match(SD.productsFromCsv('').errors[0], /空的/);
+    assert.match(SD.productsFromCsv('商品名稱,售價\n').errors[0], /沒有商品/);
+    const r = SD.productsFromCsv('商品名稱,售價,庫存,蝦皮商品ID,蝦皮選項ID\n,10,,,\nx,abc,,,\ny,10,1.5,,\nz,10,1,5,7\nz,10,1,5,7');
+    assert.equal(r.errors.length, 4);
+    assert.match(r.errors[0], /第 2 列：商品名稱是空的/);
+    assert.match(r.errors[1], /第 3 列：售價/);
+    assert.match(r.errors[2], /第 4 列：庫存/);
+    assert.match(r.errors[3], /第 6 列.*重複/);
+    // 欄位順序不拘、CRLF、千分位、% 都能讀；沒有費率的蝦皮商品走 auto
+    const ok = SD.productsFromCsv('﻿售價,商品名稱,成交手續費率,蝦皮商品ID\r\n"1,299",A,5.5%,\r\n100,B,,42\r\n');
+    assert.deepEqual(ok.errors, []);
+    assert.equal(ok.products[0].variations[0].price, 1299);
+    assert.equal(ok.products[0].fee.manualRate, 5.5);
+    assert.equal(ok.products[1].fee.mode, 'auto');
+    assert.equal(ok.products[1].variations[0].shopeeVarId, '42');
+});
+
+test('CSV 商品分類欄：依類別、依蝦皮分類、手動三種都能匯出再還原', () => {
+    const ctx = mkCtx();
+    const shop = SD.newShop('A');
+    const byCat = SD.newProduct({ name: '依類別' });
+    byCat.fee = { mode: 'category', catId: null, catLabel: '', path: ['男生衣著', '上衣'], manualRate: 6, needsReview: false };
+    const byShopee = SD.newProduct({ shopeeItemId: '200', name: '依蝦皮分類' });
+    byShopee.fee = { mode: 'auto', catId: '101391', catLabel: '收藏品 - 運動周邊', path: null, manualRate: null, needsReview: false };
+    byShopee.variations = [{ id: 'v', shopeeVarId: '201', name: '', price: 500, stock: 1, cost: 100, draft: null }];
+    const manual = SD.newProduct({ name: '手動' });
+    manual.fee.manualRate = 7.5;
+    shop.products = [byCat, byShopee, manual];
+    const csv = SD.shopCsv(shop, ctx);
+    const lines = csv.replace(/^﻿/, '').split('\r\n');
+    assert.ok(lines[0].endsWith(',備註,商品分類'), '商品分類是最後一欄');
+    assert.ok(lines[1].endsWith(',男生衣著 > 上衣'));
+    assert.ok(lines[2].endsWith(',蝦皮分類 101391 - 收藏品 - 運動周邊'));
+    assert.ok(lines[3].endsWith(','));
+    const { products, errors } = SD.productsFromCsv(csv);
+    assert.deepEqual(errors, []);
+    assert.deepEqual([products[0].fee.mode, products[0].fee.path], ['category', ['男生衣著', '上衣']]);
+    assert.deepEqual([products[1].fee.mode, products[1].fee.catId, products[1].fee.catLabel], ['auto', '101391', '收藏品 - 運動周邊']);
+    assert.deepEqual([products[2].fee.mode, products[2].fee.manualRate], ['manual', 7.5]);
+    // 還原後費率和匯出前一樣（依分類算，不是寫死成手動）
+    products.forEach((p, i) => assert.equal(SD.resolveRate(p, 'general', ctx), SD.resolveRate(shop.products[i], 'general', ctx)));
+    // 再匯出一次，內容不變
+    assert.equal(SD.shopCsv({ ...shop, products }, ctx), csv);
+});
+
+test('CSV 商品分類欄：舊版 CSV（沒有這欄）照舊用費率欄；只寫「蝦皮分類」；找不到的類別', () => {
+    const old = SD.productsFromCsv('商品名稱,規格,蝦皮商品ID,蝦皮選項ID,進價,售價,庫存,成交手續費率,一般日淨利,一般日利潤率,促銷檔期淨利,促銷檔期利潤率,備註\nA,,,,10,100,,8,,,,,');
+    assert.deepEqual([old.products[0].fee.mode, old.products[0].fee.manualRate], ['manual', 8]);
+    const r = SD.productsFromCsv('商品名稱,售價,蝦皮商品ID,商品分類\nB,100,5,蝦皮分類\nC,100,,不存在 > 類別');
+    assert.deepEqual([r.products[0].fee.mode, r.products[0].fee.catId], ['auto', null]);
+    assert.deepEqual(r.products[1].fee.path, ['不存在', '類別']);
+    assert.equal(SD.resolveRate(r.products[1], 'general', mkCtx()), null);
+});

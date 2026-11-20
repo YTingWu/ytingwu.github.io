@@ -589,8 +589,29 @@
         return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
     }
 
+    // 商品分類欄（CSV 最後一欄，匯入時還原 product.fee）：
+    //   依類別（快速計算／商品視窗選的）→ 費率表路徑「A > B > C」
+    //   依蝦皮分類（匯入時帶入）       →「蝦皮分類 12345 - 分類名稱」；沒有分類 ID 是「蝦皮分類」
+    //   手動費率                       → 空白（費率看「成交手續費率」欄）
+    const CSV_SHOPEE_CAT = '蝦皮分類';
+    function feeToCsv(fee) {
+        const f = fee || {};
+        if (f.mode === 'category' && Array.isArray(f.path) && f.path.length) return f.path.join(FEE_CAT_SEP);
+        if (f.mode === 'auto') return f.catId ? `${CSV_SHOPEE_CAT} ${f.catId}${f.catLabel ? ' - ' + f.catLabel : ''}` : CSV_SHOPEE_CAT;
+        return '';
+    }
+    // → fee 物件；空白回 null（改用成交手續費率欄）
+    function feeFromCsv(text) {
+        const t = String(text || '').trim();
+        if (!t) return null;
+        const base = { mode: 'manual', catId: null, catLabel: '', path: null, manualRate: null, needsReview: false };
+        const m = t.match(new RegExp(`^${CSV_SHOPEE_CAT}(?:\\s*(\\d+)(?:\\s*-\\s*([\\s\\S]*))?)?$`));
+        if (m) return { ...base, mode: 'auto', catId: m[1] || null, catLabel: m[1] ? (m[2] || '').trim() : '' };
+        return { ...base, mode: 'category', path: t.split(/\s*>\s*/).map(x => x.trim()).filter(Boolean) };
+    }
+
     function shopCsv(shop, ctx) {
-        const head = ['商品名稱', '規格', '蝦皮商品ID', '蝦皮選項ID', '進價', '售價', '庫存', '成交手續費率', '一般日淨利', '一般日利潤率', '促銷檔期淨利', '促銷檔期利潤率', '備註'];
+        const head = ['商品名稱', '規格', '蝦皮商品ID', '蝦皮選項ID', '進價', '售價', '庫存', '成交手續費率', '一般日淨利', '一般日利潤率', '促銷檔期淨利', '促銷檔期利潤率', '備註', '商品分類'];
         const lines = [head.join(',')];
         for (const p of shop.products) {
             for (const v of p.variations) {
@@ -598,10 +619,100 @@
                 const ok = m.hasCost && m.hasRate;
                 lines.push([p.name, v.name, p.shopeeItemId || '', v.shopeeVarId || '', m.cost ?? '', m.price, v.stock ?? '', m.rate ?? '',
                     ok ? Math.round(m.regular.profit) : '', ok && m.regular.margin != null ? m.regular.margin.toFixed(1) + '%' : '',
-                    ok ? Math.round(m.event.profit) : '', ok && m.event.margin != null ? m.event.margin.toFixed(1) + '%' : '', p.note].map(csvEscape).join(','));
+                    ok ? Math.round(m.event.profit) : '', ok && m.event.margin != null ? m.event.margin.toFixed(1) + '%' : '', p.note, feeToCsv(p.fee)].map(csvEscape).join(','));
             }
         }
         return '﻿' + lines.join('\r\n');
+    }
+
+    // ---------- CSV 匯入 ----------
+
+    // RFC 4180：支援雙引號、欄內逗號／換行、"" 跳脫；去掉開頭 BOM
+    function parseCsvRows(text) {
+        const s = String(text || '').replace(/^﻿/, '');
+        const rows = [];
+        let row = [], cell = '', q = false;
+        for (let i = 0; i < s.length; i++) {
+            const ch = s[i];
+            if (q) {
+                if (ch === '"') {
+                    if (s[i + 1] === '"') { cell += '"'; i++; } else q = false;
+                } else cell += ch;
+            } else if (ch === '"') q = true;
+            else if (ch === ',') { row.push(cell); cell = ''; }
+            else if (ch === '\n' || ch === '\r') {
+                if (ch === '\r' && s[i + 1] === '\n') i++;
+                row.push(cell); rows.push(row); row = []; cell = '';
+            } else cell += ch;
+        }
+        if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
+        return rows.filter(r => r.some(c => c.trim() !== ''));
+    }
+
+    // 讀「匯出這個賣場的商品（CSV）」的格式（欄位依表頭名稱對應，順序不拘；淨利、利潤率欄會忽略，匯入後重算）
+    // 有蝦皮商品 ID 的列依商品 ID 合併成一個多規格的蝦皮商品；沒有的每列是一個自建商品
+    // → { products: [...], errors: ['第 N 列：…'] }；errors 不是空的就不該套用
+    function productsFromCsv(text) {
+        const rows = parseCsvRows(text);
+        if (!rows.length) return { products: [], errors: ['檔案是空的'] };
+        const head = rows[0].map(h => h.trim());
+        const idx = (name) => head.indexOf(name);
+        const col = {
+            name: idx('商品名稱'), varName: idx('規格'), itemId: idx('蝦皮商品ID'), varId: idx('蝦皮選項ID'),
+            cost: idx('進價'), price: idx('售價'), stock: idx('庫存'), rate: idx('成交手續費率'), note: idx('備註'), cat: idx('商品分類'),
+        };
+        const missing = ['商品名稱', '售價'].filter(n => idx(n) < 0);
+        if (missing.length) return { products: [], errors: [`缺少欄位：${missing.join('、')}（第 1 列要是表頭，格式同「匯出這個賣場的商品（CSV）」）`] };
+
+        const errors = [];
+        const products = [];
+        const byItem = new Map();
+        const get = (r, i) => (i >= 0 && r[i] != null ? String(r[i]).trim() : '');
+        for (let i = 1; i < rows.length; i++) {
+            const r = rows[i];
+            const line = i + 1;
+            const num = (label, raw, { int = false, min = 0, max = Infinity } = {}) => {
+                if (raw === '') return null;
+                const n = Number(raw.replace(/[,$%\s]/g, ''));
+                if (!Number.isFinite(n) || n < min || n > max || (int && !Number.isInteger(n))) {
+                    errors.push(`第 ${line} 列：${label}「${raw}」不是有效的數字`);
+                    return undefined;
+                }
+                return n;
+            };
+            const name = cleanName(get(r, col.name));
+            if (!name) { errors.push(`第 ${line} 列：商品名稱是空的`); continue; }
+            const cost = num('進價', get(r, col.cost));
+            const price = num('售價', get(r, col.price), { max: 9999999 });
+            const stock = num('庫存', get(r, col.stock), { int: true, max: MAX_STOCK });
+            const rate = num('成交手續費率', get(r, col.rate), { max: 100 });
+            if ([cost, price, stock, rate].includes(undefined)) continue;
+            const itemId = get(r, col.itemId).replace(/\.0+$/, '');
+            const varId = get(r, col.varId).replace(/\.0+$/, '');
+            const note = get(r, col.note);
+            // 有「商品分類」就還原分類（費率由分類決定）；沒有這欄（舊版 CSV）或空白才用成交手續費率欄
+            const fee = feeFromCsv(get(r, col.cat)) || (rate != null
+                ? { mode: 'manual', catId: null, catLabel: '', path: null, manualRate: rate, needsReview: false }
+                : itemId
+                    ? { mode: 'auto', catId: null, catLabel: '', path: null, manualRate: null, needsReview: false } // 重新從蝦皮匯入「備貨天數」會補上分類
+                    : { mode: 'manual', catId: null, catLabel: '', path: null, manualRate: null, needsReview: false });
+            const variation = { id: uid(), shopeeVarId: itemId ? (varId || itemId) : null, name: itemId ? cleanName(get(r, col.varName)) : '', price: price ?? 0, stock, cost: itemId ? cost : null, draft: null };
+
+            if (itemId) {
+                let p = byItem.get(itemId);
+                if (!p) {
+                    p = newProduct({ shopeeItemId: itemId, name, note, fee, variations: [] });
+                    byItem.set(itemId, p);
+                    products.push(p);
+                }
+                if (p.variations.some(v => v.shopeeVarId === variation.shopeeVarId)) { errors.push(`第 ${line} 列：蝦皮選項ID ${variation.shopeeVarId} 重複`); continue; }
+                p.variations.push(variation);
+            } else {
+                products.push(newProduct({ name, note, cost, fee, variations: [variation] }));
+            }
+        }
+        if (!products.length && !errors.length) errors.push('檔案裡沒有商品資料');
+        return { products, errors };
     }
 
     const api = {
@@ -610,7 +721,7 @@
         buildFeeIndex, shopeeCategoryPath, matchFeePath, resolveFeePath, resolveRate,
         variationCost, effectivePrice, engineSettings, variationMetrics, variationSummary, deleteVariations, clearShopee, requiredPrice,
         settingsFromQuery, productFromQuery, settingsDiff, quickCalcQuery, productFromSavedConfig, migrateQuickConfigs, migrateQuickConfigsInStorage, QUICK_KEY, QUICK_BACKUP_KEY,
-        planImport, applyImportPlan, setDraft, pendingChanges, validateChanges, markExported, isStale, salesDataTime, shopCsv, MAX_STOCK,
+        planImport, applyImportPlan, setDraft, pendingChanges, validateChanges, markExported, isStale, salesDataTime, shopCsv, feeToCsv, feeFromCsv, parseCsvRows, productsFromCsv, MAX_STOCK,
     };
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     else root.ShopData = api;

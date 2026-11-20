@@ -137,8 +137,10 @@
                         <button type="button" role="menuitem" data-action="backup-export"><i class="bi bi-filetype-json"></i> 匯出全部資料（JSON）</button>
                         <button type="button" role="menuitem" data-action="backup-import"><i class="bi bi-upload"></i> 從 JSON 還原</button>
                         <button type="button" role="menuitem" data-action="csv-export"><i class="bi bi-filetype-csv"></i> 匯出這個賣場的商品（CSV）</button>
+                        <button type="button" role="menuitem" data-action="csv-import"><i class="bi bi-file-earmark-arrow-up"></i> 從 CSV 匯入商品（取代）</button>
                     </div>
                     <input type="file" id="backupFile" accept=".json,application/json" hidden>
+                    <input type="file" id="csvFile" accept=".csv,text/csv" hidden>
                 </div>
             </div>
 
@@ -315,7 +317,7 @@
             </div>
             <div class="space-y-1 md:flex-1">
                 <div>本網站由 <a href="https://brucewu.dev/" target="_blank" rel="noopener noreferrer" class="underline font-semibold">Bruce Wu</a> 設計、開發與維護</div>
-                <div class="text-xs text-balance">採用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" class="underline">創用 CC 姓名標示-非商業性-禁止改作 4.0 國際 授權條款</a> 授權<span class="block md:inline num"><span class="hidden md:inline"> · </span>v2.0.0</span></div>
+                <div class="text-xs text-balance">採用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" class="underline">創用 CC 姓名標示-非商業性-禁止改作 4.0 國際 授權條款</a> 授權<span class="block md:inline num"><span class="hidden md:inline"> · </span>v2.1.0</span></div>
             </div>
             <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" class="self-center opacity-80 hover:opacity-100">
                 <img alt="創用 CC 授權條款" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" width="88" height="31">
@@ -475,9 +477,9 @@
     <script src="js/ui.js?20261118"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="js/fee-engine.js?20261117"></script>
-    <script src="js/shop-data.js?20261118"></script>
+    <script src="js/shop-data.js?20261120b"></script>
     <script src="js/shop-xlsx.js?20261118"></script>
-    <script src="js/shop.js?20261118c"></script>
+    <script src="js/shop.js?20261120c"></script>
     <script src="js/announcement.js?20261118"></script>
     <script src="js/site.js?20261118"></script>
 </body>
